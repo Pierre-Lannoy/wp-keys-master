@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve WordPress plugin boilerplate
+about: Create a report to help us improve Keys Master
 title: ''
 labels: bug
 assignees: Pierre-Lannoy

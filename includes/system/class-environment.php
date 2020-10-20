@@ -7,9 +7,10 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\System;
+namespace KeysMaster\System;
 
 use Exception;
+use KeysMaster\System\IP;
 
 /**
  * The class responsible to manage and detect plugin environment.
@@ -34,25 +35,55 @@ class Environment {
 	 * @since 1.0.0
 	 */
 	public static function init() {
-		$plugin_path         = str_replace( WPPB_SLUG . '/includes/system/', WPPB_SLUG . '/', plugin_dir_path( __FILE__ ) );
-		$plugin_path         = str_replace( WPPB_SLUG . '\includes\system/', WPPB_SLUG . '/', $plugin_path );
-		$plugin_url          = str_replace( WPPB_SLUG . '/includes/system/', WPPB_SLUG . '/', plugin_dir_url( __FILE__ ) );
+		$plugin_path         = str_replace( POKM_SLUG . '/includes/system/', POKM_SLUG . '/', plugin_dir_path( __FILE__ ) );
+		$plugin_path         = str_replace( POKM_SLUG . '\includes\system/', POKM_SLUG . '/', $plugin_path );
+		$plugin_url          = str_replace( POKM_SLUG . '/includes/system/', POKM_SLUG . '/', plugin_dir_url( __FILE__ ) );
 		$plugin_relative_url = str_replace( get_site_url() . '/', '', $plugin_url );
-		define( 'WPPB_PLUGIN_DIR', $plugin_path );
-		define( 'WPPB_PLUGIN_URL', $plugin_url );
-		define( 'WPPB_PLUGIN_RELATIVE_URL', $plugin_relative_url );
-		define( 'WPPB_ADMIN_DIR', WPPB_PLUGIN_DIR . 'admin/' );
-		define( 'WPPB_ADMIN_URL', WPPB_PLUGIN_URL . 'admin/' );
-		define( 'WPPB_PUBLIC_DIR', WPPB_PLUGIN_DIR . 'public/' );
-		define( 'WPPB_PUBLIC_URL', WPPB_PLUGIN_URL . 'public/' );
-		define( 'WPPB_INCLUDES_DIR', WPPB_PLUGIN_DIR . 'includes/' );
-		define( 'WPPB_VENDOR_DIR', WPPB_PLUGIN_DIR . 'includes/libraries/' );
-		define( 'WPPB_LANGUAGES_DIR', WPPB_PLUGIN_DIR . 'languages/' );
-		define( 'WPPB_ADMIN_RELATIVE_URL', self::admin_relative_url() );
-		define( 'WPPB_AJAX_RELATIVE_URL', self::ajax_relative_url() );
-		define( 'WPPB_PLUGIN_SIGNATURE', WPPB_PRODUCT_NAME . ' v' . WPPB_VERSION );
-		define( 'WPPB_PLUGIN_AGENT', WPPB_PRODUCT_NAME . ' (' . self::wordpress_version_id() . '; ' . self::plugin_version_id() . '; +' . WPPB_PRODUCT_URL . ')' );
-		define( 'WPPB_ASSETS_ID', WPPB_PRODUCT_ABBREVIATION . '-assets' );
+		define( 'POKM_PLUGIN_DIR', $plugin_path );
+		define( 'POKM_PLUGIN_URL', $plugin_url );
+		define( 'POKM_PLUGIN_RELATIVE_URL', $plugin_relative_url );
+		define( 'POKM_ADMIN_DIR', POKM_PLUGIN_DIR . 'admin/' );
+		define( 'POKM_ADMIN_URL', POKM_PLUGIN_URL . 'admin/' );
+		define( 'POKM_PUBLIC_DIR', POKM_PLUGIN_DIR . 'public/' );
+		define( 'POKM_PUBLIC_URL', POKM_PLUGIN_URL . 'public/' );
+		define( 'POKM_INCLUDES_DIR', POKM_PLUGIN_DIR . 'includes/' );
+		define( 'POKM_VENDOR_DIR', POKM_PLUGIN_DIR . 'includes/libraries/' );
+		define( 'POKM_LANGUAGES_DIR', POKM_PLUGIN_DIR . 'languages/' );
+		define( 'POKM_ADMIN_RELATIVE_URL', self::admin_relative_url() );
+		define( 'POKM_AJAX_RELATIVE_URL', self::ajax_relative_url() );
+		define( 'POKM_PLUGIN_SIGNATURE', POKM_PRODUCT_NAME . ' v' . POKM_VERSION );
+		define( 'POKM_PLUGIN_AGENT', POKM_PRODUCT_NAME . ' (' . self::wordpress_version_id() . '; ' . self::plugin_version_id() . '; +' . POKM_PRODUCT_URL . ')' );
+		define( 'POKM_ASSETS_ID', POKM_PRODUCT_ABBREVIATION . '-assets' );
+	}
+
+	/**
+	 * Get the current execution mode.
+	 *
+	 * @return  integer The current execution mode.
+	 * @since 1.0.0
+	 */
+	public static function exec_mode() {
+		$req_uri = filter_input( INPUT_SERVER, 'REQUEST_URI' );
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			$id = 1;
+		} elseif ( wp_doing_cron() ) {
+			$id = 2;
+		} elseif ( wp_doing_ajax() ) {
+			$id = 3;
+		} elseif ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) {
+			$id = 4;
+		} elseif ( defined( 'REST_REQUEST ' ) && REST_REQUEST ) {
+			$id = 5;
+		} elseif ( $req_uri ? 0 === strpos( strtolower( $req_uri ), '/wp-json/' ) : false ) {
+			$id = 5;
+		} elseif ( $req_uri ? 0 === strpos( strtolower( $req_uri ), '/feed/' ) : false ) {
+			$id = 6;
+		} elseif ( is_admin() ) {
+			$id = 7;
+		} else {
+			$id = 8;
+		}
+		return $id;
 	}
 
 	/**
@@ -62,7 +93,7 @@ class Environment {
 	 * @return string The major version number.
 	 * @since  1.0.0
 	 */
-	public static function major_version( $version = WPPB_VERSION ) {
+	public static function major_version( $version = POKM_VERSION ) {
 		try {
 			$result = substr( $version, 0, strpos( $version, '.' ) );
 		} catch ( Exception $ex ) {
@@ -78,7 +109,7 @@ class Environment {
 	 * @return string The major version number.
 	 * @since  1.0.0
 	 */
-	public static function minor_version( $version = WPPB_VERSION ) {
+	public static function minor_version( $version = POKM_VERSION ) {
 		try {
 			$result = substr( $version, strpos( $version, '.' ) + 1, 1000 );
 			$result = substr( $result, 0, strpos( $result, '.' ) );
@@ -95,7 +126,7 @@ class Environment {
 	 * @return string The major version number.
 	 * @since  1.0.0
 	 */
-	public static function patch_version( $version = WPPB_VERSION ) {
+	public static function patch_version( $version = POKM_VERSION ) {
 		try {
 			$result = substr( $version, strpos( $version, '.' ) + 1, 1000 );
 			$result = substr( $result, strpos( $result, '.' ) + 1, 1000 );
@@ -159,18 +190,18 @@ class Environment {
 				$debug = true;
 				if ( defined( 'WP_DEBUG_LOG' ) ) {
 					if ( WP_DEBUG_LOG ) {
-						$opt[] = esc_html__( 'log', 'wp-plugin-boilerplate' );
+						$opt[] = esc_html__( 'log', 'keys-master' );
 					}
 				}
 				if ( defined( 'WP_DEBUG_DISPLAY' ) ) {
 					if ( WP_DEBUG_DISPLAY ) {
-						$opt[] = esc_html__( 'display', 'wp-plugin-boilerplate' );
+						$opt[] = esc_html__( 'display', 'keys-master' );
 					}
 				}
 				$s = implode( ', ', $opt );
 			}
 		}
-		return ( $debug ? esc_html__( 'Debug enabled', 'wp-plugin-boilerplate' ) . ( '' !== $s ? ' (' . $s . ')' : '' ) : esc_html__( 'Debug disabled', 'wp-plugin-boilerplate' ) );
+		return ( $debug ? esc_html__( 'Debug enabled', 'keys-master' ) . ( '' !== $s ? ' (' . $s . ')' : '' ) : esc_html__( 'Debug disabled', 'keys-master' ) );
 	}
 
 	/**
@@ -180,7 +211,7 @@ class Environment {
 	 * @since  1.0.0
 	 */
 	public static function plugin_version_id() {
-		return WPPB_PRODUCT_SHORTNAME . '/' . WPPB_VERSION;
+		return POKM_PRODUCT_SHORTNAME . '/' . POKM_VERSION;
 	}
 
 	/**
@@ -190,10 +221,10 @@ class Environment {
 	 * @since  1.0.0
 	 */
 	public static function plugin_version_text() {
-		$s = WPPB_PRODUCT_NAME . ' ' . WPPB_VERSION;
-		if ( defined( 'WPPB_CODENAME' ) ) {
-			if ( WPPB_CODENAME !== '"-"' ) {
-				$s .= ' ' . WPPB_CODENAME;
+		$s = POKM_PRODUCT_NAME . ' ' . POKM_VERSION;
+		if ( defined( 'POKM_CODENAME' ) ) {
+			if ( POKM_CODENAME !== '"-"' ) {
+				$s .= ' ' . POKM_CODENAME;
 			}
 		}
 		return $s;
@@ -206,7 +237,7 @@ class Environment {
 	 * @since  1.0.0
 	 */
 	public static function is_plugin_in_dev_mode() {
-		return ( strpos( WPPB_VERSION, 'dev' ) > 0 );
+		return ( strpos( POKM_VERSION, 'dev' ) > 0 );
 	}
 
 	/**
@@ -216,7 +247,7 @@ class Environment {
 	 * @since  1.0.0
 	 */
 	public static function is_plugin_in_rc_mode() {
-		return ( strpos( WPPB_VERSION, 'rc' ) > 0 );
+		return ( strpos( POKM_VERSION, 'rc' ) > 0 );
 	}
 
 	/**

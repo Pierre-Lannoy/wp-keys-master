@@ -9,11 +9,11 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\System;
+namespace KeysMaster\System;
 
-use WPPluginBoilerplate\System\Logger;
-use WPPluginBoilerplate\System\Option;
-use WPPluginBoilerplate\System\File;
+use KeysMaster\System\Logger;
+use KeysMaster\System\Option;
+use KeysMaster\System\File;
 
 /**
  * Define the APCu functionality.
@@ -59,8 +59,8 @@ class APCu {
 	 * @since 1.0.0
 	 */
 	public static function perfopsone_apcu_info( $apcu ) {
-		$apcu[ WPPB_SLUG ] = [
-			'name' => WPPB_PRODUCT_NAME,
+		$apcu[ POKM_SLUG ] = [
+			'name' => POKM_PRODUCT_NAME,
 		];
 		return $apcu;
 	}

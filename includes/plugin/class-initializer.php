@@ -7,7 +7,7 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\Plugin;
+namespace KeysMaster\Plugin;
 
 /**
  * Fired after 'plugins_loaded' hook.
@@ -35,9 +35,21 @@ class Initializer {
 	 * @since 1.0.0
 	 */
 	public function initialize() {
-		\WPPluginBoilerplate\System\Logger::init();
-		\WPPluginBoilerplate\System\Cache::init();
-		\WPPluginBoilerplate\System\APCu::init();
+		\KeysMaster\System\Cache::init();
+		\KeysMaster\System\Sitehealth::init();
+		\KeysMaster\System\APCu::init();
+		\KeysMaster\Plugin\Feature\UserAdministration::init();
+		\KeysMaster\Plugin\Feature\ZooKeeper::init();
+	}
+
+	/**
+	 * Initialize the plugin.
+	 *
+	 * @since 1.0.0
+	 */
+	public function late_initialize() {
+		\KeysMaster\Plugin\Feature\Capture::late_init();
+		require_once POKM_PLUGIN_DIR . 'perfopsone/init.php';
 	}
 
 }

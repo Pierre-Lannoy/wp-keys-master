@@ -9,9 +9,9 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\Library;
+namespace KeysMaster\Library;
 
-use WPPluginBoilerplate\System\L10n;
+use KeysMaster\System\L10n;
 
 /**
  * Define the libraries functionality.
@@ -61,10 +61,10 @@ class Libraries {
 		self::$psr4_libraries['feather']   = [
 			'name'    => 'Feather',
 			'prefix'  => 'Feather',
-			'base'    => WPPB_VENDOR_DIR . 'feather/',
+			'base'    => POKM_VENDOR_DIR . 'feather/',
 			'version' => '4.24.1',
 			// phpcs:ignore
-			'author'  => sprintf( esc_html__( '%s & contributors', 'wp-plugin-boilerplate' ), 'Cole Bemis' ),
+			'author'  => sprintf( esc_html__( '%s & contributors', 'keys-master' ), 'Cole Bemis' ),
 			'url'     => 'https://feathericons.com',
 			'license' => 'mit',
 			'langs'   => 'en',
@@ -72,10 +72,10 @@ class Libraries {
 		self::$psr4_libraries['markdown'] = [
 			'name'    => 'Markdown Parser',
 			'prefix'  => 'cebe\markdownparser',
-			'base'    => WPPB_VENDOR_DIR . 'markdown/',
+			'base'    => POKM_VENDOR_DIR . 'markdown/',
 			'version' => '1.2.1',
 			// phpcs:ignore
-			'author'  => sprintf( esc_html__( '%s & contributors', 'wp-plugin-boilerplate' ), 'Carsten Brandt' ),
+			'author'  => sprintf( esc_html__( '%s & contributors', 'keys-master' ), 'Carsten Brandt' ),
 			'url'     => 'https://github.com/cebe/markdown',
 			'license' => 'mit',
 			'langs'   => 'en',
@@ -113,19 +113,22 @@ class Libraries {
 	private function license_name( $license ) {
 		switch ( $license ) {
 			case 'mit':
-				$result = esc_html__( 'MIT license', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'MIT license', 'keys-master' );
 				break;
 			case 'apl2':
-				$result = esc_html__( 'Apache license, version 2.0', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'Apache license, version 2.0', 'keys-master' );
 				break;
 			case 'gpl2':
-				$result = esc_html__( 'GPL-2.0 license', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'GPL-2.0 license', 'keys-master' );
 				break;
 			case 'gpl3':
-				$result = esc_html__( 'GPL-3.0 license', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'GPL-3.0 license', 'keys-master' );
+				break;
+			case 'lgpl3':
+				$result = esc_html__( 'LGPL-3.0 license', 'keys-master' );
 				break;
 			default:
-				$result = esc_html__( 'unknown license', 'wp-plugin-boilerplate' );
+				$result = esc_html__( 'unknown license', 'keys-master' );
 				break;
 		}
 		return $result;
@@ -160,10 +163,17 @@ class Libraries {
 		}
 		$item            = [];
 		$item['name']    = 'Plugin Boilerplate';
-		$item['version'] = '';
+		$item['version'] = '1.0.0';
 		$item['author']  = 'Pierre Lannoy';
 		$item['url']     = 'https://github.com/Pierre-Lannoy/wp-' . 'plugin-' . 'boilerplate';
 		$item['license'] = $this->license_name( 'gpl3' );
+		$item['langs']   = L10n::get_language_markup( [ 'en' ] );
+		$list[]          = $item;
+		$item['name']    = 'SVG-Loaders';
+		$item['version'] = '1.0.2';
+		$item['author']  = sprintf( esc_html__( '%s & contributors', 'keys-master' ), 'Sam Herbert' );
+		$item['url']     = 'https://github.com/SamHerbert/SVG-Loaders';
+		$item['license'] = $this->license_name( 'mit' );
 		$item['langs']   = L10n::get_language_markup( [ 'en' ] );
 		$list[]          = $item;
 		usort( $list, function ( $a, $b ) { return strcmp( strtolower( $a['name'] ), strtolower( $b['name'] ) );} );
@@ -171,7 +181,7 @@ class Libraries {
 			$items = [];
 			foreach ( $list as $library ) {
 				/* translators: as in the sentence "Product W version X by author Y (license Z)" */
-				$items[] = sprintf( __( '<a href="%1$s">%2$s %3$s</a>%4$s by %5$s (%6$s)', 'wp-plugin-boilerplate' ), $library['url'], $library['name'], $library['version'], $library['langs'], $library['author'], $library['license'] );
+				$items[] = sprintf( __( '<a href="%1$s">%2$s %3$s</a>%4$s by %5$s (%6$s)', 'keys-master' ), $library['url'], $library['name'], $library['version'], $library['langs'], $library['author'], $library['license'] );
 			}
 			$result = implode( ', ', $items );
 		}

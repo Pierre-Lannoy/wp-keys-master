@@ -7,12 +7,12 @@
  * @since   1.0.0
  */
 
-define( 'WPPB_PRODUCT_NAME', 'WordPress Plugin Boilerplate' );
-define( 'WPPB_PRODUCT_URL', 'https://github.com/Pierre-Lannoy' );
-define( 'WPPB_PRODUCT_SHORTNAME', 'PluginBoilerplate' );
-define( 'WPPB_PRODUCT_ABBREVIATION', 'wppb' );
-define( 'WPPB_SLUG', 'wp-plugin-boilerplate' );
-define( 'WPPB_VERSION', '1.0.0' );
-define( 'WPPB_CODENAME', '"-"' );
+define( 'POKM_PRODUCT_NAME', 'Keys Master' );
+define( 'POKM_PRODUCT_URL', 'https://github.com/Pierre-Lannoy/wp-keys-master' );
+define( 'POKM_PRODUCT_SHORTNAME', 'keys-master' );
+define( 'POKM_PRODUCT_ABBREVIATION', 'keysmaster' );
+define( 'POKM_SLUG', 'keys-master' );
+define( 'POKM_VERSION', '1.0.0-dev0' );
+define( 'POKM_CODENAME', '"-"' );
+define( 'POKM_CDN_AVAILABLE', true );
 
-define( 'WPPB_CDN_AVAILABLE', true );

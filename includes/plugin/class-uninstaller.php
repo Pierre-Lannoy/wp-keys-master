@@ -7,10 +7,11 @@
  * @since   1.0.0
  */
 
-namespace WPPluginBoilerplate\Plugin;
+namespace KeysMaster\Plugin;
 
-use WPPluginBoilerplate\System\Option;
-use WPPluginBoilerplate\System\User;
+use KeysMaster\System\Option;
+use KeysMaster\System\User;
+use KeysMaster\Plugin\Feature\Schema;
 
 /**
  * Fired during plugin deletion.
@@ -31,7 +32,8 @@ class Uninstaller {
 	public static function uninstall() {
 		Option::site_delete_all();
 		User::delete_all_meta();
-		// Delete cache?
+		$schema = new Schema();
+		$schema->finalize();
 	}
 
 }
