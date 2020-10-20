@@ -120,7 +120,7 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function init() {
-		add_action( 'sessions_after_idle_terminate', [ self::class, 'sessions_after_idle_terminate' ], 10, 1 );
+		/*add_action( 'sessions_after_idle_terminate', [ self::class, 'sessions_after_idle_terminate' ], 10, 1 );
 		add_action( 'sessions_after_expired_terminate', [ self::class, 'sessions_after_expired_terminate' ], 10, 1 );
 		add_action( 'auth_cookie_expired', [ self::class, 'auth_cookie_expired' ], 10, 1 );
 		add_action( 'sessions_force_terminate', [ self::class, 'sessions_force_terminate' ], 10, 1 );
@@ -131,7 +131,7 @@ class Capture {
 		add_action( 'wp_logout', [ self::class, 'wp_logout' ], 10, 0 );
 		add_action( 'wp_login_failed', [ self::class, 'wp_login_failed' ], 10, 1 );
 		add_action( 'wp_login', [ self::class, 'wp_login' ], 10, 2 );
-		add_action( 'jpp_kill_login', [ self::class, 'jpp_kill_login' ], 10, 1 );
+		add_action( 'jpp_kill_login', [ self::class, 'jpp_kill_login' ], 10, 1 );*/
 	}
 
 	/**
@@ -140,7 +140,7 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function late_init() {
-		add_action( 'wordfence_security_event', [ self::class, 'wordfence_security_event' ], 10, 1 );
+		//add_action( 'wordfence_security_event', [ self::class, 'wordfence_security_event' ], 10, 1 );
 	}
 
 	/**
