@@ -90,13 +90,12 @@ class Keys_Master_Admin {
 	public function init_perfops_admin_menus( $perfops ) {
 		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
 			$perfops['analytics'][] = [
-				'name'          => esc_html_x( 'Keys Master', 'Common name - not the name of the plugin.', 'keys-master' ),
-				/* translators: as in the sentence "View sessions and accounts activity on your network." or "View sessions and accounts activity on your website." */
-				'description'   => sprintf( esc_html__( 'View sessions and accounts activity on your %s.', 'keys-master' ), Environment::is_wordpress_multisite() ? esc_html__( 'network', 'keys-master' ) : esc_html__( 'website', 'keys-master' ) ),
+				'name'          => esc_html__( 'Application Passwords', 'keys-master' ),
+				'description'   => sprintf( esc_html__( 'View application passwords usage on your %s.', 'keys-master' ), Environment::is_wordpress_multisite() ? esc_html__( 'network', 'keys-master' ) : esc_html__( 'website', 'keys-master' ) ),
 				'icon_callback' => [ \KeysMaster\Plugin\Core::class, 'get_base64_logo' ],
 				'slug'          => 'pokm-viewer',
-				'page_title'    => esc_html__( 'Sessions Analytics', 'keys-master' ),
-				'menu_title'    => esc_html_x( 'Keys Master', 'Common name - not the name of the plugin.', 'keys-master' ),
+				'page_title'    => esc_html__( 'Application Passwords Analytics', 'keys-master' ),
+				'menu_title'    => esc_html__( 'App. Passwords', 'keys-master' ),
 				'capability'    => 'manage_options',
 				'callback'      => [ $this, 'get_viewer_page' ],
 				'position'      => 50,
@@ -105,13 +104,12 @@ class Keys_Master_Admin {
 				'remedy'        => esc_url( admin_url( 'admin.php?page=pokm-settings&tab=misc' ) ),
 			];
 			$perfops['tools'][]     = [
-				'name'          => esc_html_x( 'Keys Master', 'Common name - not the name of the plugin.', 'keys-master' ),
-				/* translators: as in the sentence "Browse and manage active sessions on your network." or "Browse and manage active sessions on your website." */
-				'description'   => sprintf( esc_html__( 'Browse and manage active sessions on your %s.', 'keys-master' ), Environment::is_wordpress_multisite() ? esc_html__( 'network', 'keys-master' ) : esc_html__( 'website', 'keys-master' ) ),
+				'name'          => esc_html__( 'Application Passwords', 'keys-master' ),
+				'description'   => sprintf( esc_html__( 'Browse and manage application passwords on your %s.', 'keys-master' ), Environment::is_wordpress_multisite() ? esc_html__( 'network', 'keys-master' ) : esc_html__( 'website', 'keys-master' ) ),
 				'icon_callback' => [ \KeysMaster\Plugin\Core::class, 'get_base64_logo' ],
 				'slug'          => 'pokm-manager',
 				'page_title'    => esc_html__( 'Active Keys Master Management', 'keys-master' ),
-				'menu_title'    => esc_html_x( 'Keys Master', 'Common name - not the name of the plugin.', 'keys-master' ),
+				'menu_title'    => esc_html__( 'App. Passwords', 'keys-master' ),
 				'capability'    => 'manage_options',
 				'callback'      => [ $this, 'get_manager_page' ],
 				'position'      => 50,
@@ -298,8 +296,6 @@ class Keys_Master_Admin {
 				Option::network_set( 'use_cdn', array_key_exists( 'pokm_plugin_options_usecdn', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_options_usecdn' ) : false );
 				Option::network_set( 'display_nag', array_key_exists( 'pokm_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_options_nag' ) : false );
 				Option::network_set( 'analytics', array_key_exists( 'pokm_plugin_features_analytics', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_features_analytics' ) : false );
-				Option::network_set( 'forceip', array_key_exists( 'pokm_plugin_features_forceip', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_features_forceip' ) : false );
-				Option::network_set( 'followip', array_key_exists( 'pokm_plugin_features_followip', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_features_followip' ) : false );
 				Option::network_set( 'history', array_key_exists( 'pokm_plugin_features_history', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_features_history', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'history' ) );
 				Option::network_set( 'rolemode', array_key_exists( 'pokm_plugin_features_rolemode', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_features_rolemode', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'rolemode' ) );
 				$message = esc_html__( 'Plugin settings have been saved.', 'keys-master' );
@@ -362,24 +358,6 @@ class Keys_Master_Admin {
 			]
 		);
 		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_logger' );
-		if ( class_exists( 'PODeviceDetector\API\Device' ) ) {
-			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
-			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'keys-master' ), '<em>Device Detector v' . PODD_VERSION . '</em>' );
-		} else {
-			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
-			$help .= sprintf( esc_html__( 'Your site does not use any device detection mechanism. To allow device differentiation in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/device-detector/">Device Detector</a>' );
-		}
-		add_settings_field(
-			'pokm_plugin_options_podd',
-			__( 'Device detection', 'keys-master' ),
-			[ $form, 'echo_field_simple_text' ],
-			'pokm_plugin_options_section',
-			'pokm_plugin_options_section',
-			[
-				'text' => $help,
-			]
-		);
-		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_podd' );
 		$geo_ip = new GeoIP();
 		if ( $geo_ip->is_installed() ) {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
@@ -399,6 +377,42 @@ class Keys_Master_Admin {
 			]
 		);
 		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_geoip' );
+		if ( class_exists( 'PODeviceDetector\API\Device' ) ) {
+			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
+			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'sessions' ), '<em>Device Detector v' . PODD_VERSION . '</em>' );
+		} else {
+			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
+			$help .= sprintf( esc_html__( 'Your site does not use any device detection mechanism. To allow device differentiation in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'sessions' ), '<a href="https://wordpress.org/plugins/device-detector/">Device Detector</a>' );
+		}
+		add_settings_field(
+			'pokm_plugin_options_podd',
+			__( 'Device detection', 'keys-master' ),
+			[ $form, 'echo_field_simple_text' ],
+			'pokm_plugin_options_section',
+			'pokm_plugin_options_section',
+			[
+				'text' => $help,
+			]
+		);
+		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_podd' );
+		if ( defined( 'TRAFFIC_VERSION' ) ) {
+			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
+			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'keys-master' ), '<em>Traffic v' . TRAFFIC_VERSION . '</em>' );
+		} else {
+			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
+			$help .= sprintf( esc_html__( 'Your site does not analyze API traffic. To allow usage correlation in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/traffic/">Traffic</a>' );
+		}
+		add_settings_field(
+			'pokm_plugin_options_traffic',
+			__( 'API analytics', 'keys-master' ),
+			[ $form, 'echo_field_simple_text' ],
+			'pokm_plugin_options_section',
+			'pokm_plugin_options_section',
+			[
+				'text' => $help,
+			]
+		);
+		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_traffic' );
 		add_settings_field(
 			'pokm_plugin_options_usecdn',
 			esc_html__( 'Resources', 'keys-master' ),
@@ -460,7 +474,7 @@ class Keys_Master_Admin {
 	public function plugin_features_section_callback() {
 		$form   = new Form();
 		$mode   = [];
-		$mode[] = [ -1, esc_html__( 'Disabled (don\'t limit sessions by roles)', 'keys-master' ) ];
+		$mode[] = [ -1, esc_html__( 'Disabled (don\'t limit application passwords usage by roles)', 'keys-master' ) ];
 		$mode[] = [ 0, esc_html__( 'Enabled - permissive mode (useful when adjusting settings)', 'keys-master' ) ];
 		$mode[] = [ 1, esc_html__( 'Enabled - strict mode (useful in production, when all settings are ok)', 'keys-master' ) ];
 		add_settings_field(
@@ -479,38 +493,6 @@ class Keys_Master_Admin {
 			]
 		);
 		register_setting( 'pokm_plugin_features_section', 'pokm_plugin_features_rolemode' );
-		add_settings_field(
-			'pokm_plugin_features_forceip',
-			esc_html__( 'IP detection', 'keys-master' ),
-			[ $form, 'echo_field_checkbox' ],
-			'pokm_plugin_features_section',
-			'pokm_plugin_features_section',
-			[
-				'text'        => esc_html__( 'Override WordPress', 'keys-master' ),
-				'id'          => 'pokm_plugin_features_forceip',
-				'checked'     => Option::network_get( 'forceip' ),
-				'description' => esc_html__( 'If checked, Keys Master will improve IP detection used for tokens (recommended).', 'keys-master' ),
-				'full_width'  => false,
-				'enabled'     => true,
-			]
-		);
-		register_setting( 'pokm_plugin_features_section', 'pokm_plugin_features_forceip' );
-		add_settings_field(
-			'pokm_plugin_features_followip',
-			esc_html__( 'IP follow-up', 'keys-master' ),
-			[ $form, 'echo_field_checkbox' ],
-			'pokm_plugin_features_section',
-			'pokm_plugin_features_section',
-			[
-				'text'        => esc_html__( 'Activated', 'keys-master' ),
-				'id'          => 'pokm_plugin_features_followip',
-				'checked'     => Option::network_get( 'followip' ),
-				'description' => esc_html__( 'If checked, Keys Master will refresh IPs when a session is resumed (recommended).', 'keys-master' ),
-				'full_width'  => false,
-				'enabled'     => true,
-			]
-		);
-		register_setting( 'pokm_plugin_features_section', 'pokm_plugin_features_followip' );
 		add_settings_field(
 			'pokm_plugin_features_analytics',
 			esc_html__( 'Analytics', 'keys-master' ),
@@ -575,9 +557,9 @@ class Keys_Master_Admin {
 	public function plugin_roles_section_callback() {
 		$settings  = Option::roles_get();
 		$blocks    = [];
-		$blocks[]  = [ 'none', esc_html__( 'Allow from everywhere', 'keys-master' ) ];
-		$blocks[]  = [ 'external', esc_html__( 'Allow only from private IP ranges', 'keys-master' ) ];
-		$blocks[]  = [ 'local', esc_html__( 'Allow only from public IP ranges', 'keys-master' ) ];
+		$blocks[]  = [ 'full', esc_html__( 'Full (authentication and management)', 'keys-master' ) ];
+		$blocks[]  = [ 'limited', esc_html__( 'Only authentication', 'keys-master' ) ];
+		$blocks[]  = [ 'none', esc_html__( 'None', 'keys-master' ) ];
 		$methods   = [];
 		$methods[] = [ 'override', esc_html__( 'Override oldest session', 'keys-master' ) ];
 		/* translators: please, do not translate the string [HTTP 403 / Forbidden] as it is a standard HTTP header. */
@@ -589,11 +571,11 @@ class Keys_Master_Admin {
 			// phpcs:ignore
 			$idle[] = [ $h, esc_html( sprintf( _n( 'Terminate a session when idle for more than %d hour', 'Terminate a session when idle for more than %d hours', $h, 'keys-master' ), $h ) ) ];
 		}
-		$maxip   = [];
-		$maxip[] = [ 0, esc_html__( 'Unlimited', 'keys-master' ) ];
+		$maxap   = [];
+		$maxap[] = [ 0, esc_html__( 'Unlimited', 'keys-master' ) ];
 		foreach ( [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]  as $h ) {
 			// phpcs:ignore
-			$maxip[] = [ $h, esc_html( sprintf( _n( '%d IP address', '%d IP addresses', $h, 'keys-master' ), $h ) ) ];
+			$maxap[] = [ $h, esc_html( sprintf( _n( '%d application password', '%d application passwords', $h, 'keys-master' ), $h ) ) ];
 		}
 		$ttl = [];
 		foreach ( [ 1, 2, 3, 4 ]  as $h ) {
@@ -607,37 +589,37 @@ class Keys_Master_Admin {
 		$form = new Form();
 		foreach ( Role::get_all() as $role => $detail ) {
 			add_settings_field(
-				'pokm_plugin_roles_block_' . $role,
+				'pokm_plugin_roles_allow_' . $role,
 				$detail['l10n_name'],
 				[ $form, 'echo_field_select' ],
 				'pokm_plugin_roles_section',
 				'pokm_plugin_roles_section',
 				[
 					'list'        => $blocks,
-					'id'          => 'pokm_plugin_roles_block_' . $role,
-					'value'       => $settings[ $role ]['block'],
-					'description' => esc_html__( 'Allowed logins.', 'keys-master' ),
+					'id'          => 'pokm_plugin_roles_allow_' . $role,
+					'value'       => $settings[ $role ]['allow'],
+					'description' => esc_html__( 'Allowed application passwords usage.', 'keys-master' ),
 					'full_width'  => false,
 					'enabled'     => true,
 				]
 			);
-			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_block_' . $role );
+			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_allow_' . $role );
 			add_settings_field(
-				'pokm_plugin_roles_maxip_' . $role,
+				'pokm_plugin_roles_maxap_' . $role,
 				'',
 				[ $form, 'echo_field_select' ],
 				'pokm_plugin_roles_section',
 				'pokm_plugin_roles_section',
 				[
-					'list'        => $maxip,
-					'id'          => 'pokm_plugin_roles_maxip_' . $role,
-					'value'       => $settings[ $role ]['maxip'],
-					'description' => esc_html__( 'Maximal number of IP per user. Requires IP follow-up to be activated - see "Options" tab.', 'keys-master' ),
+					'list'        => $maxap,
+					'id'          => 'pokm_plugin_roles_maxap_' . $role,
+					'value'       => $settings[ $role ]['maxap'],
+					'description' => esc_html__( 'Maximal number of application passwords.', 'keys-master' ),
 					'full_width'  => false,
 					'enabled'     => true,
 				]
 			);
-			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_maxip_' . $role );
+			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_maxap_' . $role );
 			add_settings_field(
 				'pokm_plugin_roles_limit_' . $role,
 				'',
@@ -686,38 +668,6 @@ class Keys_Master_Admin {
 				]
 			);
 			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_idle_' . $role );
-			add_settings_field(
-				'pokm_plugin_roles_cookie-ttl_' . $role,
-				'',
-				[ $form, 'echo_field_select' ],
-				'pokm_plugin_roles_section',
-				'pokm_plugin_roles_section',
-				[
-					'list'        => $ttl,
-					'id'          => 'pokm_plugin_roles_cookie-ttl_' . $role,
-					'value'       => $settings[ $role ]['cookie-ttl'],
-					'description' => esc_html__( 'Standard cookie duration.', 'keys-master' ),
-					'full_width'  => false,
-					'enabled'     => true,
-				]
-			);
-			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_cookie-ttl_' . $role );
-			add_settings_field(
-				'pokm_plugin_roles_cookie-rttl_' . $role,
-				'',
-				[ $form, 'echo_field_select' ],
-				'pokm_plugin_roles_section',
-				'pokm_plugin_roles_section',
-				[
-					'list'        => $ttl,
-					'id'          => 'pokm_plugin_roles_cookie-rttl_' . $role,
-					'value'       => $settings[ $role ]['cookie-rttl'],
-					'description' => esc_html__( '"Remember Me" cookie duration.', 'keys-master' ),
-					'full_width'  => false,
-					'enabled'     => true,
-				]
-			);
-			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_cookie-rttl_' . $role );
 		}
 	}
 
