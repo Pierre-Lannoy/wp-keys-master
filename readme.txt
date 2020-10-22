@@ -1,10 +1,10 @@
 === Keys Master ===
 Contributors: PierreLannoy
 Tags: authentication, login, protection, role, session
-Requires at least: 5.2
+Requires at least: 5.6
 Requires PHP: 7.2
-Tested up to: 5.5
-Stable tag: 1.2.0
+Tested up to: 5.6
+Stable tag: 1.0.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 

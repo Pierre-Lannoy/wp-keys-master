@@ -2,7 +2,7 @@
 /**
  * Keys Master list
  *
- * Lists all active sessions.
+ * Lists all active passwords.
  *
  * @package Features
  * @author  Pierre Lannoy <https://pierre.lannoy.fr/>.
@@ -16,7 +16,7 @@ use KeysMaster\System\Logger;
 use KeysMaster\System\Date;
 use KeysMaster\System\Timezone;
 use KeysMaster\System\Option;
-use KeysMaster\System\Session;
+use KeysMaster\System\Password;
 use KeysMaster\System\User;
 use KeysMaster\System\GeoIP;
 use KeysMaster\System\UserAgent;
@@ -30,9 +30,9 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 /**
- * Define the sessions list functionality.
+ * Define the passwords list functionality.
  *
- * Lists all active sessions.
+ * Lists all active passwords.
  *
  * @package Features
  * @author  Pierre Lannoy <https://pierre.lannoy.fr/>.
@@ -41,12 +41,12 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 class Passwords extends \WP_List_Table {
 
 	/**
-	 * Active sessions
+	 * Active passwords
 	 *
 	 * @since    1.0.0
-	 * @var      array    $sessions    The sessions list.
+	 * @var      array    $passwords    The passwords list.
 	 */
-	private $sessions = [];
+	private $passwords = [];
 
 	/**
 	 * GeoIP helper.
@@ -129,30 +129,6 @@ class Passwords extends \WP_List_Table {
 	private $action = '';
 
 	/**
-	 * The token of the current session.
-	 *
-	 * @since    1.0.0
-	 * @var      string    $selftoken    The token of the current session.
-	 */
-	private $selftoken = '';
-
-	/**
-	 * Is devices detectable.
-	 *
-	 * @since    1.0.0
-	 * @var      boolean    $available_devices    Is devices detectable.
-	 */
-	private $available_devices = false;
-
-	/**
-	 * The icons.
-	 *
-	 * @since    1.0.0
-	 * @var      array    $icons    The icons for device, browser and os.
-	 */
-	private $icons = [];
-
-	/**
 	 * The bulk args.
 	 *
 	 * @since    1.0.0
@@ -184,73 +160,32 @@ class Passwords extends \WP_List_Table {
 	public function __construct() {
 		parent::__construct(
 			[
-				'singular' => 'session',
-				'plural'   => 'sessions',
+				'singular' => 'password',
+				'plural'   => 'passwords',
 				'ajax'     => true,
 			]
 		);
-		$this->geoip     = new GeoIP();
-		$this->selftoken = Hash::simple_hash( wp_get_session_token(), false );
+		$this->geoip = new GeoIP();
 		global $wp_version;
 		if ( version_compare( $wp_version, '4.2-z', '>=' ) && $this->compat_fields && is_array( $this->compat_fields ) ) {
 			array_push( $this->compat_fields, 'all_items' );
 		}
-		$this->available_devices = class_exists( 'PODeviceDetector\API\Device' );
-		$this->settings          = Option::roles_get();
-		$this->roles             = Role::get_all();
+		$this->settings = Option::roles_get();
+		$this->roles    = Role::get_all();
 		$this->process_args();
 		$this->process_action();
-		$this->sessions = [];
-		foreach ( Session::get_all_sessions() as $user ) {
+		$this->passwords = [];
+		foreach ( Password::get_all_passwords() as $user ) {
 			if ( array_key_exists( 'meta_value', $user ) && is_array( $user['meta_value'] ) ) {
-				foreach ( $user['meta_value'] as $token => $session ) {
-					$item             = [];
-					$item['token']    = $token;
-					$item['umeta_id'] = $user['umeta_id'];
-					$item['id']       = $user['user_id'];
-					if ( array_key_exists( 'expiration', $session ) ) {
-						$item['expiration'] = $session['expiration'];
-					}
-					if ( array_key_exists( 'login', $session ) ) {
-						$item['login'] = $session['login'];
-					}
-					if ( array_key_exists( 'session_idle', $session ) ) {
-						$item['session_idle'] = $session['session_idle'];
-					}
-					$item['device']      = '-';
-					$item['os_name']     = '-';
-					$item['os']          = '-';
-					$item['browser']     = '-';
-					$item['client_name'] = '-';
-					$item['os_ver']      = '';
-					$item['client_ver']  = '';
-					if ( array_key_exists( 'ua', $session ) ) {
-						$item['ua'] = $session['ua'];
-						if ( $this->available_devices ) {
-							$device              = UserAgent::get( $item['ua'] );
-							$item['brand_id']    = $device->brand_short_name;
-							$item['model']       = $device->model_name;
-							$item['device']      = ( '' !== $device->brand_name ? $device->brand_name : esc_html__( 'Generic', 'keys-master' ) ) . ( '' !== $device->model_name ? ' ' . $device->model_name : '' );
-							$item['os_id']       = $device->os_short_name;
-							$item['os_name']     = $device->os_name;
-							$item['os_ver']      = ( '' !== $device->os_version ? ' ' . $device->os_version : '' );
-							$item['os']          = $item['os_name'] . $item['os_ver'];
-							$item['client_id']   = $device->client_short_name;
-							$item['client_name'] = ( '' !== $device->client_name ? $device->client_name : $device->client_full_type );
-							if ( $device->client_is_browser ) {
-								$this->icons[ $item['ua'] ]['browser'] = $device->browser_icon_base64();
-								$item['client_ver']                    = ( '' !== $device->client_version ? ' ' . $device->client_version : '' );
-								$item['browser']                       = $item['client_name'] . $item['client_ver'];
-							} else {
-								$item['browser'] = $item['client_name'];
-							}
-							$this->icons[ $item['ua'] ]['device'] = $device->brand_icon_base64();
-							$this->icons[ $item['ua'] ]['os']     = $device->os_icon_base64();
-						}
-					}
-					if ( array_key_exists( 'ip', $session ) ) {
-						$item['ip'] = $session['ip'];
-					}
+				foreach ( $user['meta_value'] as $password ) {
+					$item              = [];
+					$item['id']        = $user['user_id'];
+					$item['umeta_id']  = $user['umeta_id'];
+					$item['uuid']      = $password['uuid'];
+					$item['name']      = $password['name'];
+					$item['created']   = $password['created'];
+					$item['last_used'] = $password['last_used'];
+					$item['ip']        = $password['last_ip'];
 					if ( 0 < count( $this->filters ) ) {
 						foreach ( $this->filters as $filter => $value ) {
 							if ( array_key_exists( $filter, $item ) && (string) $value !== (string) $item[ $filter ] ) {
@@ -258,7 +193,7 @@ class Passwords extends \WP_List_Table {
 							}
 						}
 					}
-					$this->sessions[] = $item;
+					$this->passwords[] = $item;
 				}
 			}
 		}
@@ -285,13 +220,13 @@ class Passwords extends \WP_List_Table {
 	 */
 	public function column_cb( $item ) {
 		return sprintf(
-			'<input ' . ( $item['token'] === $this->selftoken ? 'disabled ' : '' ) . 'type="checkbox" name="bulk[]" value="%s" />',
-			$item['id'] . ':' . $item['token']
+			'<input ' . ( $item['uuid'] === $this->selftoken ? 'disabled ' : '' ) . 'type="checkbox" name="bulk[]" value="%s" />',
+			$item['id'] . ':' . $item['uuid']
 		);
 	}
 
 	/**
-	 * "post" column formatter.
+	 * "user" column formatter.
 	 *
 	 * @param   array $item   The current item.
 	 * @return  string  The cell formatted, ready to print.
@@ -313,6 +248,17 @@ class Passwords extends \WP_List_Table {
 	}
 
 	/**
+	 * "name" column formatter.
+	 *
+	 * @param   array $item   The current item.
+	 * @return  string  The cell formatted, ready to print.
+	 * @since    1.0.0
+	 */
+	protected function column_name( $item ) {
+		return $item['name'] . $this->get_filter( 'id', $item['id'] ) . '<br /><span style="color:silver">' . $item['uuid'] . '</span>';
+	}
+
+	/**
 	 * "ip" column formatter.
 	 *
 	 * @param   array $item   The current item.
@@ -320,82 +266,25 @@ class Passwords extends \WP_List_Table {
 	 * @since    1.0.0
 	 */
 	protected function column_ip( $item ) {
+		if ( ! isset( $item['ip'] ) ) {
+			return '-';
+		}
 		$icon   = $this->geoip->get_flag( $item['ip'], '', 'width:14px;padding-left:4px;padding-right:4px;vertical-align:baseline;' );
 		$result = $icon . $item['ip'] . $this->get_filter( 'ip', $item['ip'] );
 		return $result;
 	}
 
 	/**
-	 * "device" column formatter.
+	 * "created" column formatter.
 	 *
 	 * @param   array $item   The current item.
 	 * @return  string  The cell formatted, ready to print.
 	 * @since    1.0.0
 	 */
-	protected function column_device( $item ) {
-		$icon = '';
-		$name = $item['device'];
-		if ( array_key_exists( $item['ua'], $this->icons ) && array_key_exists( 'device', $this->icons[ $item['ua'] ] ) ) {
-			$icon = '<img style="width:16px;float:left;padding-right:6px;" src="' . $this->icons[ $item['ua'] ]['device'] . '" />';
-		}
-		if ( array_key_exists( 'brand_id', $item ) ) {
-			$url  = [
-				'site'     => 'all',
-				'type'     => 'device',
-				'id'       => $item['brand_id'],
-				'extended' => '' !== $item['model'] ? $item['model'] : '-',
-			];
-			$name = $this->get_internal_link( UserAgent::get_analytics_url( $url ), $item['device'] );
-		}
-		return $icon . $name . $this->get_filter( 'device', $item['device'] );
-	}
-
-	/**
-	 * "OS" column formatter.
-	 *
-	 * @param   array $item   The current item.
-	 * @return  string  The cell formatted, ready to print.
-	 * @since    1.0.0
-	 */
-	protected function column_os( $item ) {
-		$icon = '';
-		$name = $item['os_name'] . $item['os_ver'] . $this->get_filter( 'os_name', $item['os_name'] );
-		if ( array_key_exists( $item['ua'], $this->icons ) && array_key_exists( 'os', $this->icons[ $item['ua'] ] ) ) {
-			$icon = '<img style="width:16px;float:left;padding-right:6px;" src="' . $this->icons[ $item['ua'] ]['os'] . '" />';
-		}
-		if ( array_key_exists( 'os_id', $item ) ) {
-			$url  = [
-				'site' => 'all',
-				'type' => 'os',
-				'id'   => $item['os_id'],
-			];
-			$name = $this->get_internal_link( UserAgent::get_analytics_url( $url ), $item['os_name'] ) . $this->get_filter( 'os_name', $item['os_name'] ) . '<br /><span style="color:silver">' . $item['os_ver'] . '</span>';
-		}
-		return $icon . $name;
-	}
-
-	/**
-	 * "browser" column formatter.
-	 *
-	 * @param   array $item   The current item.
-	 * @return  string  The cell formatted, ready to print.
-	 * @since    1.0.0
-	 */
-	protected function column_browser( $item ) {
-		$icon = '';
-		$name = $item['client_name'] . $item['client_ver'] . $this->get_filter( 'client_name', $item['client_name'] );
-		if ( array_key_exists( $item['ua'], $this->icons ) && array_key_exists( 'browser', $this->icons[ $item['ua'] ] ) ) {
-			$icon = '<img style="width:16px;float:left;padding-right:6px;" src="' . $this->icons[ $item['ua'] ]['browser'] . '" />';
-		}
-		if ( array_key_exists( 'client_id', $item ) ) {
-			$url  = [
-				'site' => 'all',
-				'type' => 'browser',
-				'id'   => $item['client_id'],
-			];
-			$name = $this->get_internal_link( UserAgent::get_analytics_url( $url ), $item['client_name'] ) . $this->get_filter( 'client_name', $item['client_name'] ) . '<br /><span style="color:silver">' . $item['client_ver'] . '</span>';
-		}
-		return $icon . $name;
+	protected function column_created( $item ) {
+		$datetime = new \DateTime( date( 'Y-m-d H:i:s', $item['created'] ) );
+		$datetime->setTimezone( Timezone::network_get() );
+		return $datetime->format( 'Y-m-d H:i:s' );
 	}
 
 	/**
@@ -405,69 +294,13 @@ class Passwords extends \WP_List_Table {
 	 * @return  string  The cell formatted, ready to print.
 	 * @since    1.0.0
 	 */
-	protected function column_login( $item ) {
-		if ( array_key_exists( 'login', $item ) ) {
-			$datetime = new \DateTime( date( 'Y-m-d H:i:s', $item['login'] ) );
+	protected function column_last_used( $item ) {
+		if ( isset( $item['last_used'] ) ) {
+			$datetime = new \DateTime( date( 'Y-m-d H:i:s', $item['last_used'] ) );
 			$datetime->setTimezone( Timezone::network_get() );
 			return $datetime->format( 'Y-m-d H:i:s' );
 		}
-		return '';
-	}
-
-	/**
-	 * "idle" column formatter.
-	 *
-	 * @param   array $item   The current item.
-	 * @return  string  The cell formatted, ready to print.
-	 * @since    1.0.0
-	 */
-	protected function column_idle( $item ) {
-		if ( array_key_exists( 'session_idle', $item ) ) {
-			$value = $item['session_idle'] - time();
-			if ( 0 === $value ) {
-				return esc_html__( 'Now', 'keys-master' );
-			}
-			if ( 0 > $value ) {
-				$value = 0 - $value;
-				if ( $value < 72 * HOUR_IN_SECONDS ) {
-					return sprintf( esc_html__( '%s ago', 'keys-master' ), implode( ', ', Date::get_age_array_from_seconds( $value, true, true ) ) );
-				}
-				return sprintf( esc_html__( '%s ago', 'keys-master' ), sprintf( esc_html__( '%d days', 'keys-master' ), (int) round( $value / ( 24 * HOUR_IN_SECONDS ), 0 ) ) );
-			}
-			if ( $value < 72 * HOUR_IN_SECONDS ) {
-				return sprintf( esc_html__( 'In %s', 'keys-master' ), implode( ', ', Date::get_age_array_from_seconds( $value, true, true ) ) );
-			}
-			return sprintf( esc_html__( 'In %s', 'keys-master' ), sprintf( esc_html__( '%d days', 'keys-master' ), (int) round( $value / ( 24 * HOUR_IN_SECONDS ), 0 ) ) );
-		}
-		return '';
-	}
-
-	/**
-	 * "expiration" column formatter.
-	 *
-	 * @param   array $item   The current item.
-	 * @return  string  The cell formatted, ready to print.
-	 * @since    1.0.0
-	 */
-	protected function column_expiration( $item ) {
-		if ( array_key_exists( 'expiration', $item ) ) {
-			$value = $item['expiration'] - time();
-			if ( 0 === $value ) {
-				return esc_html__( 'Now', 'keys-master' );
-			}
-			if ( 0 > $value ) {
-				$value = 0 - $value;
-				if ( $value < 72 * HOUR_IN_SECONDS ) {
-					return sprintf( esc_html__( '%s ago', 'keys-master' ), implode( ', ', Date::get_age_array_from_seconds( $value, true, true ) ) );
-				}
-				return sprintf( esc_html__( '%s ago', 'keys-master' ), sprintf( esc_html__( '%d days', 'keys-master' ), (int) round( $value / ( 24 * HOUR_IN_SECONDS ), 0 ) ) );
-			}
-			if ( $value < 72 * HOUR_IN_SECONDS ) {
-				return sprintf( esc_html__( 'In %s', 'keys-master' ), implode( ', ', Date::get_age_array_from_seconds( $value, true, true ) ) );
-			}
-			return sprintf( esc_html__( 'In %s', 'keys-master' ), sprintf( esc_html__( '%d days', 'keys-master' ), (int) round( $value / ( 24 * HOUR_IN_SECONDS ), 0 ) ) );
-		}
-		return '';
+		return '-';
 	}
 
 	/**
@@ -493,15 +326,12 @@ class Passwords extends \WP_List_Table {
 	 */
 	public function get_columns() {
 		$columns = [
-			'cb'         => '<input type="checkbox" />',
-			'id'         => esc_html__( 'Session', 'keys-master' ),
-			'ip'         => esc_html__( 'Remote IP', 'keys-master' ),
-			'device'     => esc_html__( 'Device', 'keys-master' ),
-			'os'         => esc_html__( 'OS', 'keys-master' ),
-			'browser'    => esc_html__( 'Client', 'keys-master' ),
-			'login'      => esc_html__( 'Login', 'keys-master' ),
-			'idle'       => esc_html__( 'Idle exp.', 'keys-master' ),
-			'expiration' => esc_html__( 'Standard exp.', 'keys-master' ),
+			'cb'        => '<input type="checkbox" />',
+			'id'        => esc_html__( 'User', 'keys-master' ),
+			'name'      => esc_html__( 'Name', 'keys-master' ),
+			'created'   => esc_html__( 'Created', 'keys-master' ),
+			'ip'        => esc_html__( 'Last remote IP', 'keys-master' ),
+			'last_used' => esc_html__( 'Last used', 'keys-master' ),
 		];
 		return $columns;
 	}
@@ -513,12 +343,7 @@ class Passwords extends \WP_List_Table {
 	 * @since    1.0.0
 	 */
 	protected function get_hidden_columns() {
-		if ( $this->available_devices ) {
-			return [];
-		} else {
-			return [ 'device', 'os', 'browser' ];
-		}
-
+		return [];
 	}
 
 	/**
@@ -529,13 +354,11 @@ class Passwords extends \WP_List_Table {
 	 */
 	protected function get_sortable_columns() {
 		$sortable_columns = [
-			'id'         => [ 'id', true ],
-			'device'     => [ 'device', true ],
-			'os'         => [ 'os', true ],
-			'browser'    => [ 'browser', true ],
-			'login'      => [ 'login', true ],
-			'idle'       => [ 'idle', true ],
-			'expiration' => [ 'expiration', true ],
+			'id'        => [ 'id', true ],
+			'name'      => [ 'name', true ],
+			'created'   => [ 'created', true ],
+			'idle'      => [ 'idle', true ],
+			'last_used' => [ 'last_used', true ],
 		];
 		return $sortable_columns;
 	}
@@ -548,7 +371,7 @@ class Passwords extends \WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		return [
-			'invalidate' => esc_html__( 'Delete session(s)', 'keys-master' ),
+			'invalidate' => esc_html__( 'Revoke password(s)', 'keys-master' ),
 		];
 	}
 
@@ -599,9 +422,9 @@ class Passwords extends \WP_List_Table {
 	public function prepare_items() {
 		$this->set_pagination_args(
 			[
-				'total_items' => count( $this->sessions ),
+				'total_items' => count( $this->passwords ),
 				'per_page'    => $this->limit,
-				'total_pages' => ceil( count( $this->sessions ) / $this->limit ),
+				'total_pages' => ceil( count( $this->passwords ) / $this->limit ),
 			]
 		);
 		$current_page          = $this->get_pagenum();
@@ -609,15 +432,11 @@ class Passwords extends \WP_List_Table {
 		$hidden                = $this->get_hidden_columns();
 		$sortable              = $this->get_sortable_columns();
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
-		$data                  = $this->sessions;
+		$data                  = $this->passwords;
 		usort(
 			$data,
 			function ( $a, $b ) {
-				if ( 'device' === $this->orderby || 'os' === $this->orderby || 'browser' === $this->orderby ) {
-					$result = strcmp( strtolower( $a[ $this->orderby ] ), strtolower( $b[ $this->orderby ] ) );
-				} else {
-					$result = intval( $a[ $this->orderby ] ) < intval( $b[ $this->orderby ] ) ? 1 : -1;
-				}
+				$result = intval( $a[ $this->orderby ] ) < intval( $b[ $this->orderby ] ) ? 1 : -1;
 				return ( 'asc' === $this->order ) ? -$result : $result;
 			}
 		);
@@ -695,7 +514,7 @@ class Passwords extends \WP_List_Table {
 			$l          = [];
 			$l['value'] = $d;
 			// phpcs:ignore
-			$l['text']     = sprintf( esc_html__( 'Display %d sessions per page', 'keys-master' ), $d );
+			$l['text']     = sprintf( esc_html__( 'Display %d passwords per page', 'keys-master' ), $d );
 			$l['selected'] = ( intval( $d ) === intval( $this->limit ) ? 'selected="selected" ' : '' );
 			$result[]      = $l;
 		}
@@ -874,7 +693,7 @@ class Passwords extends \WP_List_Table {
 	 * @param object $item The current item
 	 */
 	public function single_row( $item ) {
-		echo '<tr' . ( $item['token'] === $this->selftoken ? ' class="pokm-selftoken"' : '' ) . '>';
+		echo '<tr>';
 		$this->single_row_columns( $item );
 		echo '</tr>';
 	}
@@ -932,7 +751,7 @@ class Passwords extends \WP_List_Table {
 		if ( ! $this->orderby ) {
 			$this->orderby = 'id';
 		}
-		foreach ( [ 'id', 'ip', 'device', 'os_name', 'client_name' ] as $f ) {
+		foreach ( [ 'id', 'ip' ] as $f ) {
 			$v = filter_input( INPUT_GET, $f, FILTER_SANITIZE_STRING );
 			if ( $v ) {
 				$this->filters[ $f ] = $v;
@@ -970,33 +789,18 @@ class Passwords extends \WP_List_Table {
 	 */
 	public function process_action() {
 		switch ( $this->action ) {
-			case 'reset':
-				$count = Session::delete_all_sessions();
-				if ( is_integer( $count ) ) {
-					if ( 0 < $count ) {
-						$message = esc_html__( 'All sessions have been deleted.', 'keys-master' );
-						$code    = 0;
-					} else {
-						$message = esc_html__( 'No sessions to delete.', 'keys-master' );
-						$code    = 0;
-					}
-				} else {
-					$message = esc_html__( 'Unable to delete all sessions. Please see events log.', 'keys-master' );
-					$code    = 500;
-				}
-				break;
 			case 'invalidate':
-				$count = Session::delete_selected_sessions( $this->bulk );
+				$count = Password::delete_selected_passwords( $this->bulk );
 				if ( is_integer( $count ) ) {
 					if ( 0 < $count ) {
-						$message = esc_html__( 'All selected sessions have been deleted.', 'keys-master' );
+						$message = esc_html__( 'All selected passwords have been revoked.', 'keys-master' );
 						$code    = 0;
 					} else {
-						$message = esc_html__( 'No sessions to delete.', 'keys-master' );
+						$message = esc_html__( 'No passwords to revoke.', 'keys-master' );
 						$code    = 0;
 					}
 				} else {
-					$message = esc_html__( 'Unable to delete all selected sessions. Please see events log.', 'keys-master' );
+					$message = esc_html__( 'Unable to revoke all selected passwords. Please see events log.', 'keys-master' );
 					$code    = 500;
 				}
 				break;
@@ -1004,9 +808,9 @@ class Passwords extends \WP_List_Table {
 				return;
 		}
 		if ( 0 === $code ) {
-			add_settings_error( 'oembed_manager_no_error', $code, $message, 'updated' );
+			add_settings_error( 'pokm_manager_no_error', $code, $message, 'updated' );
 		} else {
-			add_settings_error( 'oembed_manager_error', $code, $message, 'error' );
+			add_settings_error( 'pokm_manager_error', $code, $message, 'error' );
 		}
 	}
 }

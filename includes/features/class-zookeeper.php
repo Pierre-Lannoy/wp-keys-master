@@ -69,6 +69,7 @@ class ZooKeeper {
 	 * @since    1.0.0
 	 */
 	private static function terminate_sessions() {
+		return;
 		global $wpdb;
 		Logger::debug( '[ZooKeeper] Starting "terminate_sessions" execution.' );
 		$index = Cache::get_global( 'zookeeper/userindex' );

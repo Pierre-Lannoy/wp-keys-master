@@ -22,7 +22,3 @@ use KeysMaster\System\Environment;
     </select>
     <input type="submit" name="dolimit-<?php echo $which; ?>" id="dolimit-<?php echo $which; ?>" class="button action" value="<?php esc_html_e('Apply', 'sessions');?>"  />
 </div>
-
-<div class="alignleft actions bulkactions">
-    <input style="margin-left:10px;" type="submit" name="doinvalidate-<?php echo $which; ?>"  id="doinvalidate-<?php echo $which; ?>" class="button-primary action" value="<?php esc_html_e('Delete All Keys Master', 'sessions');?>"  />
-</div>

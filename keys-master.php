@@ -69,7 +69,7 @@ function pokm_uninstall() {
 function pokm_run() {
 	// It is needed to do these inits here because some plugins make very early die()
 	\KeysMaster\System\Logger::init();
-	\KeysMaster\System\Session::init();
+	\KeysMaster\System\Password::init();
 	\KeysMaster\Plugin\Feature\Capture::init();
 	\KeysMaster\Plugin\Feature\Schema::init();
 	$plugin = new KeysMaster\Plugin\Core();

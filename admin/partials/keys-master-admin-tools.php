@@ -9,9 +9,9 @@
  * @since   1.0.0
  */
 
-use KeysMaster\Plugin\Feature\Sessions;
+use KeysMaster\Plugin\Feature\Passwords;
 
-$scripts = new Keys Master();
+$scripts = new Passwords();
 $scripts->prepare_items();
 
 wp_enqueue_script( POKM_ASSETS_ID );
@@ -20,7 +20,7 @@ wp_enqueue_style( POKM_ASSETS_ID );
 ?>
 
 <div class="wrap">
-	<h2><?php echo esc_html__( 'Active Keys Master Management', 'keys-master' ); ?></h2>
+	<h2><?php echo esc_html__( 'Application Passwords Management', 'keys-master' ); ?></h2>
 	<?php settings_errors(); ?>
 	<?php $scripts->views(); ?>
     <form id="keys-master-tools" method="post" action="<?php echo $scripts->get_url(); ?>">
