@@ -474,9 +474,9 @@ class Keys_Master_Admin {
 	public function plugin_features_section_callback() {
 		$form   = new Form();
 		$mode   = [];
-		$mode[] = [ -1, esc_html__( 'Disabled (don\'t limit application passwords usage by roles)', 'keys-master' ) ];
-		$mode[] = [ 0, esc_html__( 'Enabled - permissive mode (useful when adjusting settings)', 'keys-master' ) ];
-		$mode[] = [ 1, esc_html__( 'Enabled - strict mode (useful in production, when all settings are ok)', 'keys-master' ) ];
+		$mode[] = [ -1, esc_html__( 'Disabled - Don\'t limit application passwords usage by roles', 'keys-master' ) ];
+		$mode[] = [ 0, esc_html__( 'Enabled - Cumulative privileges', 'keys-master' ) ];
+		$mode[] = [ 1, esc_html__( 'Enabled - Least privileges', 'keys-master' ) ];
 		add_settings_field(
 			'pokm_plugin_features_rolemode',
 			esc_html__( 'Settings by roles', 'keys-master' ),
@@ -577,15 +577,6 @@ class Keys_Master_Admin {
 			// phpcs:ignore
 			$maxap[] = [ $h, esc_html( sprintf( _n( '%d application password', '%d application passwords', $h, 'keys-master' ), $h ) ) ];
 		}
-		$ttl = [];
-		foreach ( [ 1, 2, 3, 4 ]  as $h ) {
-			// phpcs:ignore
-			$ttl[] = [ 24 * $h, esc_html( sprintf( _n( '%d day', '%d days', $h, 'keys-master' ), $h ) ) ];
-		}
-		foreach ( [ 1, 2, 3, 4 ]  as $h ) {
-			// phpcs:ignore
-			$ttl[] = [ 24 * 7 * $h, esc_html( sprintf( _n( '%d week', '%d weeks', $h, 'keys-master' ), $h ) ) ];
-		}
 		$form = new Form();
 		foreach ( Role::get_all() as $role => $detail ) {
 			add_settings_field(
@@ -614,7 +605,7 @@ class Keys_Master_Admin {
 					'list'        => $maxap,
 					'id'          => 'pokm_plugin_roles_maxap_' . $role,
 					'value'       => $settings[ $role ]['maxap'],
-					'description' => esc_html__( 'Maximal number of application passwords.', 'keys-master' ),
+					'description' => esc_html__( 'Maximal number of application passwords per user.', 'keys-master' ),
 					'full_width'  => false,
 					'enabled'     => true,
 				]
