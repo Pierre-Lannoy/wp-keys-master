@@ -91,8 +91,6 @@ class Password {
 	 */
 	public static $meta_key = '_application_passwords';
 
-
-
 	/**
 	 * Create an instance.
 	 *
@@ -162,6 +160,43 @@ class Password {
 	public function get_user_id() {
 		return $this->user_id;
 	}
+
+	/**
+	 * Limits AP creation if needed.
+	 *
+	 * @param bool      $check      Whether to allow updating metadata for the given type.
+	 * @param int       $object_id  ID of the object metadata is for.
+	 * @param string    $meta_key   Metadata key.
+	 * @param mixed     $meta_value Metadata value. Must be serializable if non-scalar.
+	 * @param mixed     $prev_value Optional. Previous value to check before updating.
+	 *                              If specified, only update existing metadata entries with
+	 *                              this value. Otherwise, update all entries.
+	 * @return boolean  True if allowed, false otherwise.
+	 */
+	public function limit_management( $check, $object_id, $meta_key, $meta_value, $prev_value = '' ) {
+		if ( self::$meta_key === $meta_key ) {
+			if ( is_array( $meta_value ) ) {
+				$privileges = $this->get_privileges_for_user( $object_id );
+				if ( 'full' !== $privileges['modes']['allow'] ) {
+					return false;
+				}
+				if ( count( $meta_value ) > $privileges['modes']['maxap'] ) {
+					$old = get_user_meta( $object_id, self::$meta_key, true );
+					if ( isset( $old ) && count( $old ) > count( $meta_value ) ) {
+						return $check;
+					}
+					return false;
+				}
+			}
+		}
+		return $check;
+	}
+
+
+
+
+
+
 
 	/**
 	 * Verify if the ip range is allowed.
@@ -467,66 +502,61 @@ class Password {
 	 */
 	private function get_privileges_for_roles( $roles ) {
 		$result   = [];
-		$roles    = [];
-		$modes    = [];
-		$method   = 'block';
 		$settings = Option::roles_get();
-
-		$allow = 'none';
-		$maxip = 0;
-		foreach ( $roles as $role ) {
-			// Allowed IP type
-			switch ( $settings[ $role ]['block'] ) {
-				case 'none':
-					$allow = 'all';
-					break;
-				case 'external':
-					if ( 'local' === $allow ) {
-						$allow = 'all';
-					} elseif ( 'none' === $allow ) {
-						$allow = 'external';
-					}
-					break;
-				case 'local':
-					if ( 'external' === $allow ) {
-						$allow = 'all';
-					} elseif ( 'none' === $allow ) {
-						$allow = 'local';
-					}
-					break;
-			}
-			if ( 0 === (int) Option::network_get( 'rolemode' ) ) { // Cumulative privileges.
-
-				if ( array_key_exists( $role, $settings ) ) {
-					if ( 'none' === $settings[ $role ]['limit'] ) {
-						$mode  = 'none';
-						$l = PHP_INT_MAX;
-					} else {
-						foreach ( LimiterTypes::$selector_names as $key => $name ) {
-							if ( 0 === strpos( $settings[ $role ]['limit'], $key ) ) {
-								$mode  = $key;
-								$limit = (int) substr( $settings[ $role ]['limit'], strlen( $key ) + 1 );
-								break;
-							}
+		if ( 0 === (int) Option::network_get( 'rolemode' ) ) { // Cumulative privileges.
+			$allow = 'none';
+			$maxap = 0;
+			foreach ( $roles as $role ) {
+				// Allowed usages
+				switch ( $settings[ $role ]['allow'] ) {
+					case 'full':
+						$allow = 'full';
+						break;
+					case 'limited':
+						if ( 'none' === $allow ) {
+							$allow = 'limited';
 						}
-					}
+						break;
+					case 'none':
+						// no downscale with cumulative privileges
+						break;
 				}
-			} else { // Least privileges.
+				// Max number of APs
+				if ( $settings[ $role ]['maxap'] > $maxap ) {
+					$maxap = $settings[ $role ]['maxap'];
+				}
 			}
+		} else { // Least privileges.
+			$allow = 'full';
+			$maxap = PHP_INT_MAX;
+			foreach ( $roles as $role ) {
+				// Allowed usages
+				switch ( $settings[ $role ]['allow'] ) {
+					case 'none':
+						$allow = 'none';
+						break;
+					case 'limited':
+						if ( 'full' === $allow ) {
+							$allow = 'limited';
+						}
+						break;
+					case 'full':
+						// no upscale with least privileges
+						break;
+				}
+				// Max number of APs
+				if ( $settings[ $role ]['maxap'] < $maxap ) {
+					$maxap = $settings[ $role ]['maxap'];
+				}
+			}
+		}
 
-		}
-		if ( 'none' === $allow ) {
-			Logger::critical( sprintf( 'Misconfiguration: user ID %s not allowed to connect from private or public IP ranges. Temporarily set to "allow=all". Please fix it!', $user->ID ), 666 );
-			$allow = 'all';
-		}
+
 		$modes['allow'] = $allow;
-		if ( 0 === $maxip ) {
-			Logger::critical( sprintf( 'Misconfiguration: user ID %s not allowed to connect because ip-quota is set to 0. Temporarily set to "ip-quota=max". Please fix it!', $user->ID ), 666 );
-			$maxip = PHP_INT_MAX;
-		}
-		$result['roles']  = $roles;
-		$result['modes']  = $modes;
-		$result['method'] = $method;
+		$modes['maxap'] = $maxap;
+
+		$result['roles'] = $roles;
+		$result['modes'] = $modes;
 		return $result;
 	}
 
@@ -849,7 +879,9 @@ class Password {
 			self::$instance = new static();
 		}
 		self::$instance->init_if_needed();
-		add_action( 'updated_user_meta', 'change_user_nickname', 20, 4 );
+		if ( -1 !== (int) Option::network_get( 'rolemode' ) ) {
+			add_action( 'update_user_metadata', [ self::$instance, 'limit_management' ], PHP_INT_MAX, 5 );
+		}
 		//add_filter( 'auth_cookie_expiration', [ self::$instance, 'cookie_expiration' ], PHP_INT_MAX, 3 );
 		//add_filter( 'authenticate', [ self::$instance, 'limit_logins' ], PHP_INT_MAX, 3 );
 		//add_filter( 'jetpack_sso_handle_login', [ self::$instance, 'jetpack_sso_handle_login' ], PHP_INT_MAX, 2 );

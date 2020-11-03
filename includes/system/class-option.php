@@ -82,14 +82,10 @@ class Option {
 		self::$defaults['buffer_limit']      = 4000;
 		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'analytics', 'history', 'rolemode', 'zk_cycle', 'zk_tsize', 'zk_semaphore', 'buffer_limit' ];
 		// Specific options.
-		self::$defaults['limit']       = 'none';
-		self::$defaults['method']      = 'block';
-		self::$defaults['idle']        = 0;
-		self::$defaults['maxap']       = PHP_INT_MAX;
-		self::$defaults['block']       = 'none';
-		self::$defaults['cookie-ttl']  = 48;
-		self::$defaults['cookie-rttl'] = 336;
-		self::$specific                = [ 'limit', 'maxap', 'method', 'idle', 'block', 'cookie-ttl', 'cookie-rttl' ];
+		self::$defaults['allow'] = 'full';
+		self::$defaults['idle']  = 0;
+		self::$defaults['maxap'] = PHP_INT_MAX;
+		self::$specific          = [ 'maxap', 'idle', 'allow' ];
 	}
 
 	/**

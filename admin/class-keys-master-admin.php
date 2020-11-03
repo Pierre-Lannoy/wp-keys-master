@@ -528,45 +528,18 @@ class Keys_Master_Admin {
 	}
 
 	/**
-	 * Get the available history retentions.
-	 *
-	 * @return array An array containing the history modes.
-	 * @since  1.0.0
-	 */
-	protected function get_session_count_array() {
-		$result   = [];
-		$result[] = [ 'none', esc_html__( 'No limit', 'keys-master' ) ];
-		foreach ( LimiterTypes::$selector_names as $key => $name ) {
-			for ( $i = 1; $i <= 3; $i++ ) {
-				if ( '' === $name ) {
-					$result[] = [ $key . '-' . $i, esc_html( sprintf( _n( '%d session per user', '%d sessions per user', $i, 'keys-master' ), $i ) ), LimiterTypes::is_selector_available( $key ) ];
-				} else {
-					// phpcs:ignore
-					$result[] = [ $key . '-' . $i, esc_html( sprintf( _n( '%d session per user and per %s', '%d sessions per user and per %s', $i, 'keys-master' ), $i, $name ) ), LimiterTypes::is_selector_available( $key ) ];
-				}
-			}
-		}
-		return $result;
-	}
-
-	/**
 	 * Callback for plugin roles modification section.
 	 *
 	 * @since 1.0.0
 	 */
 	public function plugin_roles_section_callback() {
-		$settings  = Option::roles_get();
-		$blocks    = [];
-		$blocks[]  = [ 'full', esc_html__( 'Full (authentication and management)', 'keys-master' ) ];
-		$blocks[]  = [ 'limited', esc_html__( 'Only authentication', 'keys-master' ) ];
-		$blocks[]  = [ 'none', esc_html__( 'None', 'keys-master' ) ];
-		$methods   = [];
-		$methods[] = [ 'override', esc_html__( 'Override oldest session', 'keys-master' ) ];
-		/* translators: please, do not translate the string [HTTP 403 / Forbidden] as it is a standard HTTP header. */
-		$methods[] = [ 'block', esc_html__( 'Block and send a "HTTP 403 / Forbidden" error', 'keys-master' ) ];
-		$methods[] = [ 'default', esc_html__( 'Block and send a WordPress error', 'keys-master' ) ];
-		$idle      = [];
-		$idle[]    = [ 0, esc_html__( 'Never terminate an idle session', 'keys-master' ) ];
+		$settings = Option::roles_get();
+		$blocks   = [];
+		$blocks[] = [ 'full', esc_html__( 'Full (authentication and management)', 'keys-master' ) ];
+		$blocks[] = [ 'limited', esc_html__( 'Only authentication', 'keys-master' ) ];
+		$blocks[] = [ 'none', esc_html__( 'None', 'keys-master' ) ];
+		$idle     = [];
+		$idle[]   = [ 0, esc_html__( 'Never terminate an idle session', 'keys-master' ) ];
 		foreach ( [ 1, 2, 3, 4, 5, 6, 12, 24 ]  as $h ) {
 			// phpcs:ignore
 			$idle[] = [ $h, esc_html( sprintf( _n( 'Terminate a session when idle for more than %d hour', 'Terminate a session when idle for more than %d hours', $h, 'keys-master' ), $h ) ) ];
@@ -611,38 +584,6 @@ class Keys_Master_Admin {
 				]
 			);
 			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_maxap_' . $role );
-			add_settings_field(
-				'pokm_plugin_roles_limit_' . $role,
-				'',
-				[ $form, 'echo_field_select' ],
-				'pokm_plugin_roles_section',
-				'pokm_plugin_roles_section',
-				[
-					'list'        => $this->get_session_count_array(),
-					'id'          => 'pokm_plugin_roles_limit_' . $role,
-					'value'       => $settings[ $role ]['limit'],
-					'description' => esc_html__( 'Maximal number of sessions for users.', 'keys-master' ),
-					'full_width'  => false,
-					'enabled'     => true,
-				]
-			);
-			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_limit_' . $role );
-			add_settings_field(
-				'pokm_plugin_roles_method_' . $role,
-				'',
-				[ $form, 'echo_field_select' ],
-				'pokm_plugin_roles_section',
-				'pokm_plugin_roles_section',
-				[
-					'list'        => $methods,
-					'id'          => 'pokm_plugin_roles_method_' . $role,
-					'value'       => $settings[ $role ]['method'],
-					'description' => esc_html__( 'Method to be used when the maximal number of sessions is reached.', 'keys-master' ),
-					'full_width'  => false,
-					'enabled'     => true,
-				]
-			);
-			register_setting( 'pokm_plugin_roles_section', 'pokm_plugin_roles_method_' . $role );
 			add_settings_field(
 				'pokm_plugin_roles_idle_' . $role,
 				'',
