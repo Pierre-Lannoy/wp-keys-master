@@ -572,7 +572,6 @@ class Keys_Master_Admin {
 			$idle[] = [ $h, esc_html( sprintf( _n( 'Terminate a session when idle for more than %d hour', 'Terminate a session when idle for more than %d hours', $h, 'keys-master' ), $h ) ) ];
 		}
 		$maxap   = [];
-		$maxap[] = [ 0, esc_html__( 'No application password', 'keys-master' ) ];
 		foreach ( [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]  as $h ) {
 			// phpcs:ignore
 			$maxap[] = [ $h, esc_html( sprintf( _n( '%d application password', '%d application passwords', $h, 'keys-master' ), $h ) ) ];
