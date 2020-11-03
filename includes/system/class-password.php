@@ -52,18 +52,18 @@ class Password {
 	private $user = null;
 
 	/**
-	 * The user's sessions.
+	 * The user's APs.
 	 *
 	 * @since  1.0.0
-	 * @var    array    $sessions    The user's sessions.
+	 * @var    array    $passwords    The user's APs.
 	 */
-	private $sessions = [];
+	private $passwords = [];
 
 	/**
-	 * The user's distinct sessions IP.
+	 * The user's distinct APs IP.
 	 *
 	 * @since  1.1.0
-	 * @var    array    $ip    The user's distinct sessions IP.
+	 * @var    array    $ip    The user's distinct APs IP.
 	 */
 	private $ip = [];
 
@@ -121,7 +121,7 @@ class Password {
 				$this->user_id = 0;
 			}
 		}
-		$this->sessions = self::get_user_passwords( $this->user_id );
+		$this->passwords = self::get_user_passwords( $this->user_id );
 		if ( $this->is_needed() ) {
 			$this->user = get_user_by( 'id', $this->user_id );
 			if ( ! $this->user ) {
@@ -141,14 +141,14 @@ class Password {
 	}
 
 	/**
-	 * Get the number of active sessions.
+	 * Get the number of APs.
 	 *
-	 * @return integer  The number of sessions.
+	 * @return integer  The number of APs.
 	 * @since 1.0.0
 	 */
 	public function get_opkm_count() {
-		if ( isset( $this->sessions ) ) {
-			return count( $this->sessions );
+		if ( isset( $this->passwords ) ) {
+			return count( $this->passwords );
 		}
 		return 0;
 	}
@@ -212,27 +212,27 @@ class Password {
 	 * @since 1.0.0
 	 */
 	private function verify_per_user_limit( $limit ) {
-		if ( is_array( $this->sessions ) && $limit > count( $this->sessions ) ) {
+		if ( is_array( $this->passwords ) && $limit > count( $this->passwords ) ) {
 			return 'allow';
 		}
-		if ( ! is_array( $this->sessions ) ) {
+		if ( ! is_array( $this->passwords ) ) {
 			return 'allow';
 		}
 		uasort(
-			$this->sessions,
+			$this->passwords,
 			function ( $a, $b ) {
 				if ( $a['login'] === $b['login'] ) {
 					return 0;
 				} return ( $a['login'] < $b['login'] ) ? -1 : 1;
 			}
 		);
-		if ( $limit < count( $this->sessions ) ) {
-			$this->sessions = array_slice( $this->sessions, 1 );
+		if ( $limit < count( $this->passwords ) ) {
+			$this->passwords = array_slice( $this->passwords, 1 );
 			do_action( 'opkm_force_terminate', $this->user_id );
-			self::delete_user_password( $this->sessions, $this->user_id );
+			self::delete_user_password( $this->passwords, $this->user_id );
 			return $this->verify_per_user_limit( $limit );
 		}
-		return array_key_first( $this->sessions );
+		return array_key_first( $this->passwords );
 	}
 
 	/**
@@ -243,13 +243,13 @@ class Password {
 	 * @since 1.0.0
 	 */
 	private function verify_per_ip_limit( $limit ) {
-		if ( ! is_array( $this->sessions ) ) {
+		if ( ! is_array( $this->passwords ) ) {
 			return 'allow';
 		}
 		$ip      = IP::get_current();
 		$compare = [];
 		$buffer  = [];
-		foreach ( $this->sessions as $token => $session ) {
+		foreach ( $this->passwords as $token => $session ) {
 			if ( IP::expand( $session['ip'] ) === $ip ) {
 				$compare[ $token ] = $session;
 			} else {
@@ -270,8 +270,8 @@ class Password {
 		if ( $limit < count( $compare ) ) {
 			$compare = array_slice( $compare, 1 );
 			do_action( 'opkm_force_terminate', $this->user_id );
-			$this->sessions = array_merge( $compare, $buffer );
-			self::delete_user_password( $this->sessions, $this->user_id );
+			$this->passwords = array_merge( $compare, $buffer );
+			self::delete_user_password( $this->passwords, $this->user_id );
 			return $this->verify_per_user_limit( $limit );
 		}
 		return array_key_first( $compare );
@@ -285,7 +285,7 @@ class Password {
 	 * @since 1.0.0
 	 */
 	private function verify_per_country_limit( $limit ) {
-		if ( ! is_array( $this->sessions ) ) {
+		if ( ! is_array( $this->passwords ) ) {
 			return 'allow';
 		}
 		$ip      = IP::get_current();
@@ -293,7 +293,7 @@ class Password {
 		$country = $geo->get_iso3166_alpha2( $ip );
 		$compare = [];
 		$buffer  = [];
-		foreach ( $this->sessions as $token => $session ) {
+		foreach ( $this->passwords as $token => $session ) {
 			if ( $country === $geo->get_iso3166_alpha2( $session['ip'] ) ) {
 				$compare[ $token ] = $session;
 			} else {
@@ -314,8 +314,8 @@ class Password {
 		if ( $limit < count( $compare ) ) {
 			$compare = array_slice( $compare, 1 );
 			do_action( 'opkm_force_terminate', $this->user_id );
-			$this->sessions = array_merge( $compare, $buffer );
-			self::delete_user_password( $this->sessions, $this->user_id );
+			$this->passwords = array_merge( $compare, $buffer );
+			self::delete_user_password( $this->passwords, $this->user_id );
 			return $this->verify_per_user_limit( $limit );
 		}
 		return array_key_first( $compare );
@@ -412,13 +412,13 @@ class Password {
 	 * @since 1.0.0
 	 */
 	private function verify_per_device_limit( $selector, $limit ) {
-		if ( ! is_array( $this->sessions ) ) {
+		if ( ! is_array( $this->passwords ) ) {
 			return 'allow';
 		}
 		$device  = $this->get_device_id( '', $selector );
 		$compare = [];
 		$buffer  = [];
-		foreach ( $this->sessions as $token => $session ) {
+		foreach ( $this->passwords as $token => $session ) {
 			if ( $device === $this->get_device_id( $session['ua'], $selector ) ) {
 				$compare[ $token ] = $session;
 			} else {
@@ -439,15 +439,15 @@ class Password {
 		if ( $limit < count( $compare ) ) {
 			$compare = array_slice( $compare, 1 );
 			do_action( 'opkm_force_terminate', $this->user_id );
-			$this->sessions = array_merge( $compare, $buffer );
-			self::delete_user_password( $this->sessions, $this->user_id );
+			$this->passwords = array_merge( $compare, $buffer );
+			self::delete_user_password( $this->passwords, $this->user_id );
 			return $this->verify_per_user_limit( $limit );
 		}
 		return array_key_first( $compare );
 	}
 
 	/**
-	 * Enforce sessions limitation if needed.
+	 * Enforce AP limitation if needed.
 	 *
 	 * @param string  $message  The error message.
 	 * @param integer $error    The error code.
@@ -459,7 +459,100 @@ class Password {
 	}
 
 	/**
-	 * Enforce sessions limitation if needed.
+	 * Computes privileges for a set of roles.
+	 *
+	 * @param array     $roles  The set of roles for which the privileges must be computed.
+	 * @return array    The privileges.
+	 * @since 2.0.0
+	 */
+	private function get_privileges_for_roles( $roles ) {
+		$result   = [];
+		$roles    = [];
+		$modes    = [];
+		$method   = 'block';
+		$settings = Option::roles_get();
+
+		$allow = 'none';
+		$maxip = 0;
+		foreach ( $roles as $role ) {
+			// Allowed IP type
+			switch ( $settings[ $role ]['block'] ) {
+				case 'none':
+					$allow = 'all';
+					break;
+				case 'external':
+					if ( 'local' === $allow ) {
+						$allow = 'all';
+					} elseif ( 'none' === $allow ) {
+						$allow = 'external';
+					}
+					break;
+				case 'local':
+					if ( 'external' === $allow ) {
+						$allow = 'all';
+					} elseif ( 'none' === $allow ) {
+						$allow = 'local';
+					}
+					break;
+			}
+			if ( 0 === (int) Option::network_get( 'rolemode' ) ) { // Cumulative privileges.
+
+				if ( array_key_exists( $role, $settings ) ) {
+					if ( 'none' === $settings[ $role ]['limit'] ) {
+						$mode  = 'none';
+						$l = PHP_INT_MAX;
+					} else {
+						foreach ( LimiterTypes::$selector_names as $key => $name ) {
+							if ( 0 === strpos( $settings[ $role ]['limit'], $key ) ) {
+								$mode  = $key;
+								$limit = (int) substr( $settings[ $role ]['limit'], strlen( $key ) + 1 );
+								break;
+							}
+						}
+					}
+				}
+			} else { // Least privileges.
+			}
+
+		}
+		if ( 'none' === $allow ) {
+			Logger::critical( sprintf( 'Misconfiguration: user ID %s not allowed to connect from private or public IP ranges. Temporarily set to "allow=all". Please fix it!', $user->ID ), 666 );
+			$allow = 'all';
+		}
+		$modes['allow'] = $allow;
+		if ( 0 === $maxip ) {
+			Logger::critical( sprintf( 'Misconfiguration: user ID %s not allowed to connect because ip-quota is set to 0. Temporarily set to "ip-quota=max". Please fix it!', $user->ID ), 666 );
+			$maxip = PHP_INT_MAX;
+		}
+		$result['roles']  = $roles;
+		$result['modes']  = $modes;
+		$result['method'] = $method;
+		return $result;
+	}
+
+	/**
+	 * Computes privileges for a user.
+	 *
+	 * @param integer   $user_id         The user for who the privileges must be computed.
+	 * @return array    The privileges.
+	 * @since 2.0.0
+	 */
+	public function get_privileges_for_user( $user_id ) {
+		if ( Role::SUPER_ADMIN === Role::admin_type( $user_id ) || Role::SINGLE_ADMIN === Role::admin_type( $user_id ) || Role::LOCAL_ADMIN === Role::admin_type( $user_id ) ) {
+			$roles[] = 'administrator';
+		} else {
+			foreach ( Role::get_all() as $key => $detail ) {
+				if ( in_array( $key, $this->user->roles, true ) ) {
+					$roles[] = $key;
+					break;
+				}
+			}
+		}
+		return $this->get_privileges_for_roles( $roles );
+	}
+
+	/**
+	 * Enforce AP limitation if needed.
 	 *
 	 * @param mixed   $user         WP_User if the user is authenticated, WP_Error or null otherwise.
 	 * @param string  $username     Username or email address.
@@ -473,12 +566,12 @@ class Password {
 			return $user;
 		}
 		if ( $user instanceof \WP_User ) {
-			$this->user_id  = $user->ID;
-			$this->user     = $user;
-			$this->sessions = self::get_user_passwords( $this->user_id );
-			$role           = '';
-			$this->ip       = [];
-			foreach ( $this->sessions as $session ) {
+			$this->user_id   = $user->ID;
+			$this->user      = $user;
+			$this->passwords = self::get_user_passwords( $this->user_id );
+			$role            = '';
+			$this->ip        = [];
+			foreach ( $this->passwords as $session ) {
 				$ip = IP::expand( $session['ip'] );
 				if ( ! in_array( $ip, $this->ip, true ) ) {
 					$this->ip[] = $ip;
@@ -566,10 +659,10 @@ class Password {
 						switch ( $method ) {
 							case 'override':
 								if ( '' !== $result ) {
-									if ( array_key_exists( $result, $this->sessions) ) {
-										unset( $this->sessions[ $result ] );
+									if ( array_key_exists( $result, $this->passwords) ) {
+										unset( $this->passwords[ $result ] );
 										do_action( 'opkm_force_terminate', $this->user_id );
-										self::delete_user_password( $this->sessions, $this->user_id );
+										self::delete_user_password( $this->passwords, $this->user_id );
 										Logger::notice( sprintf( 'Session overridden for %s. Reason: %s.', User::get_user_string( $this->user_id ), str_replace( 'device-', ' ', $mode ) ) );
 									}
 								}
@@ -601,7 +694,7 @@ class Password {
 		if ( ! $this->is_needed() || ! isset( $this->user ) ) {
 			return false;
 		}
-		if ( ! array_key_exists( $this->token, $this->sessions ) ) {
+		if ( ! array_key_exists( $this->token, $this->passwords ) ) {
 			return false;
 		}
 		$role = '';
@@ -616,14 +709,14 @@ class Password {
 			return false;
 		}
 		if ( 0 === (int) $settings[ $role ]['idle'] ) {
-			if ( array_key_exists( 'session_idle', $this->sessions[ $this->token ] ) ) {
-				unset( $this->sessions[ $this->token ]['session_idle'] );
-				self::delete_user_password( $this->sessions, $this->user_id );
+			if ( array_key_exists( 'session_idle', $this->passwords[ $this->token ] ) ) {
+				unset( $this->passwords[ $this->token ]['session_idle'] );
+				self::delete_user_password( $this->passwords, $this->user_id );
 			}
 			return false;
 		}
-		$this->sessions[ $this->token ]['session_idle'] = time() + (int) $settings[ $role ]['idle'] * HOUR_IN_SECONDS;
-		self::delete_user_password( $this->sessions, $this->user_id );
+		$this->passwords[ $this->token ]['session_idle'] = time() + (int) $settings[ $role ]['idle'] * HOUR_IN_SECONDS;
+		self::delete_user_password( $this->passwords, $this->user_id );
 		return true;
 	}
 
@@ -640,11 +733,11 @@ class Password {
 		if ( ! $this->is_needed() || ! isset( $this->user ) ) {
 			return false;
 		}
-		if ( ! array_key_exists( $this->token, $this->sessions ) ) {
+		if ( ! array_key_exists( $this->token, $this->passwords ) ) {
 			return false;
 		}
-		$this->sessions[ $this->token ]['ip'] = IP::expand( $_SERVER['REMOTE_ADDR'] );
-		self::delete_user_password( $this->sessions, $this->user_id );
+		$this->passwords[ $this->token ]['ip'] = IP::expand( $_SERVER['REMOTE_ADDR'] );
+		self::delete_user_password( $this->passwords, $this->user_id );
 		return true;
 	}
 
@@ -756,6 +849,7 @@ class Password {
 			self::$instance = new static();
 		}
 		self::$instance->init_if_needed();
+		add_action( 'updated_user_meta', 'change_user_nickname', 20, 4 );
 		//add_filter( 'auth_cookie_expiration', [ self::$instance, 'cookie_expiration' ], PHP_INT_MAX, 3 );
 		//add_filter( 'authenticate', [ self::$instance, 'limit_logins' ], PHP_INT_MAX, 3 );
 		//add_filter( 'jetpack_sso_handle_login', [ self::$instance, 'jetpack_sso_handle_login' ], PHP_INT_MAX, 2 );

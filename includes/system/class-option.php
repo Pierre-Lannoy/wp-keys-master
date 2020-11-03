@@ -85,48 +85,11 @@ class Option {
 		self::$defaults['limit']       = 'none';
 		self::$defaults['method']      = 'block';
 		self::$defaults['idle']        = 0;
-		self::$defaults['maxap']       = 0;
+		self::$defaults['maxap']       = PHP_INT_MAX;
 		self::$defaults['block']       = 'none';
 		self::$defaults['cookie-ttl']  = 48;
 		self::$defaults['cookie-rttl'] = 336;
 		self::$specific                = [ 'limit', 'maxap', 'method', 'idle', 'block', 'cookie-ttl', 'cookie-rttl' ];
-	}
-
-	/**
-	 * Set the defaults options.
-	 *
-	 * @since 1.0.0
-	 */
-	public static function verify() {
-		foreach ( self::$network as $key => $val ) {
-			if ( 'not_present' === (string) self::network_get( $key, 'not_present' ) ) {
-				self::network_set( $key, $val );
-			}
-		}
-		// Options for whole site(s).
-		self::$defaults['use_cdn']           = false;
-		self::$defaults['script_in_footer']  = false;
-		self::$defaults['download_favicons'] = false;
-		self::$defaults['display_nag']       = true;
-		self::$defaults['nags']              = [];
-		self::$defaults['version']           = '0.0.0';
-		self::$defaults['history']           = 30;
-		self::$defaults['analytics']         = true;
-		self::$defaults['forceip']           = true;
-		self::$defaults['followip']          = true;
-		self::$defaults['rolemode']          = 0;
-		self::$defaults['zk_semaphore']      = 300;
-		self::$defaults['zk_cycle']          = 90;
-		self::$defaults['zk_tsize']          = 20;
-		self::$defaults['buffer_limit']      = 4000;
-		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'analytics', 'forceip', 'followip', 'history', 'rolemode', 'zk_cycle', 'zk_tsize', 'zk_semaphore', 'buffer_limit' ];
-		// Specific options.
-		self::$defaults['limit']  = 'none';
-		self::$defaults['method'] = 'block';
-		self::$defaults['idle']   = 0;
-		self::$defaults['maxap']  = 0;
-		self::$defaults['allow']  = 'full';
-		self::$specific           = [ 'limit', 'maxap', 'method', 'idle', 'allow' ];
 	}
 
 	/**
