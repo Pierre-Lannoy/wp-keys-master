@@ -22,7 +22,6 @@ use KeysMaster\System\GeoIP;
 use KeysMaster\System\UserAgent;
 use KeysMaster\Plugin\Feature\Schema;
 use KeysMaster\Plugin\Feature\Capture;
-use KeysMaster\Plugin\Feature\LimiterTypes;
 use KeysMaster\System\IP;
 
 /**
@@ -324,13 +323,13 @@ class Password {
 			if ( 'none' === $settings[ $role ]['limit'] ) {
 				$mode = 'none';
 			} else {
-				foreach ( LimiterTypes::$selector_names as $key => $name ) {
+				/*foreach ( LimiterTypes::$selector_names as $key => $name ) {
 					if ( 0 === strpos( $settings[ $role ]['limit'], $key ) ) {
 						$mode  = $key;
 						$limit = (int) substr( $settings[ $role ]['limit'], strlen( $key ) + 1 );
 						break;
 					}
-				}
+				}*/
 			}
 			$r = '';
 			switch ( $mode ) {
@@ -344,7 +343,7 @@ class Password {
 				case 'device-client':
 				case 'device-browser':
 				case 'device-os':
-					$r = esc_html( sprintf( _n( '%d concurrent session per %s.', '%d concurrent sessions per %s.', $limit, 'keys-master' ), $limit, LimiterTypes::$selector_names[ $mode ] ) );
+					//$r = esc_html( sprintf( _n( '%d concurrent session per %s.', '%d concurrent sessions per %s.', $limit, 'keys-master' ), $limit, LimiterTypes::$selector_names[ $mode ] ) );
 					break;
 			}
 			if ( '' !== $r ) {

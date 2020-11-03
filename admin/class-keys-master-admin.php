@@ -21,7 +21,6 @@ use KeysMaster\System\Blog;
 use KeysMaster\System\Date;
 use KeysMaster\System\Timezone;
 use KeysMaster\System\GeoIP;
-use KeysMaster\Plugin\Feature\LimiterTypes;
 use PerfOpsOne\AdminMenus;
 use KeysMaster\System\Statistics;
 
