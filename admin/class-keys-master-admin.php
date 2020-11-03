@@ -535,22 +535,22 @@ class Keys_Master_Admin {
 	public function plugin_roles_section_callback() {
 		$settings = Option::roles_get();
 		$blocks   = [];
-		$blocks[] = [ 'full', esc_html__( 'Full (authentication and management)', 'keys-master' ) ];
-		$blocks[] = [ 'limited', esc_html__( 'Only authentication', 'keys-master' ) ];
+		$blocks[] = [ 'full', esc_html__( 'Full (authentication, creation and revocation)', 'keys-master' ) ];
+		$blocks[] = [ 'limited', esc_html__( 'Limited (authentication and revocation)', 'keys-master' ) ];
 		$blocks[] = [ 'none', esc_html__( 'None', 'keys-master' ) ];
 		$idle     = [];
-		$idle[]   = [ 0, esc_html__( 'Never terminate an idle session', 'keys-master' ) ];
-		foreach ( [ 1, 2, 3, 4, 5, 6, 12, 24 ]  as $h ) {
+		$idle[]   = [ 0, esc_html__( 'Never revoke', 'keys-master' ) ];
+		foreach ( [ 7, 14, 30, 60 ]  as $h ) {
 			// phpcs:ignore
-			$idle[] = [ $h, esc_html( sprintf( _n( 'Terminate a session when idle for more than %d hour', 'Terminate a session when idle for more than %d hours', $h, 'keys-master' ), $h ) ) ];
+			$idle[] = [ $h, esc_html( sprintf( __( 'Revoke when unused for more than %d days', 'keys-master' ), $h ) ) ];
 		}
-		$maxap   = [];
+		$maxap = [];
 		foreach ( [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]  as $h ) {
 			// phpcs:ignore
 			$maxap[] = [ $h, esc_html( sprintf( _n( '%d application password', '%d application passwords', $h, 'keys-master' ), $h ) ) ];
 		}
 		$maxap[] = [ PHP_INT_MAX, esc_html__( 'Unlimited', 'keys-master' ) ];
-		$form = new Form();
+		$form    = new Form();
 		foreach ( Role::get_all() as $role => $detail ) {
 			add_settings_field(
 				'pokm_plugin_roles_allow_' . $role,
@@ -594,7 +594,7 @@ class Keys_Master_Admin {
 					'list'        => $idle,
 					'id'          => 'pokm_plugin_roles_idle_' . $role,
 					'value'       => $settings[ $role ]['idle'],
-					'description' => esc_html__( 'Idle sessions supervision.', 'keys-master' ),
+					'description' => esc_html__( 'Unused application passwords supervision.', 'keys-master' ),
 					'full_width'  => false,
 					'enabled'     => true,
 				]

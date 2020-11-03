@@ -11,6 +11,7 @@
 
 namespace KeysMaster\System;
 
+use Decalog\Plugin\Feature\Log;
 use KeysMaster\System\Role;
 use KeysMaster\System\Option;
 use KeysMaster\System\Logger;
@@ -58,22 +59,6 @@ class Password {
 	 * @var    array    $passwords    The user's APs.
 	 */
 	private $passwords = [];
-
-	/**
-	 * The user's distinct APs IP.
-	 *
-	 * @since  1.1.0
-	 * @var    array    $ip    The user's distinct APs IP.
-	 */
-	private $ip = [];
-
-	/**
-	 * The current token.
-	 *
-	 * @since  1.0.0
-	 * @var    string    $token    The current token.
-	 */
-	private $token = '';
 
 	/**
 	 * The class instance.
@@ -195,14 +180,14 @@ class Password {
 		if ( self::$meta_key === $meta_key ) {
 			if ( is_array( $meta_value ) ) {
 				$privileges = $this->get_privileges_for_user( $object_id );
-				if ( 'full' !== $privileges['modes']['allow'] ) {
-					return false;
+				$old        = get_user_meta( $object_id, self::$meta_key, true );
+				if ( isset( $old ) && count( $old ) > count( $meta_value ) ) {
+					return $check;
 				}
 				if ( count( $meta_value ) > $privileges['modes']['maxap'] ) {
-					$old = get_user_meta( $object_id, self::$meta_key, true );
-					if ( isset( $old ) && count( $old ) > count( $meta_value ) ) {
-						return $check;
-					}
+					return false;
+				}
+				if ( 'full' !== $privileges['modes']['allow'] ) {
 					return false;
 				}
 			}
@@ -223,6 +208,7 @@ class Password {
 		if ( 0 === (int) Option::network_get( 'rolemode' ) ) { // Cumulative privileges.
 			$allow = 'none';
 			$maxap = 0;
+			$idle  = -1;
 			foreach ( $roles as $role ) {
 				// Allowed usages
 				switch ( $settings[ $role ]['allow'] ) {
@@ -242,10 +228,17 @@ class Password {
 				if ( $settings[ $role ]['maxap'] > $maxap ) {
 					$maxap = $settings[ $role ]['maxap'];
 				}
+				// Max idle days
+				if ( 0 === $settings[ $role ]['idle'] ) {
+					$idle = 0;
+				} elseif ( $settings[ $role ]['idle'] > $idle && 0 !== $idle ) {
+					$idle = $settings[ $role ]['idle'];
+				}
 			}
 		} else { // Least privileges.
 			$allow = 'full';
 			$maxap = PHP_INT_MAX;
+			$idle  = PHP_INT_MAX;
 			foreach ( $roles as $role ) {
 				// Allowed usages
 				switch ( $settings[ $role ]['allow'] ) {
@@ -265,11 +258,17 @@ class Password {
 				if ( $settings[ $role ]['maxap'] < $maxap ) {
 					$maxap = $settings[ $role ]['maxap'];
 				}
+				// Max idle days
+				if ( $settings[ $role ]['idle'] < $idle && 0 !== $settings[ $role ]['idle'] ) {
+					$idle = $settings[ $role ]['idle'];
+				} elseif ( 0 === $settings[ $role ]['idle'] && PHP_INT_MAX === $idle ) {
+					$idle = 0;
+				}
 			}
 		}
-		$modes['allow'] = $allow;
-		$modes['maxap'] = $maxap;
-
+		$modes['allow']  = $allow;
+		$modes['maxap']  = $maxap;
+		$modes['idle']   = $idle;
 		$result['roles'] = $roles;
 		$result['modes'] = $modes;
 		return $result;
@@ -451,39 +450,44 @@ class Password {
 	}
 
 	/**
-	 * Terminate sessions needing to be terminated.
+	 * Revokes passwords needing it.
 	 *
-	 * @param   array   $sessions The sessions records.
+	 * @param   array   $passwords The APs records.
 	 * @param   integer   $user_id  The user ID.
-	 * @return  integer   Number of terminated sessions.
+	 * @return  integer   Number of revoked passwords.
 	 * @since   1.0.0
 	 */
-	public static function auto_terminate_session( $sessions, $user_id ) {
-		$idle = [];
-		$exp  = [];
-		foreach ( $sessions as $token => $session ) {
-			if ( array_key_exists( 'session_idle', $session ) && time() > $session['session_idle'] ) {
-				$idle[] = $token;
-			} elseif ( array_key_exists( 'expiration', $session ) && time() > $session['expiration'] ) {
-				$exp[] = $token;
+	public static function auto_revoke_password( $passwords, $user_id ) {
+		$privileges = self::$instance->get_privileges_for_user( $user_id );
+		if ( isset( $privileges['modes']['idle'] ) ) {
+			$idle = (int) $privileges['modes']['idle'];
+		}
+		$del = [];
+		if ( 0 < $idle ) {
+			$stop = time() - ( $idle * DAY_IN_SECONDS );
+			foreach ( $passwords as $password ) {
+				if ( isset( $password['last_used'] ) ) {
+					if ( $password['last_used'] < $stop ) {
+						$del[] = $password['uuid'];
+					}
+				} elseif ( isset( $password['created'] ) ) {
+					if ( $password['created'] < $stop ) {
+						$del[] = $password['uuid'];
+					}
+				}
 			}
 		}
-		foreach ( $idle as $token ) {
-			unset( $sessions[ $token ] );
+		foreach ( $del as $uuid ) {
+			self::delete_user_password( $uuid, $user_id );
 			do_action( 'opkm_after_idle_terminate', $user_id );
 		}
-		foreach ( $exp as $token ) {
-			unset( $sessions[ $token ] );
-			do_action( 'opkm_after_expired_terminate', $user_id );
-		}
-		self::delete_user_password( $sessions, $user_id );
-		return count( $idle ) + count( $exp );
+		return count( $del );
 	}
 
 	/**
-	 * Delete selected sessions.
+	 * Delete selected APs.
 	 *
-	 * @param array   $bulk   The sessions to delete.
+	 * @param array   $bulk   The APs to delete.
 	 * @return int|bool False if it was not possible, otherwise the number of deleted meta.
 	 * @since    1.0.0
 	 */
