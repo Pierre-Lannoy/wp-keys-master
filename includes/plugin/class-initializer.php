@@ -38,6 +38,7 @@ class Initializer {
 		\KeysMaster\System\Cache::init();
 		\KeysMaster\System\Sitehealth::init();
 		\KeysMaster\System\APCu::init();
+		\KeysMaster\Plugin\Feature\UserAdministration::init();
 		\KeysMaster\Plugin\Feature\ZooKeeper::init();
 	}
 

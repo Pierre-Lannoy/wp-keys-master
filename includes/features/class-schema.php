@@ -38,7 +38,7 @@ class Schema {
 	 * @since  1.0.0
 	 * @var    string    $statistics    The statistics table name.
 	 */
-	private static $statistics = 'sessions_statistics';
+	private static $statistics = 'password_statistics';
 
 	/**
 	 * Initialize the class and set its properties.
@@ -54,7 +54,7 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	public static function init() {
-		add_action( 'shutdown', [ self::class, 'write' ], 11, 0 );
+		//add_action( 'shutdown', [ self::class, 'write' ], 11, 0 );
 	}
 
 	/**

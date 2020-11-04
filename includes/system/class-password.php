@@ -125,12 +125,15 @@ class Password {
 	/**
 	 * Verify if APs are available for the user.
 	 *
-	 * @param bool     $available   True if available, false otherwise.
-	 * @param \WP_User $user        The user to check.
+	 * @param bool     $available   Optional. True if available, false otherwise.
+	 * @param \WP_User $user        Optional. The user to check.
 	 * @return boolean  True if AP is available for this user, false otherwise.
 	 * @since 1.0.0
 	 */
-	public function is_available( $available, $user ) {
+	public function is_available( $available = true, $user = null ) {
+		if ( ! isset( $user ) ) {
+			$user = $this->user;
+		}
 		if ( $user instanceof \WP_User && 0 < $user->ID ) {
 			$privileges = $this->get_privileges_for_user( $user->ID );
 			if ( ! isset( $privileges['modes']['allow'] ) || 'none' === $privileges['modes']['allow'] ) {
@@ -276,12 +279,17 @@ class Password {
 	/**
 	 * Computes privileges for a user.
 	 *
-	 * @param integer   $user_id         The user for who the privileges must be computed.
+	 * @param null|integer   $user_id         Optional. The user for who the privileges must be computed.
 	 * @return array    The privileges.
 	 * @since 2.0.0
 	 */
-	public function get_privileges_for_user( $user_id ) {
-		$user = get_userdata( $user_id );
+	public function get_privileges_for_user( $user_id = null ) {
+		if ( isset( $user_id ) ) {
+			$user = get_userdata( $user_id );
+		} else {
+			$user    = $this->user;
+			$user_id = $user->ID;
+		}
 		if ( Role::SUPER_ADMIN === Role::admin_type( $user_id ) || Role::SINGLE_ADMIN === Role::admin_type( $user_id ) || Role::LOCAL_ADMIN === Role::admin_type( $user_id ) ) {
 			$roles[] = 'administrator';
 		} else {
@@ -298,72 +306,41 @@ class Password {
 	/**
 	 * Get the limits as printable text.
 	 *
+	 * @param null|integer   $user_id         Optional. The user for who the privileges must be computed.
 	 * @return string  The limits, ready to print.
 	 * @since 1.0.0
 	 */
-	public function get_limits_as_text() {
-		$result = '';
-		$role   = '';
-		foreach ( Role::get_all() as $key => $detail ) {
-			if ( in_array( $key, $this->user->roles, true ) ) {
-				$role = $key;
-				break;
-			}
+	public function get_limits_as_self_text( $user_id = null ) {
+		if ( ! isset( $user_id ) ) {
+			$user_id = $this->user->ID;
 		}
-		$settings = Option::roles_get();
-		if ( array_key_exists( $role, $settings ) ) {
-			if ( 'external' === $settings[ $role ]['block'] ) {
-				$result .= esc_html__( 'Login allowed only from private IP ranges.', 'keys-master' );
-			} elseif ( 'local' === $settings[ $role ]['block'] ) {
-				$result .= esc_html__( 'Login allowed only from public IP ranges.', 'keys-master' );
+		$privileges = $this->get_privileges_for_user( $user_id );
+		if ( 'full' === $privileges['modes']['allow'] ) {
+			$text = '';
+			if ( 1000 > $privileges['modes']['maxap'] ) {
+				$text = sprintf( esc_html__( 'You can manage up to %d passwords.', 'keys-master' ), $privileges['modes']['maxap'] );
 			}
-			$method = $settings[ $role ]['method'];
-			$mode   = '';
-			$limit  = 0;
-			if ( 'none' === $settings[ $role ]['limit'] ) {
-				$mode = 'none';
-			} else {
-				/*foreach ( LimiterTypes::$selector_names as $key => $name ) {
-					if ( 0 === strpos( $settings[ $role ]['limit'], $key ) ) {
-						$mode  = $key;
-						$limit = (int) substr( $settings[ $role ]['limit'], strlen( $key ) + 1 );
-						break;
-					}
-				}*/
+			if ( 0 < $privileges['modes']['idle'] ) {
+				$text .= ( '' === $text ? '' : ' ' ) . sprintf( esc_html__( 'Passwords are revoked after %d days of inactivity.', 'keys-master' ), $privileges['modes']['idle'] );
 			}
-			$r = '';
-			switch ( $mode ) {
-				case 'user':
-					$r = esc_html( sprintf( _n( '%d concurrent session.', '%d concurrent sessions.', $limit, 'keys-master' ), $limit ) );
-					break;
-				case 'ip':
-				case 'country':
-				case 'device-class':
-				case 'device-type':
-				case 'device-client':
-				case 'device-browser':
-				case 'device-os':
-					//$r = esc_html( sprintf( _n( '%d concurrent session per %s.', '%d concurrent sessions per %s.', $limit, 'keys-master' ), $limit, LimiterTypes::$selector_names[ $mode ] ) );
-					break;
+			if ( '' !== $text ) {
+				$result  = '<script>';
+				$result .= 'jQuery(document).ready( function($) {';
+				$result .= "$('.application-passwords p:eq(0)').after('" . $text . "');";
+				$result .= '});';
+				$result .= '</script>';
 			}
-			if ( '' !== $r ) {
-				if ( '' !== $result ) {
-					$result .= ' ';
-				}
-				$result .= $r;
+
+		} else {
+			$text    = '<p>' . esc_html__( 'To create an application password, please, ask your administrator.', 'keys-master' ) ;
+			$result  = '<script>';
+			$result .= 'jQuery(document).ready( function($) {';
+			if ( Role::SUPER_ADMIN !== Role::admin_type() && Role::SINGLE_ADMIN !== Role::admin_type() ) {
+				$result .= "$('.create-application-password').hide();";
 			}
-			if ( 0 !== (int) $settings[ $role ]['idle'] ) {
-				$r = esc_html( sprintf( _n( 'Sessions expire after %d hour of inactivity.', 'Sessions expire after %d hours of inactivity.', $settings[ $role ]['idle'], 'keys-master' ), $settings[ $role ]['idle'] ) );
-				if ( '' !== $r ) {
-					if ( '' !== $result ) {
-						$result .= ' ';
-					}
-					$result .= $r;
-				}
-			}
-		}
-		if ( '' === $result ) {
-			$result = esc_html__( 'No restrictions.', 'keys-master' );
+			$result .= "$('.application-passwords p:eq(0)').after('" . $text . "');";
+			$result .= '});';
+			$result .= '</script>';
 		}
 		return $result;
 	}

@@ -76,8 +76,4 @@ jQuery(document).ready( function($) {
 			$( "#pokm-chart-button-password" ).addClass( "active" );
 		}
 	);
-
-
-
-
 } );
