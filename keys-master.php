@@ -18,7 +18,7 @@
  * License:           GPLv3
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Network:           true
- * Text Domain:       sessions
+ * Text Domain:       keys-master
  * Domain Path:       /languages
  */
 

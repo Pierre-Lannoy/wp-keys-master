@@ -370,10 +370,10 @@ class Password {
 	}
 
 	/**
-	 * Get sessions.
+	 * Get APs.
 	 *
 	 * @param   mixed $user_id  Optional. The user ID.
-	 * @return  array  The list of sessions.
+	 * @return  array  The list of APs.
 	 * @since   1.0.0
 	 */
 	public static function get_user_passwords( $user_id = false ) {
@@ -388,9 +388,9 @@ class Password {
 	}
 
 	/**
-	 * Get all sessions.
+	 * Get all APs.
 	 *
-	 * @return  array  The details of sessions.
+	 * @return  array  The details of APs.
 	 * @since   1.0.0
 	 */
 	public static function get_all_passwords() {
@@ -407,7 +407,7 @@ class Password {
 	}
 
 	/**
-	 * Set sessions.
+	 * Set APs.
 	 *
 	 * @param   string   $password The password uuid.
 	 * @param   mixed   $user_id  Optional. The user ID.

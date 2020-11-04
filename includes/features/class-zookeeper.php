@@ -16,7 +16,6 @@ use KeysMaster\System\Cache;
 use KeysMaster\System\Logger;
 use KeysMaster\System\Option;
 use KeysMaster\System\Password;
-use KeysMaster\System\Session;
 use KeysMaster\Plugin\Feature\Schema;
 
 /**
@@ -65,7 +64,7 @@ class ZooKeeper {
 	}
 
 	/**
-	 * Terminates staled sessions.
+	 * Terminates staled APs.
 	 *
 	 * @since    1.0.0
 	 */
