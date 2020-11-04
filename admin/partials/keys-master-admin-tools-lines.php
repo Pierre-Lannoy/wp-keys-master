@@ -14,11 +14,11 @@ use KeysMaster\System\Environment;
 ?>
 
 <div class="alignleft actions bulkactions">
-    <label for="limit-selector" class="screen-reader-text"><?php esc_html_e('Number of sessions to display', 'sessions');?></label>
+    <label for="limit-selector" class="screen-reader-text"><?php esc_html_e('Number of sessions to display', 'keys-master');?></label>
     <select name="limit-<?php echo $which; ?>" id="limit-selector-<?php echo $which; ?>">
 		<?php foreach ($list->get_line_number_select() as $line) { ?>
             <option <?php echo $line['selected']; ?>value="<?php echo $line['value']; ?>"><?php echo $line['text']; ?></option>
 		<?php } ?>
     </select>
-    <input type="submit" name="dolimit-<?php echo $which; ?>" id="dolimit-<?php echo $which; ?>" class="button action" value="<?php esc_html_e('Apply', 'sessions');?>"  />
+    <input type="submit" name="dolimit-<?php echo $which; ?>" id="dolimit-<?php echo $which; ?>" class="button action" value="<?php esc_html_e('Apply', 'keys-master');?>"  />
 </div>

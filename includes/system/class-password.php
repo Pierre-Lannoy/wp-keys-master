@@ -1,8 +1,8 @@
 <?php
 /**
- * Session handling
+ * APs handling
  *
- * Handles all session operations and detection.
+ * Handles all APs operations and detection.
  *
  * @package System
  * @author  Pierre Lannoy <https://pierre.lannoy.fr/>.
@@ -25,9 +25,9 @@ use KeysMaster\Plugin\Feature\Capture;
 use KeysMaster\System\IP;
 
 /**
- * Define the session functionality.
+ * Define the APs functionality.
  *
- * Handles all session operations and detection.
+ * Handles all APs operations and detection.
  *
  * @package System
  * @author  Pierre Lannoy <https://pierre.lannoy.fr/>.

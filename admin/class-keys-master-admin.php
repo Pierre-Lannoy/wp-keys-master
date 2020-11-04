@@ -378,10 +378,10 @@ class Keys_Master_Admin {
 		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_geoip' );
 		if ( class_exists( 'PODeviceDetector\API\Device' ) ) {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
-			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'sessions' ), '<em>Device Detector v' . PODD_VERSION . '</em>' );
+			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'keys-master' ), '<em>Device Detector v' . PODD_VERSION . '</em>' );
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
-			$help .= sprintf( esc_html__( 'Your site does not use any device detection mechanism. To allow device differentiation in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'sessions' ), '<a href="https://wordpress.org/plugins/device-detector/">Device Detector</a>' );
+			$help .= sprintf( esc_html__( 'Your site does not use any device detection mechanism. To allow device differentiation in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/device-detector/">Device Detector</a>' );
 		}
 		add_settings_field(
 			'pokm_plugin_options_podd',

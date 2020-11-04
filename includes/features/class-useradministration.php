@@ -33,7 +33,7 @@ class UserAdministration {
 	}
 
 	/**
-	 * Echo the 'Sessions Management' section of the user profile.
+	 * Echo the APs section of the user profile.
 	 *
 	 * @param \WP_User  $user   The user.
 	 * @since    1.0.0

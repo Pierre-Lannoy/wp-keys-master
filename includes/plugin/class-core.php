@@ -18,7 +18,7 @@ use KeysMaster\System\Assets;
 use KeysMaster\Library\Libraries;
 use KeysMaster\System\Logger;
 use KeysMaster\System\Nag;
-use KeysMaster\System\Session;
+use KeysMaster\System\Password;
 
 /**
  * The core plugin class.
