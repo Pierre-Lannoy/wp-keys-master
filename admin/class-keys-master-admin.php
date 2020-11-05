@@ -107,7 +107,7 @@ class Keys_Master_Admin {
 				'description'   => sprintf( esc_html__( 'Browse and manage application passwords on your %s.', 'keys-master' ), Environment::is_wordpress_multisite() ? esc_html__( 'network', 'keys-master' ) : esc_html__( 'website', 'keys-master' ) ),
 				'icon_callback' => [ \KeysMaster\Plugin\Core::class, 'get_base64_logo' ],
 				'slug'          => 'pokm-manager',
-				'page_title'    => esc_html__( 'Active Keys Master Management', 'keys-master' ),
+				'page_title'    => esc_html__( 'Application Passwords Management', 'keys-master' ),
 				'menu_title'    => esc_html__( 'App. Passwords', 'keys-master' ),
 				'capability'    => 'manage_options',
 				'callback'      => [ $this, 'get_manager_page' ],

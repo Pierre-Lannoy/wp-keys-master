@@ -9,9 +9,9 @@
  * @wordpress-plugin
  * Plugin Name:       Keys Master
  * Plugin URI:        https://github.com/Pierre-Lannoy/wp-keys-master
- * Description:       Powerful sessions manager for WordPress with sessions limiter and full analytics reporting capabilities.
- * Version:           1.2.0
- * Requires at least: 5.2
+ * Description:       Powerful application passwords manager for WordPress with limiter and full analytics reporting capabilities.
+ * Version:           1.0.0
+ * Requires at least: 5.6
  * Requires PHP:      7.2
  * Author:            Pierre Lannoy
  * Author URI:        https://pierre.lannoy.fr
