@@ -154,6 +154,7 @@ class Keys_Master_Admin {
 	 */
 	public function init_settings_sections() {
 		add_settings_section( 'pokm_plugin_features_section', esc_html__( 'Plugin Features', 'keys-master' ), [ $this, 'plugin_features_section_callback' ], 'pokm_plugin_features_section' );
+		add_settings_section( 'pokm_privacy_options_section', esc_html__( 'Privacy options', 'keys-master' ), [ $this, 'privacy_options_section_callback' ], 'pokm_privacy_options_section' );
 		add_settings_section( 'pokm_plugin_options_section', esc_html__( 'Plugin options', 'keys-master' ), [ $this, 'plugin_options_section_callback' ], 'pokm_plugin_options_section' );
 		add_settings_section( 'pokm_plugin_roles_section', '', [ $this, 'plugin_roles_section_callback' ], 'pokm_plugin_roles_section' );
 	}
@@ -295,6 +296,7 @@ class Keys_Master_Admin {
 				Option::network_set( 'use_cdn', array_key_exists( 'pokm_plugin_options_usecdn', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_options_usecdn' ) : false );
 				Option::network_set( 'display_nag', array_key_exists( 'pokm_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_options_nag' ) : false );
 				Option::network_set( 'analytics', array_key_exists( 'pokm_plugin_features_analytics', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_features_analytics' ) : false );
+				Option::network_set( 'obfuscation', array_key_exists( 'pokm_privacy_options_obfuscation', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_privacy_options_obfuscation' ) : false );
 				Option::network_set( 'history', array_key_exists( 'pokm_plugin_features_history', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_features_history', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'history' ) );
 				Option::network_set( 'rolemode', array_key_exists( 'pokm_plugin_features_rolemode', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_features_rolemode', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'rolemode' ) );
 				$message = esc_html__( 'Plugin settings have been saved.', 'keys-master' );
@@ -524,6 +526,30 @@ class Keys_Master_Admin {
 			]
 		);
 		register_setting( 'pokm_plugin_features_section', 'pokm_plugin_features_history' );
+	}
+	/**
+	 * Callback for privacy options section.
+	 *
+	 * @since 1.0.0
+	 */
+	public function privacy_options_section_callback() {
+		$form = new Form();
+		add_settings_field(
+			'pokm_privacy_options_obfuscation',
+			esc_html__( 'Remote IPs', 'keys-master' ),
+			[ $form, 'echo_field_checkbox' ],
+			'pokm_privacy_options_section',
+			'pokm_privacy_options_section',
+			[
+				'text'        => esc_html__( 'Obfuscation', 'keys-master' ),
+				'id'          => 'pokm_privacy_options_obfuscation',
+				'checked'     => Option::network_get( 'obfuscation' ),
+				'description' => esc_html__( 'If checked, hashes will be stored instead of real IPs.', 'keys-master' ),
+				'full_width'  => false,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'pokm_privacy_options_section', 'pokm_privacy_options_obfuscation' );
 	}
 
 	/**
