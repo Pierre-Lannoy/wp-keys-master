@@ -154,7 +154,7 @@ class Keys_Master_Admin {
 	 */
 	public function init_settings_sections() {
 		add_settings_section( 'pokm_plugin_features_section', esc_html__( 'Plugin Features', 'keys-master' ), [ $this, 'plugin_features_section_callback' ], 'pokm_plugin_features_section' );
-		add_settings_section( 'pokm_privacy_options_section', esc_html__( 'Privacy options', 'keys-master' ), [ $this, 'privacy_options_section_callback' ], 'pokm_privacy_options_section' );
+		//add_settings_section( 'pokm_privacy_options_section', esc_html__( 'Privacy options', 'keys-master' ), [ $this, 'privacy_options_section_callback' ], 'pokm_privacy_options_section' );
 		add_settings_section( 'pokm_plugin_options_section', esc_html__( 'Plugin options', 'keys-master' ), [ $this, 'plugin_options_section_callback' ], 'pokm_plugin_options_section' );
 		add_settings_section( 'pokm_plugin_roles_section', '', [ $this, 'plugin_roles_section_callback' ], 'pokm_plugin_roles_section' );
 	}
