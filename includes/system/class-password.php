@@ -126,7 +126,7 @@ class Password {
 	 * Verify if APs are available for the user.
 	 *
 	 * @param bool     $available   Optional. True if available, false otherwise.
-	 * @param \WP_User $user        Optional. The user to check.
+	 * @param null|\WP_User $user   Optional. The user to check.
 	 * @return boolean  True if AP is available for this user, false otherwise.
 	 * @since 1.0.0
 	 */
