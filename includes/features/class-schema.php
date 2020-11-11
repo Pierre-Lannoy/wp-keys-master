@@ -20,6 +20,7 @@ use KeysMaster\System\Logger;
 use KeysMaster\System\Cache;
 use KeysMaster\System\Timezone;
 use KeysMaster\Plugin\Feature\Capture;
+use KeysMaster\System\Password;
 
 /**
  * Define the schema functionality.
@@ -41,6 +42,14 @@ class Schema {
 	private static $statistics = 'password_statistics';
 
 	/**
+	 * Usages table name.
+	 *
+	 * @since  1.0.0
+	 * @var    string    $usages    The usages table name.
+	 */
+	private static $usages = 'password_usage';
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -54,7 +63,7 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	public static function init() {
-		//add_action( 'shutdown', [ self::class, 'write' ], 11, 0 );
+		add_action( 'shutdown', [ self::class, 'write' ], 11, 0 );
 	}
 
 	/**
@@ -66,6 +75,7 @@ class Schema {
 	public static function write( $purge = true ) {
 		if ( Option::network_get( 'analytics' ) ) {
 			self::write_current_to_database( Capture::get_stats() );
+			self::write_usage_to_database( Capture::get_usage() );
 		}
 		if ( $purge ) {
 			self::purge();
@@ -109,6 +119,44 @@ class Schema {
 	}
 
 	/**
+	 * Effectively write the usage in the database.
+	 *
+	 * @param array $record The usage to write.
+	 * @since    1.0.0
+	 */
+	private static function write_usage_to_database( $record ) {
+		$record = self::maybe_add_stats( $record );
+		if ( 0 === count( $record ) ) {
+			return;
+		}
+		$datetime            = new \DateTime( 'now', Timezone::network_get() );
+		$record['timestamp'] = $datetime->format( 'Y-m-d' );
+		$field_insert        = [];
+		$value_insert        = [];
+		$value_update        = [];
+		foreach ( $record as $k => $v ) {
+			$field_insert[] = '`' . $k . '`';
+			if ( is_integer( $v ) ) {
+				$value_insert[] = (int) $v;
+				if ( in_array( $k, [ 'success', 'fail' ], true ) ) {
+					$value_update[] = '`' . $k . '`=`' . $k . '` + ' . (int) $v;
+				}
+			} else {
+				$value_insert[] = "'" . $v . "'";
+			}
+		}
+		if ( count( $field_insert ) > 1 ) {
+			global $wpdb;
+			$sql  = 'INSERT INTO `' . $wpdb->base_prefix . self::$usages . '` ';
+			$sql .= '(' . implode( ',', $field_insert ) . ') ';
+			$sql .= 'VALUES (' . implode( ',', $value_insert ) . ') ';
+			$sql .= 'ON DUPLICATE KEY UPDATE ' . implode( ',', $value_update ) . ';';
+			// phpcs:ignore
+			$wpdb->query( $sql );
+		}
+	}
+
+	/**
 	 * Adds misc stats to a buffer, if needed.
 	 *
 	 * @param array $record The buffer to write.
@@ -120,35 +168,23 @@ class Schema {
 		if ( isset( $check ) && $check && (int) $check + 6 * HOUR_IN_SECONDS > time() ) {
 			return $record;
 		}
-		$record['cnt']        = 1;
-		$record['u_ham']      = 0;
-		$record['u_total']    = 0;
-		$record['u_spam']     = 0;
-		$record['u_active']   = 0;
-		$record['u_sessions'] = 0;
+		$record['cnt']      = 1;
+		$record['user']     = 0;
+		$record['adopt']    = 0;
+		$record['password'] = 0;
 		global $wpdb;
-		$sql = 'SELECT COUNT(*) as u_cnt, user_status FROM ' . $wpdb->users . ' GROUP BY user_status';
+		$sql = 'SELECT COUNT(*) as u_cnt FROM ' . $wpdb->users;
 		// phpcs:ignore
 		$query = $wpdb->get_results( $sql, ARRAY_A );
 		if ( is_array( $query ) && 0 < count( $query ) ) {
-			$record['u_total'] = 0;
-			foreach ( $query as $row ) {
-				if ( 0 === (int) $row['user_status'] ) {
-					$record['u_ham']    = $row['u_cnt'];
-					$record['u_total'] += $row['u_cnt'];
-				}
-				if ( 1 === (int) $row['user_status'] ) {
-					$record['u_spam']   = $row['u_cnt'];
-					$record['u_total'] += $row['u_cnt'];
-				}
-			}
+			$record['user'] = $query[0]['u_cnt'];
 		}
-		$sql = "SELECT COUNT(*) AS users, SUM( CAST( SUBSTRING(`meta_value`,3,POSITION('{' IN `meta_value`) - 4) AS UNSIGNED)) AS sessions FROM " . $wpdb->usermeta . " WHERE `meta_key`='session_tokens' and `meta_value`<>'' and `meta_value`<>'a:0:{}'";
+		$sql = "SELECT COUNT(*) AS users, SUM( CAST( SUBSTRING(`meta_value`,3,POSITION('{' IN `meta_value`) - 4) AS UNSIGNED)) AS sessions FROM " . $wpdb->usermeta . " WHERE `meta_key`='" . Password::$meta_key . "' and `meta_value`<>'' and `meta_value`<>'a:0:{}'";
 		// phpcs:ignore
 		$query = $wpdb->get_results( $sql, ARRAY_A );
 		if ( is_array( $query ) && 0 < count( $query ) ) {
-			$record['u_active']   = $query[0]['users'];
-			$record['u_sessions'] = $query[0]['sessions'];
+			$record['adopt']    = $query[0]['users'];
+			$record['password'] = $query[0]['sessions'];
 		}
 		Logger::debug( 'Misc stats added.' );
 		Cache::set_global( 'data/statcheck', time(), 'infinite' );
@@ -201,6 +237,7 @@ class Schema {
 		}
 		$database = new Database();
 		$count    = $database->purge( self::$statistics, 'timestamp', 24 * $days );
+		$count   += $database->purge( self::$usages, 'timestamp', 24 * $days );
 		if ( 0 === $count ) {
 			Logger::debug( 'No old records to delete.' );
 		} elseif ( 1 === $count ) {
@@ -223,24 +260,28 @@ class Schema {
 		$sql             = 'CREATE TABLE IF NOT EXISTS ' . $wpdb->base_prefix . self::$statistics;
 		$sql            .= " (`timestamp` date NOT NULL DEFAULT '0000-00-00',";
 		$sql            .= " `cnt` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `u_total` bigint UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `u_ham` bigint UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `u_spam` bigint UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `u_active` bigint UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `u_suspended` bigint UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `u_banned` bigint UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `u_sessions` bigint UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `expired` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `idle` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `forced` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `registration` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `delete` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `reset` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `logout` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `login_success` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `login_fail` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `login_block` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= ' UNIQUE KEY u_stat (timestamp)';
+		$sql            .= " `user` bigint UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `adopt` bigint UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `password` bigint UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `revoked` int(11) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `created` int(11) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `success` int(11) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `fail` int(11) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= ' UNIQUE KEY ap_stat (timestamp)';
+		$sql            .= ") $charset_collate;";
+		// phpcs:ignore
+		$wpdb->query( $sql );
+		global $wpdb;
+		$charset_collate = 'DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci';
+		$sql             = 'CREATE TABLE IF NOT EXISTS ' . $wpdb->base_prefix . self::$usages;
+		$sql            .= " (`timestamp` date NOT NULL DEFAULT '0000-00-00',";
+		$sql            .= " `channel` enum('xmlrpc','api','unknown') NOT NULL DEFAULT 'unknown',";
+		$sql            .= " `site` int(11) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `remote_ip` varchar(66) NOT NULL DEFAULT '127.0.0.1',";
+		$sql            .= " `device` varchar(512) NOT NULL DEFAULT '-',";
+		$sql            .= " `success` int(11) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= " `fail` int(11) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql            .= ' UNIQUE KEY ap_usage (timestamp, channel, site, remote_ip, device)';
 		$sql            .= ") $charset_collate;";
 		// phpcs:ignore
 		$wpdb->query( $sql );
@@ -257,6 +298,10 @@ class Schema {
 		// phpcs:ignore
 		$wpdb->query( $sql );
 		Logger::debug( sprintf( 'Table "%s" removed.', $wpdb->base_prefix . self::$statistics ) );
+		$sql = 'DROP TABLE IF EXISTS ' . $wpdb->base_prefix . self::$usages;
+		// phpcs:ignore
+		$wpdb->query( $sql );
+		Logger::debug( sprintf( 'Table "%s" removed.', $wpdb->base_prefix . self::$usages ) );
 		Logger::debug( 'Schema destroyed.' );
 	}
 

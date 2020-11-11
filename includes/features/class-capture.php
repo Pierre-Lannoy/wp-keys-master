@@ -14,6 +14,11 @@ namespace KeysMaster\Plugin\Feature;
 use KeysMaster\System\Logger;
 use KeysMaster\System\User;
 use KeysMaster\Plugin\Feature\Schema;
+use KeysMaster\System\Environment;
+use KeysMaster\System\Blog;
+use KeysMaster\System\IP;
+use KeysMaster\System\Option;
+use KeysMaster\System\Hash;
 
 /**
  * Define the captures functionality.
@@ -27,60 +32,20 @@ use KeysMaster\Plugin\Feature\Schema;
 class Capture {
 
 	/**
-	 * The number of expired sessions.
+	 * The number of created APs.
 	 *
 	 * @since  1.0.0
-	 * @var    integer    $expired    The number of expired sessions.
+	 * @var    integer    $created    The number of created APs.
 	 */
-	private static $expired = 0;
+	private static $created = 0;
 
 	/**
-	 * The number of idle sessions.
+	 * The number of revoked APs.
 	 *
 	 * @since  1.0.0
-	 * @var    integer    $idle    The number of idle sessions.
+	 * @var    integer    $revoked    The number of revoked APs.
 	 */
-	private static $idle = 0;
-
-	/**
-	 * The number of forced sessions.
-	 *
-	 * @since  1.0.0
-	 * @var    integer    $forced    The number of forced sessions.
-	 */
-	private static $forced = 0;
-
-	/**
-	 * The number of registrations.
-	 *
-	 * @since  1.0.0
-	 * @var    integer    $registration    The number of registrations.
-	 */
-	private static $registration = 0;
-
-	/**
-	 * The number of deleted accounts.
-	 *
-	 * @since  1.0.0
-	 * @var    integer    $delete    The number of deleted accounts.
-	 */
-	private static $delete = 0;
-
-	/**
-	 * The number of password resets.
-	 *
-	 * @since  1.0.0
-	 * @var    integer    $reset    The number of password resets.
-	 */
-	private static $reset = 0;
-
-	/**
-	 * The number of logouts.
-	 *
-	 * @since  1.0.0
-	 * @var    integer    $logout    The number of logouts.
-	 */
-	private static $logout = 0;
+	private static $revoked = 0;
 
 	/**
 	 * The number of successful logins.
@@ -99,12 +64,12 @@ class Capture {
 	private static $login_fail = 0;
 
 	/**
-	 * The number of blocked logins.
+	 * The call usage.
 	 *
 	 * @since  1.0.0
-	 * @var    integer    $login_block    The number of blocked logins.
+	 * @var    array    $usage    The call usage.
 	 */
-	private static $login_block = 0;
+	private static $usage = [];
 
 	/**
 	 * Initialize the class and set its properties.
@@ -120,18 +85,10 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function init() {
-		/*add_action( 'sessions_after_idle_terminate', [ self::class, 'sessions_after_idle_terminate' ], 10, 1 );
-		add_action( 'sessions_after_expired_terminate', [ self::class, 'sessions_after_expired_terminate' ], 10, 1 );
-		add_action( 'auth_cookie_expired', [ self::class, 'auth_cookie_expired' ], 10, 1 );
-		add_action( 'sessions_force_terminate', [ self::class, 'sessions_force_terminate' ], 10, 1 );
-		add_action( 'sessions_force_admin_terminate', [ self::class, 'sessions_force_admin_terminate' ], 10, 1 );
-		add_action( 'delete_user', [ self::class, 'delete_user' ], 10, 2 );
-		add_action( 'user_register', [ self::class, 'user_register' ], 10, 1 );
-		add_action( 'password_reset', [ self::class, 'password_reset' ], 10, 2 );
-		add_action( 'wp_logout', [ self::class, 'wp_logout' ], 10, 0 );
-		add_action( 'wp_login_failed', [ self::class, 'wp_login_failed' ], 10, 1 );
-		add_action( 'wp_login', [ self::class, 'wp_login' ], 10, 2 );
-		add_action( 'jpp_kill_login', [ self::class, 'jpp_kill_login' ], 10, 1 );*/
+		add_action( 'wp_create_application_password', [ self::class, 'wp_create_application_password' ], 10, 4 );
+		add_action( 'wp_delete_application_password', [ self::class, 'wp_delete_application_password' ], 10, 2 );
+		add_action( 'application_password_failed_authentication', [ self::class, 'application_password_failed_authentication' ], 10, 1 );
+		add_action( 'application_password_did_authenticate', [ self::class, 'application_password_did_authenticate' ], 10, 2 );
 	}
 
 	/**
@@ -140,7 +97,6 @@ class Capture {
 	 * @since    1.0.0
 	 */
 	public static function late_init() {
-		//add_action( 'wordfence_security_event', [ self::class, 'wordfence_security_event' ], 10, 1 );
 	}
 
 	/**
@@ -151,207 +107,104 @@ class Capture {
 	 */
 	public static function get_stats() {
 		$result = [];
-		if ( 0 < self::$expired ) {
-			$result['expired'] = self::$expired;
+		if ( 0 < self::$created ) {
+			$result['created'] = self::$created;
 		}
-		if ( 0 < self::$idle ) {
-			$result['idle'] = self::$idle;
-		}
-		if ( 0 < self::$forced ) {
-			$result['forced'] = self::$forced;
-		}
-		if ( 0 < self::$registration ) {
-			$result['registration'] = self::$registration;
-		}
-		if ( 0 < self::$delete ) {
-			$result['delete'] = self::$delete;
-		}
-		if ( 0 < self::$reset ) {
-			$result['reset'] = self::$reset;
-		}
-		if ( 0 < self::$logout ) {
-			$result['logout'] = self::$logout;
+		if ( 0 < self::$revoked ) {
+			$result['revoked'] = self::$revoked;
 		}
 		if ( 0 < self::$login_success ) {
-			$result['login_success'] = self::$login_success;
+			$result['success'] = self::$login_success;
 		}
 		if ( 0 < self::$login_fail ) {
-			$result['login_fail'] = self::$login_fail;
-		}
-		if ( 0 < self::$login_block ) {
-			$result['login_block'] = self::$login_block;
+			$result['fail'] = self::$login_fail;
 		}
 		return $result;
 	}
 
 	/**
-	 * Post actions for idle session terminated.
+	 * Get the usage.
 	 *
-	 * @param   integer   $user_id  The user ID.
+	 * @return array The current usage.
 	 * @since    1.0.0
 	 */
-	public static function sessions_after_idle_terminate( $user_id ) {
-		self::$idle ++;
-		Logger::info( sprintf( 'Idle session terminated for %s.', User::get_user_string( $user_id ) ) );
+	public static function get_usage() {
+		return self::$usage;
 	}
 
 	/**
-	 * Post actions for cookie expiration.
+	 * Set the usage.
 	 *
-	 * @param   array   $cookie_elements  The cookies elements.
+	 * @param   boolean     $success    Optional. Set it as a successful call.
 	 * @since    1.0.0
 	 */
-	public static function auth_cookie_expired( $cookie_elements ) {
-		// Don't allow too much iterations in case Decalog WordPress processor try to use get_current_user_id() and then restarts auth_cookie_expired hook.
-		try {
-			$cpt = 0;
-			// phpcs:ignore
-			foreach ( debug_backtrace( 0, 256 ) as $t ) {
-				if ( array_key_exists( 'function', $t ) && ( false !== strpos( $t['function'], 'auth_cookie_expired' ) ) ) {
-					$cpt++;
-				}
-				if ( 1 < $cpt ++ ) {
-					return;
-				}
-			}
-		} catch ( \Throwable $t ) {
-			return;
+	private static function set_usage( $success = true ) {
+		switch ( Environment::exec_mode() ) {
+			case 4:
+				self::$usage['channel'] = 'xmlrpc';
+				break;
+			case 5:
+				self::$usage['channel'] = 'api';
+				break;
+			default:
+				self::$usage['channel'] = 'unknown';
 		}
-		self::$forced ++;
-		Logger::info( 'Session cookie is expired.' );
+		self::$usage['site'] = Blog::get_current_blog_id( 0 );
+		if ( Option::network_get( 'obfuscation' ) ) {
+			self::$usage['remote_ip'] = Hash::simple_hash( IP::get_current() );
+		} else {
+			self::$usage['remote_ip'] = IP::get_current();
+		}
+		if ( array_key_exists( 'HTTP_USER_AGENT', $_SERVER ) ) {
+			self::$usage['device'] = filter_input( INPUT_SERVER, 'HTTP_USER_AGENT' );
+		} else {
+			self::$usage['device'] = '-';
+		}
+		if ( $success ) {
+			self::$usage['success'] = 1;
+			self::$usage['fail']    = 0;
+		} else {
+			self::$usage['success'] = 0;
+			self::$usage['fail']    = 1;
+		}
 	}
 
 	/**
-	 * Post actions for force session terminated.
+	 * "wp_create_application_password" event.
 	 *
-	 * @param   integer   $user_id  The user ID.
 	 * @since    1.0.0
 	 */
-	public static function sessions_force_terminate( $user_id ) {
-		self::$forced ++;
-		Logger::info( sprintf( 'Old session terminated for %s.', User::get_user_string( $user_id ) ) );
+	public function wp_create_application_password( $user_id, $new_item, $new_password = '', $args = [] ) {
+		self::$created ++;
 	}
 
 	/**
-	 * Post actions for force session terminated.
+	 * "wp_delete_application_password" event.
 	 *
-	 * @param   integer   $count  The number of terminated sessions.
 	 * @since    1.0.0
 	 */
-	public static function sessions_force_admin_terminate( $count ) {
-		self::$forced = self::$forced + $count;
-		Logger::debug( sprintf( 'Batch termination for %d sessions.', $count ) );
+	public function wp_delete_application_password( $user_id, $item ) {
+		self::$revoked ++;
 	}
 
 	/**
-	 * Post actions for expired session terminated.
-	 *
-	 * @param   integer   $user_id  The user ID.
-	 * @since    1.0.0
-	 */
-	public static function sessions_after_expired_terminate( $user_id ) {
-		self::$expired ++;
-		Logger::info( sprintf( 'Expired session terminated for %s.', User::get_user_string( $user_id ) ) );
-	}
-
-	/**
-	 * "delete_user" event.
+	 * "application_password_failed_authentication" event.
 	 *
 	 * @since    1.0.0
 	 */
-	public static function delete_user( $user_id, $reassign ) {
-		self::$delete ++;
-		Logger::info( sprintf( 'Deleted account for %s.', User::get_user_string( $user_id ) ) );
-	}
-
-	/**
-	 * "user_register" and "wpmu_new_user" events.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function user_register( $user_id ) {
-		self::$registration ++;
-		Logger::info( sprintf( 'Created account for %s.', User::get_user_string( $user_id ) ) );
-	}
-
-	/**
-	 * "password_reset" event.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function password_reset( $user, $new_pass ) {
-		self::$reset ++;
-		Logger::info( sprintf( 'Password reset for %s.', User::get_user_string( $user instanceof \WP_User ? $user->ID : 0 ) ) );
-	}
-
-	/**
-	 * "wp_logout" event.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function wp_logout() {
-		self::$logout ++;
-		Logger::info( 'A user has logged out.' );
-	}
-
-	/**
-	 * "wp_login_failed" event.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function wp_login_failed( $username ) {
+	public function application_password_failed_authentication( $error ) {
+		self::set_usage( false );
 		self::$login_fail ++;
-		Logger::info( sprintf( 'Login failed for "%s" username.', $username ) );
 	}
 
 	/**
-	 * "wp_login" event.
+	 * "application_password_did_authenticate" event.
 	 *
 	 * @since    1.0.0
 	 */
-	public static function wp_login( $user_login, $user = null ) {
+	public function application_password_did_authenticate( $user, $item ) {
+		self::set_usage( true );
 		self::$login_success ++;
-		if ( ! $user ) {
-			$user = get_user_by( 'login', $user_login );
-		}
-		Logger::info( sprintf( 'Login success for %s.', User::get_user_string( $user instanceof \WP_User ? $user->ID : 0 ) ) );
-	}
-
-	/**
-	 * "jpp_kill_login" event.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function jpp_kill_login( $ip ) {
-		self::$login_block ++;
-		Logger::info( sprintf( 'Login blocked for "%s".', $ip ) );
-	}
-
-	/**
-	 * "wordfence_security_event" filter.
-	 *
-	 * @since    1.6.0
-	 */
-	public static function wordfence_security_event( $event, $details = null, $a = null ) {
-		if ( 'loginLockout' === $event || 'breachLogin' === $event ) {
-			self::$login_block ++;
-			Logger::info( 'Login blocked.' );
-		}
-	}
-
-	/**
-	 * "login_block" pseudo event.
-	 *
-	 * @param   integer   $user_id  The user ID.
-	 * @param   boolean   $dec      Optional. Decrements login_failed.
-	 * @since    1.0.0
-	 */
-	public static function login_block( $user_id, $dec = false ) {
-		self::$login_block ++;
-		if ( $dec ) {
-			self::$login_fail --;
-		}
-		Logger::info( sprintf( 'Login blocked for %s.', User::get_user_string( $user_id ) ) );
 	}
 
 }
