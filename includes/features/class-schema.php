@@ -125,7 +125,6 @@ class Schema {
 	 * @since    1.0.0
 	 */
 	private static function write_usage_to_database( $record ) {
-		$record = self::maybe_add_stats( $record );
 		if ( 0 === count( $record ) ) {
 			return;
 		}
@@ -277,11 +276,11 @@ class Schema {
 		$sql            .= " (`timestamp` date NOT NULL DEFAULT '0000-00-00',";
 		$sql            .= " `channel` enum('xmlrpc','api','unknown') NOT NULL DEFAULT 'unknown',";
 		$sql            .= " `site` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `remote_ip` varchar(66) NOT NULL DEFAULT '127.0.0.1',";
+		$sql            .= " `country` varchar(2) NOT NULL DEFAULT '--',";
 		$sql            .= " `device` varchar(512) NOT NULL DEFAULT '-',";
 		$sql            .= " `success` int(11) UNSIGNED NOT NULL DEFAULT '0',";
 		$sql            .= " `fail` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= ' UNIQUE KEY ap_usage (timestamp, channel, site, remote_ip, device)';
+		$sql            .= ' UNIQUE KEY ap_usage (timestamp, channel, site, country, device)';
 		$sql            .= ") $charset_collate;";
 		// phpcs:ignore
 		$wpdb->query( $sql );

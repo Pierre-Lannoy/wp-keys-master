@@ -19,6 +19,7 @@ use KeysMaster\System\Blog;
 use KeysMaster\System\IP;
 use KeysMaster\System\Option;
 use KeysMaster\System\Hash;
+use KeysMaster\System\GeoIP;
 
 /**
  * Define the captures functionality.
@@ -150,10 +151,12 @@ class Capture {
 				self::$usage['channel'] = 'unknown';
 		}
 		self::$usage['site'] = Blog::get_current_blog_id( 0 );
-		if ( Option::network_get( 'obfuscation' ) ) {
-			self::$usage['remote_ip'] = Hash::simple_hash( IP::get_current() );
+		$geo_ip              = new GeoIP();
+		$country             = $geo_ip->get_iso3166_alpha2( IP::get_current() );
+		if ( ! empty( $country ) ) {
+			self::$usage['country'] = $country;
 		} else {
-			self::$usage['remote_ip'] = IP::get_current();
+			self::$usage['country'] = '--';
 		}
 		if ( array_key_exists( 'HTTP_USER_AGENT', $_SERVER ) ) {
 			self::$usage['device'] = filter_input( INPUT_SERVER, 'HTTP_USER_AGENT' );
