@@ -104,4 +104,38 @@ class Conversion {
 		}
 	}
 
+	/**
+	 * Get a shortened number.
+	 *
+	 * @param   float   $number    The 24h rate to shorten.
+	 * @param   integer $precision Optional. The decimal numbers.
+	 * @param   boolean $detail    Optional. Give the detail of the shortening.
+	 * @param   string  $separator Optional. Unit separator.
+	 * @return  string|array  The shortened number.
+	 * @since   1.0.0
+	 */
+	public static function rate_shorten( $number, $precision = 2, $detail = false, $separator = '' ) {
+		$divisors = [
+			pow( 60, 0 ) => esc_html_x( 'day', 'Abbreviation - Stands for "day".', 'keys-master' ),
+			pow( 60, 1 ) => esc_html_x( 'hr', 'Abbreviation - Stands for "hour".', 'keys-master' ),
+			pow( 60, 2 ) => esc_html_x( 'min', 'Abbreviation - Stands for "minute".', 'keys-master' ),
+			pow( 60, 3 ) => esc_html_x( 'sec', 'Abbreviation - Stands for "second".', 'keys-master' ),
+		];
+		foreach ( $divisors as $divisor => $shorthand ) {
+			if ( abs( $number ) < ( $divisor * 1000 ) ) {
+				break;
+			}
+		}
+		if ( $detail ) {
+			return [
+				'value'        => number_format( $number / $divisor, $precision, '.', '' ),
+				'divisor'      => $divisor,
+				'abbreviation' => $shorthand,
+				'base'         => 60,
+			];
+		} else {
+			return 0 + number_format( $number / $divisor, $precision, '.', '' ) . $separator . '/' . $shorthand;
+		}
+	}
+
 }

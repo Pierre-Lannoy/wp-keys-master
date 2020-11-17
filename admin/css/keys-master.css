@@ -432,6 +432,11 @@
     color: var(--main-font-color);
 }
 
+.pokm-kpi-large-bottom-sup {
+    vertical-align: middle;
+    font-size: x-small;
+}
+
 .pokm-kpi-large-top {
     padding: 4px;
 }

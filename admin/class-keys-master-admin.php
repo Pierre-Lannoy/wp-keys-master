@@ -365,7 +365,7 @@ class Keys_Master_Admin {
 			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'keys-master' ), '<em>' . $geo_ip->get_full_name() . '</em>' );
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
-			$help .= sprintf( esc_html__( 'Your site does not use any IP geographic information plugin. To allow country differentiation in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/ip-locator/">IP Locator</a>' );
+			$help .= sprintf( esc_html__( 'Your site does not use any IP geographic information plugin. To allow country differentiation in Keys Master analytics, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/ip-locator/">IP Locator</a>' );
 		}
 		add_settings_field(
 			'pokm_plugin_options_geoip',
@@ -383,7 +383,7 @@ class Keys_Master_Admin {
 			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'keys-master' ), '<em>Device Detector v' . PODD_VERSION . '</em>' );
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
-			$help .= sprintf( esc_html__( 'Your site does not use any device detection mechanism. To allow device differentiation in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/device-detector/">Device Detector</a>' );
+			$help .= sprintf( esc_html__( 'Your site does not use any device detection mechanism. To allow device differentiation in Keys Master analytics, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/device-detector/">Device Detector</a>' );
 		}
 		add_settings_field(
 			'pokm_plugin_options_podd',
@@ -396,7 +396,7 @@ class Keys_Master_Admin {
 			]
 		);
 		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_podd' );
-		if ( defined( 'TRAFFIC_VERSION' ) ) {
+		/*if ( defined( 'TRAFFIC_VERSION' ) ) {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'keys-master' ), '<em>Traffic v' . TRAFFIC_VERSION . '</em>' );
 		} else {
@@ -412,8 +412,8 @@ class Keys_Master_Admin {
 			[
 				'text' => $help,
 			]
-		);
-		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_traffic' );
+		);*/
+		//register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_traffic' );
 		add_settings_field(
 			'pokm_plugin_options_usecdn',
 			esc_html__( 'Resources', 'keys-master' ),

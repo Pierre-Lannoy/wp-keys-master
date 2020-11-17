@@ -614,136 +614,119 @@ class Analytics {
 		];
 		$result['data'] = [];
 		$kpi            = new static( 'summary', date( 'Y-m-d' ), date( 'Y-m-d' ), false );
-		foreach ( [ 'session', 'cleaned', 'login', 'turnover', 'spam', 'user' ] as $query ) {
+		foreach ( [ 'success', 'password', 'created', 'revoked', 'adoption', 'rate' ] as $query ) {
 			$data = $kpi->query_kpi( $query, false );
-
 			switch ( $query ) {
-				case 'session':
-					$val                       = Conversion::number_shorten( $data['kpi-main-session'], 0, true );
-					$result['data']['session'] = [
-						'name'        => esc_html_x( 'Keys Master', 'Noun - Active sessions.', 'keys-master' ),
-						'short'       => esc_html_x( 'Ses.', 'Noun - Short (max 4 char) - Active sessions.', 'keys-master' ),
-						'description' => esc_html__( 'Number of active sessions.', 'keys-master' ),
+				case 'success':
+					$val                       = Conversion::number_shorten( $data['kpi-bottom-success'], 0, true );
+					$result['data']['success'] = [
+						'name'        => esc_html_x( 'Authentication Success', 'Noun - Number of successful authentications.', 'keys-master' ),
+						'short'       => esc_html_x( 'Auth', 'Noun - Short (max 4 char) - Active sessions.', 'keys-master' ),
+						'description' => esc_html__( 'Number of successful authentications.', 'keys-master' ),
 						'dimension'   => 'none',
 						'ratio'       => null,
 						'variation'   => [
-							'raw'      => round( $data['kpi-index-session'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-session'], 2 ),
-							'permille' => round( $data['kpi-index-session'] * 10, 2 ),
+							'raw'      => round( $data['kpi-index-success'] / 100, 6 ),
+							'percent'  => round( $data['kpi-index-success'], 2 ),
+							'permille' => round( $data['kpi-index-success'] * 10, 2 ),
 						],
 						'value'       => [
-							'raw'   => $data['kpi-main-session'],
+							'raw'   => $data['kpi-bottom-success'],
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 					];
 					break;
-				case 'cleaned':
-					$val                       = Conversion::number_shorten( $data['kpi-main-cleaned'], 0, true );
-					$result['data']['cleaned'] = [
-						'name'        => esc_html_x( 'Cleaned', 'Noun - Cleaned sessions.', 'keys-master' ),
-						'short'       => esc_html_x( 'Cl.', 'Noun - Short (max 4 char) - Cleaned sessions.', 'keys-master' ),
-						'description' => esc_html__( 'Number of cleaned sessions (idle, expired or overridden).', 'keys-master' ),
+				case 'password':
+					$val                        = Conversion::number_shorten( $data['kpi-main-password'], 0, true );
+					$result['data']['password'] = [
+						'name'        => esc_html_x( 'Passwords', 'Noun - Number of application passwords.', 'keys-master' ),
+						'short'       => esc_html_x( 'Pwd.', 'Noun - Short (max 4 char) - Number of application passwords.', 'keys-master' ),
+						'description' => esc_html__( 'Number of application passwords.', 'keys-master' ),
 						'dimension'   => 'none',
 						'ratio'       => null,
 						'variation'   => [
-							'raw'      => round( $data['kpi-index-cleaned'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-cleaned'], 2 ),
-							'permille' => round( $data['kpi-index-cleaned'] * 10, 2 ),
+							'raw'      => round( $data['kpi-index-password'] / 100, 6 ),
+							'percent'  => round( $data['kpi-index-password'], 2 ),
+							'permille' => round( $data['kpi-index-password'] * 10, 2 ),
 						],
 						'value'       => [
-							'raw'   => $data['kpi-main-cleaned'],
+							'raw'   => $data['kpi-main-password'],
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 					];
 					break;
-				case 'login':
-					$val                     = Conversion::number_shorten( $data['kpi-bottom-login'], 0, true );
-					$result['data']['login'] = [
-						'name'        => esc_html_x( 'Logins', 'Noun - Successful logins.', 'keys-master' ),
-						'short'       => esc_html_x( 'Log.', 'Noun - Short (max 4 char) - Successful logins.', 'keys-master' ),
-						'description' => esc_html__( 'Successful logins.', 'keys-master' ),
+				case 'revoked':
+					$val                       = Conversion::number_shorten( $data['kpi-main-revoked'], 0, true );
+					$result['data']['revoked'] = [
+						'name'        => esc_html_x( 'Revoked', 'Noun - Number of revoked application passwords.', 'keys-master' ),
+						'short'       => esc_html_x( 'Rvk.', 'Noun - Short (max 4 char) - Number of revoked application passwords.', 'keys-master' ),
+						'description' => esc_html__( 'Number of revoked application passwords.', 'keys-master' ),
 						'dimension'   => 'none',
-						'ratio'       => [
-							'raw'      => round( $data['kpi-main-login'] / 100, 6 ),
-							'percent'  => round( $data['kpi-main-login'], 2 ),
-							'permille' => round( $data['kpi-main-login'] * 10, 2 ),
-						],
+						'ratio'       => null,
 						'variation'   => [
-							'raw'      => round( $data['kpi-index-login'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-login'], 2 ),
-							'permille' => round( $data['kpi-index-login'] * 10, 2 ),
+							'raw'      => round( $data['kpi-index-revoked'] / 100, 6 ),
+							'percent'  => round( $data['kpi-index-revoked'], 2 ),
+							'permille' => round( $data['kpi-index-revoked'] * 10, 2 ),
 						],
 						'value'       => [
-							'raw'   => $data['kpi-bottom-login'],
+							'raw'   => $data['kpi-main-revoked'],
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 					];
 					break;
-				case 'turnover':
-					$val                        = Conversion::number_shorten( $data['kpi-bottom-turnover'], 0, true );
-					$result['data']['turnover'] = [
-						'name'        => esc_html_x( 'Moves', 'Noun - Moving users.', 'keys-master' ),
-						'short'       => esc_html_x( 'Mov.', 'Noun - Short (max 4 char) - Moving users.', 'keys-master' ),
-						'description' => esc_html__( 'Moving users (registered or deleted).', 'keys-master' ),
+				case 'created':
+					$val                       = Conversion::number_shorten( $data['kpi-main-created'], 0, true );
+					$result['data']['created'] = [
+						'name'        => esc_html_x( 'Created', 'Noun - Number of created application passwords.' ),
+						'short'       => esc_html_x( 'Crd.', 'Noun - Short (max 4 char) - Number of created application passwords.', 'keys-master' ),
+						'description' => esc_html__( 'Number of created application passwords.', 'keys-master' ),
 						'dimension'   => 'none',
-						'ratio'       => [
-							'raw'      => round( $data['kpi-main-turnover'] / 100, 6 ),
-							'percent'  => round( $data['kpi-main-turnover'], 2 ),
-							'permille' => round( $data['kpi-main-turnover'] * 10, 2 ),
-						],
+						'ratio'       => null,
 						'variation'   => [
-							'raw'      => round( $data['kpi-index-turnover'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-turnover'], 2 ),
-							'permille' => round( $data['kpi-index-turnover'] * 10, 2 ),
+							'raw'      => round( $data['kpi-index-created'] / 100, 6 ),
+							'percent'  => round( $data['kpi-index-created'], 2 ),
+							'permille' => round( $data['kpi-index-created'] * 10, 2 ),
 						],
 						'value'       => [
-							'raw'   => $data['kpi-bottom-turnover'],
+							'raw'   => $data['kpi-main-created'],
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 					];
 					break;
-				case 'user':
-					$val                    = Conversion::number_shorten( $data['kpi-bottom-user'], 0, true );
-					$result['data']['user'] = [
-						'name'        => esc_html_x( 'Users', 'Noun - Active users.', 'keys-master' ),
-						'short'       => esc_html_x( 'Usr.', 'Noun - Short (max 4 char) - Active users.', 'keys-master' ),
-						'description' => esc_html__( 'Active users.', 'keys-master' ),
+				case 'adoption':
+					$val                        = Conversion::number_shorten( $data['kpi-bottom-adoption'], 0, true );
+					$result['data']['adoption'] = [
+						'name'        => esc_html_x( 'Adoption', 'Noun - Application passwords adoption.', 'keys-master' ),
+						'short'       => esc_html_x( 'Adp.', 'Noun - Short (max 4 char) - Application passwords adoption.', 'keys-master' ),
+						'description' => esc_html__( 'Number of users having set at least one application password.', 'keys-master' ),
 						'dimension'   => 'none',
-						'ratio'       => [
-							'raw'      => round( $data['kpi-main-user'] / 100, 6 ),
-							'percent'  => round( $data['kpi-main-user'], 2 ),
-							'permille' => round( $data['kpi-main-user'] * 10, 2 ),
-						],
+						'ratio'       => null,
 						'variation'   => [
-							'raw'      => round( $data['kpi-index-user'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-user'], 2 ),
-							'permille' => round( $data['kpi-index-user'] * 10, 2 ),
+							'raw'      => round( $data['kpi-main-adoption'] / 100, 6 ),
+							'percent'  => round( $data['kpi-main-adoption'], 2 ),
+							'permille' => round( $data['kpi-main-adoption'] * 10, 2 ),
 						],
 						'value'       => [
-							'raw'   => $data['kpi-bottom-user'],
+							'raw'   => $data['kpi-bottom-adoption'],
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 					];
 					break;
-				case 'spam':
-					$val                    = Conversion::number_shorten( $data['kpi-bottom-spam'], 0, true );
-					$result['data']['spam'] = [
-						'name'        => esc_html_x( 'Spams', 'Noun - Users marked as spam.', 'keys-master' ),
-						'short'       => esc_html_x( 'Spm.', 'Noun - Short (max 4 char) - Users marked as spam.', 'keys-master' ),
-						'description' => esc_html__( 'Users marked as spam.', 'keys-master' ),
+				case 'rate':
+					$val                    = Conversion::number_shorten( $data['kpi-bottom-rate'], 0, true );
+					$result['data']['rate'] = [
+						'name'        => esc_html_x( 'Usage', 'Noun - Number of application passwords usage.', 'keys-master' ),
+						'short'       => esc_html_x( 'Usg.', 'Noun - Short (max 4 char) - Number of application passwords usage.', 'keys-master' ),
+						'description' => esc_html__( 'Number of application passwords usage.', 'keys-master' ),
 						'dimension'   => 'none',
-						'ratio'       => [
-							'raw'      => round( $data['kpi-main-spam'] / 100, 6 ),
-							'percent'  => round( $data['kpi-main-spam'], 2 ),
-							'permille' => round( $data['kpi-main-spam'] * 10, 2 ),
-						],
+						'ratio'       => null,
 						'variation'   => [
-							'raw'      => round( $data['kpi-index-spam'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-spam'], 2 ),
-							'permille' => round( $data['kpi-index-spam'] * 10, 2 ),
+							'raw'      => round( $data['kpi-index-rate'] / 100, 6 ),
+							'percent'  => round( $data['kpi-index-rate'], 2 ),
+							'permille' => round( $data['kpi-index-rate'] * 10, 2 ),
 						],
 						'value'       => [
-							'raw'   => $data['kpi-bottom-spam'],
+							'raw'   => $data['kpi-bottom-rate'],
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 					];
@@ -766,25 +749,85 @@ class Analytics {
 		$result = [];
 		$data   = Schema::get_grouped_kpi( $this->filter, '', ! $this->is_today );
 		$pdata  = Schema::get_grouped_kpi( $this->previous );
+		// RATES
+		if ( 'rate' === $queried ) {
+			$current  = 0.0;
+			$total    = 0.0;
+			$previous = 0.0;
+			$datetime = new \DateTime( 'now', Timezone::network_get() );
+			$today    = $datetime->format( 'Y-m-d' );
+			$ratio    = 24.0 / ( (float) $datetime->format( 'H' ) + ( (float) $datetime->format( 'i' ) / 60 ) );
+			foreach ( $data as $row ) {
+				if ( $today === $row['timestamp'] ) {
+					$current = $current + ( $ratio * ( (float) $row['success'] + (float) $row['fail'] ) );
+				} else {
+					$current = $current + (float) $row['success'] + (float) $row['fail'];
+				}
+				$total = $total + (float) $row['success'] + (float) $row['fail'];
+			}
+			foreach ( $pdata as $row ) {
+				$previous = $previous + (float) $row[ $queried ];
+			}
+			if ( 0 !== $this->duration ) {
+				$current  = $current / $this->duration;
+				$previous = $previous / $this->duration;
+			}
+			if ( ! $chart ) {
+				$result[ 'kpi-main-' . $queried ] = (int) $current;
+				if ( 0.0 !== $current && 0.0 !== $previous ) {
+					$result[ 'kpi-index-' . $queried ] = round( 100 * ( $current - $previous ) / $previous, 4 );
+				} else {
+					$result[ 'kpi-index-' . $queried ] = null;
+				}
+				$result[ 'kpi-bottom-' . $queried ] = (int) $current;
+				return $result;
+			}
+			$val = (int) $total;
+			if ( 0 === $val ) {
+				$txt = esc_html__( 'no call', 'keys-master' );
+			} else {
+				$txt = sprintf( esc_html( _n( '%s call', '%s calls', $val ) ), Conversion::number_shorten( $val, 0, false, '&nbsp;' ) );
+			}
+			$result[ 'kpi-bottom-' . $queried ] = '<span class="pokm-kpi-large-bottom-text">' . $txt . '</span>';
+			$main                               = Conversion::rate_shorten( $current, 2, true );
+			$result[ 'kpi-main-' . $queried ]   = $main['value'] . '&nbsp;<span class="pokm-kpi-large-bottom-sup">/' . $main['abbreviation'] . '</span>';
+			if ( 0.0 !== $current && 0.0 !== $previous ) {
+				$percent = round( 100 * ( $current - $previous ) / $previous, 1 );
+				if ( 0.1 > abs( $percent ) ) {
+					$percent = 0;
+				}
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:' . ( 0 <= $percent ? '#18BB9C' : '#E74C3C' ) . ';">' . ( 0 < $percent ? '+' : '' ) . $percent . '&nbsp;%</span>';
+			} elseif ( 0.0 === $previous && 0.0 !== $current ) {
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:#18BB9C;">+∞</span>';
+			} elseif ( 0.0 !== $previous && 100.0 !== $previous && 0.0 === $current ) {
+				$result[ 'kpi-index-' . $queried ] = '<span style="color:#E74C3C;">-∞</span>';
+			}
+		}
 		// COUNTS
-		if ( 'session' === $queried || 'cleaned' === $queried ) {
+		if ( 'password' === $queried || 'created' === $queried || 'revoked' === $queried ) {
 			$current  = 0.0;
 			$previous = 0.0;
 			switch ( $queried ) {
-				case 'session':
+				case 'password':
 					foreach ( $data as $row ) {
-						$current = $current + (float) ceil( $row['u_sessions'] / ( 0 < $row['cnt'] ? $row['cnt'] : 1 ) );
+						$current = $current + (float) ceil( $row['password'] / ( 0 < $row['cnt'] ? $row['cnt'] : 1 ) );
 					}
 					foreach ( $pdata as $row ) {
-						$previous = $previous + (float) ceil( $row['u_sessions'] / ( 0 < $row['cnt'] ? $row['cnt'] : 1 ) );
+						$previous = $previous + (float) ceil( $row['password'] / ( 0 < $row['cnt'] ? $row['cnt'] : 1 ) );
+					}
+					if ( 0 < count( $data ) ) {
+						$current = $current / count( $data );
+					}
+					if ( 0 < count( $pdata ) ) {
+						$previous = $previous / count( $pdata );
 					}
 					break;
-				case 'cleaned':
+				default:
 					foreach ( $data as $row ) {
-						$current = $current + (float) $row['expired'] + (float) $row['idle'] + (float) $row['forced'];
+						$current = $current + (float) $row[ $queried ];
 					}
 					foreach ( $pdata as $row ) {
-						$previous = $previous + (float) $row['expired'] + (float) $row['idle'] + (float) $row['forced'];
+						$previous = $previous + (float) $row[ $queried ];
 					}
 					break;
 			}
@@ -814,7 +857,7 @@ class Analytics {
 			}
 		}
 		// RATIOS
-		if ( 'login' === $queried || 'turnover' === $queried || 'spam' === $queried || 'user' === $queried ) {
+		if ( 'success' === $queried || 'adoption' === $queried ) {
 			$base_value  = 0.0;
 			$pbase_value = 0.0;
 			$data_value  = 0.0;
@@ -823,77 +866,43 @@ class Analytics {
 			$previous    = 0.0;
 			$val         = null;
 			switch ( $queried ) {
-				case 'login':
+				case 'success':
 					foreach ( $data as $row ) {
-						$base_value = $base_value + (float) $row['login_success'] + (float) $row['login_fail'] + (float) $row['login_block'];
-						$data_value = $data_value + (float) $row['login_success'];
+						$base_value = $base_value + (float) $row['success'] + (float) $row['fail'];
+						$data_value = $data_value + (float) $row['success'];
 					}
 					foreach ( $pdata as $row ) {
-						$pbase_value = $pbase_value + (float) $row['login_success'] + (float) $row['login_fail'] + (float) $row['login_block'];
-						$pdata_value = $pdata_value + (float) $row['login_success'];
+						$pbase_value = $pbase_value + (float) $row['success'] + (float) $row['fail'];
+						$pdata_value = $pdata_value + (float) $row['success'];
 					}
 					$val = (int) $data_value;
 					if ( 0 === $val ) {
-						$txt = esc_html__( 'no successful login', 'keys-master' );
+						$txt = esc_html__( 'no successful authentication', 'keys-master' );
 					} else {
-						$txt = sprintf( esc_html( _n( '%s successful login', '%s successful logins', $val, 'keys-master' ) ), Conversion::number_shorten( $val, 2, false, '&nbsp;' ) );
+						$txt = sprintf( esc_html( _n( '%s successful authent.', '%s successful authent.', $val, 'keys-master' ) ), Conversion::number_shorten( $val, 2, false, '&nbsp;' ) );
 					}
 					$result[ 'kpi-bottom-' . $queried ] = '<span class="pokm-kpi-large-bottom-text">' . $txt . '</span>';
 					break;
-				case 'turnover':
+				case 'adoption':
 					foreach ( $data as $row ) {
-						$base_value = $base_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_total'] / (float) $row['cnt'] : 0.0 );
-						$data_value = $data_value + ( (float) $row['registration'] + (float) $row['registration'] ) / 2;
+						$base_value = $base_value + ( 0 !== (int) $row['cnt'] ? (float) $row['user'] / (float) $row['cnt'] : 0.0 );
+						$data_value = $data_value + ( 0 !== (int) $row['cnt'] ? (float) $row['adopt'] / (float) $row['cnt'] : 0.0 );
 					}
 					foreach ( $pdata as $row ) {
-						$pbase_value = $pbase_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_total'] / (float) $row['cnt'] : 0.0 );
-						$pdata_value = $pdata_value + ( (float) $row['registration'] + (float) $row['registration'] ) / 2;
-					}
-					$val = (int) $data_value * 2;
-					if ( 0 === $val ) {
-						$txt = esc_html__( 'no moves', 'keys-master' );
-					} else {
-						$txt = sprintf( esc_html( _n( '%s move', '%s moves', $val, 'keys-master' ) ), Conversion::number_shorten( $val, 2, false, '&nbsp;' ) );
-					}
-					$result[ 'kpi-bottom-' . $queried ] = '<span class="pokm-kpi-large-bottom-text">' . $txt . '</span>';
-					break;
-				case 'spam':
-					foreach ( $data as $row ) {
-						$base_value = $base_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_total'] / (float) $row['cnt'] : 0.0 );
-						$data_value = $data_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_spam'] / (float) $row['cnt'] : 0.0 );
-					}
-					foreach ( $pdata as $row ) {
-						$pbase_value = $pbase_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_total'] / (float) $row['cnt'] : 0.0 );
-						$pdata_value = $pdata_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_spam'] / (float) $row['cnt'] : 0.0 );
+						$pbase_value = $pbase_value + ( 0 !== (int) $row['cnt'] ? (float) $row['user'] / (float) $row['cnt'] : 0.0 );
+						$pdata_value = $pdata_value + ( 0 !== (int) $row['cnt'] ? (float) $row['adopt'] / (float) $row['cnt'] : 0.0 );
 					}
 					$val = (int) $data_value;
 					if ( 0 === $val ) {
-						$txt = esc_html__( 'no spam users', 'keys-master' );
+						$txt = esc_html__( 'no adoption', 'keys-master' );
 					} else {
-						$txt = sprintf( esc_html( _n( '%s spam user', '%s spam users', $val, 'keys-master' ) ), Conversion::number_shorten( $val, 2, false, '&nbsp;' ) );
-					}
-					$result[ 'kpi-bottom-' . $queried ] = '<span class="pokm-kpi-large-bottom-text">' . $txt . '</span>';
-					break;
-				case 'user':
-					foreach ( $data as $row ) {
-						$base_value = $base_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_total'] / (float) $row['cnt'] : 0.0 );
-						$data_value = $data_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_active'] / (float) $row['cnt'] : 0.0 );
-					}
-					foreach ( $pdata as $row ) {
-						$pbase_value = $pbase_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_total'] / (float) $row['cnt'] : 0.0 );
-						$pdata_value = $pdata_value + ( 0 !== (int) $row['cnt'] ? (float) $row['u_active'] / (float) $row['cnt'] : 0.0 );
-					}
-					$val = (int) $data_value;
-					if ( 0 === $val ) {
-						$txt = esc_html__( 'no spam users', 'keys-master' );
-					} else {
-						$txt = sprintf( esc_html( _n( '%s active user', '%s active users', (int) ( $val / $this->duration ), 'keys-master' ) ), Conversion::number_shorten( $val / $this->duration, 2, false, '&nbsp;' ) );
+						$txt = sprintf( esc_html( _n( '%s user', '%s users', (int) ( $val / $this->duration ), 'keys-master' ) ), Conversion::number_shorten( $val / $this->duration, 2, false, '&nbsp;' ) );
 					}
 					$result[ 'kpi-bottom-' . $queried ] = '<span class="pokm-kpi-large-bottom-text">' . $txt . '</span>';
 					break;
 			}
 			if ( 0.0 !== $base_value && 0.0 !== $data_value ) {
-				$current = 100 * $data_value / $base_value;
+				$current                          = 100 * $data_value / $base_value;
 				$result[ 'kpi-main-' . $queried ] = round( $current, $chart ? 1 : 4 );
 			} else {
 				if ( 0.0 !== $data_value ) {
@@ -966,12 +975,12 @@ class Analytics {
 	public function get_kpi_bar() {
 		$result  = '<div class="pokm-box pokm-box-full-line">';
 		$result .= '<div class="pokm-kpi-bar">';
-		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'login' ) . '</div>';
-		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'session' ) . '</div>';
-		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'cleaned' ) . '</div>';
-		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'user' ) . '</div>';
-		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'turnover' ) . '</div>';
-		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'spam' ) . '</div>';
+		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'success' ) . '</div>';
+		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'password' ) . '</div>';
+		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'created' ) . '</div>';
+		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'revoked' ) . '</div>';
+		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'adoption' ) . '</div>';
+		$result .= '<div class="pokm-kpi-large">' . $this->get_large_kpi( 'rate' ) . '</div>';
 		$result .= '</div>';
 		$result .= '</div>';
 		return $result;
@@ -1022,35 +1031,35 @@ class Analytics {
 	 */
 	private function get_large_kpi( $kpi ) {
 		switch ( $kpi ) {
-			case 'login':
+			case 'success':
 				$icon  = Feather\Icons::get_base64( 'log-in', 'none', '#73879C' );
-				$title = esc_html_x( 'Login Success', 'Noun - Number of successful logins.', 'keys-master' );
-				$help  = esc_html__( 'Ratio of successful logins.', 'keys-master' );
+				$title = esc_html_x( 'Authent. Success', 'Noun - Number of successful authentication.', 'keys-master' );
+				$help  = esc_html__( 'Ratio of successful authentication.', 'keys-master' );
 				break;
-			case 'session':
+			case 'password':
+				$icon  = Feather\Icons::get_base64( 'key', 'none', '#73879C' );
+				$title = esc_html_x( 'Passwords', 'Noun - Number of application passwords.', 'keys-master' );
+				$help  = esc_html__( 'Number of application passwords.', 'keys-master' );
+				break;
+			case 'created':
+				$icon  = Feather\Icons::get_base64( 'shield', 'none', '#73879C' );
+				$title = esc_html_x( 'Created', 'Noun - Number of created application passwords.', 'keys-master' );
+				$help  = esc_html__( 'Number of created application passwords.', 'keys-master' );
+				break;
+			case 'revoked':
+				$icon  = Feather\Icons::get_base64( 'shield-off', 'none', '#73879C' );
+				$title = esc_html_x( 'Revoked', 'Noun - Number of revoked application passwords.', 'keys-master' );
+				$help  = esc_html__( 'Number of revoked application passwords.', 'keys-master' );
+				break;
+			case 'adoption':
+				$icon  = Feather\Icons::get_base64( 'user-check', 'none', '#73879C' );
+				$title = esc_html_x( 'Adoption', 'Noun - Application passwords adoption.', 'keys-master' );
+				$help  = esc_html__( 'Ratio of users having set at least one application password.', 'keys-master' );
+				break;
+			case 'rate':
 				$icon  = Feather\Icons::get_base64( 'activity', 'none', '#73879C' );
-				$title = esc_html_x( 'Active Keys Master', 'Noun - Percentage of mobile hits.', 'keys-master' );
-				$help  = esc_html__( 'Number of active sessions.', 'keys-master' );
-				break;
-			case 'cleaned':
-				$icon  = Feather\Icons::get_base64( 'trash-2', 'none', '#73879C' );
-				$title = esc_html_x( 'Cleaned Keys Master', 'Noun - Number of cleaned sessions.', 'keys-master' );
-				$help  = esc_html__( 'Number of cleaned sessions (idle, expired or overridden).', 'keys-master' );
-				break;
-			case 'user':
-				$icon  = Feather\Icons::get_base64( 'users', 'none', '#73879C' );
-				$title = esc_html_x( 'Active Users', 'Noun - Percentage of active users.', 'keys-master' );
-				$help  = esc_html__( 'Ratio of active users.', 'keys-master' );
-				break;
-			case 'turnover':
-				$icon  = Feather\Icons::get_base64( 'refresh-cw', 'none', '#73879C' );
-				$title = esc_html_x( 'Turnover', 'Noun - Users turnover.', 'keys-master' );
-				$help  = esc_html__( 'Ratio of moving users (registered or deleted).', 'keys-master' );
-				break;
-			case 'spam':
-				$icon  = Feather\Icons::get_base64( 'user-x', 'none', '#73879C' );
-				$title = esc_html_x( 'Spam', 'Noun - Ratio of users marked as spam.', 'keys-master' );
-				$help  = esc_html__( 'Ratio of users marked as spam.', 'keys-master' );
+				$title = esc_html_x( 'Usage Rate', 'Noun - Number of application passwords usage.', 'keys-master' );
+				$help  = esc_html__( 'Number of application passwords usage.', 'keys-master' );
 				break;
 		}
 		$top       = '<img style="width:12px;vertical-align:baseline;" src="' . $icon . '" />&nbsp;&nbsp;<span style="cursor:help;" class="pokm-kpi-large-top-text bottom" data-position="bottom" data-tooltip="' . $help . '">' . $title . '</span>';

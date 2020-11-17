@@ -22,8 +22,6 @@ wp_enqueue_style( 'pokm-tooltip' );
 wp_enqueue_style( 'pokm-chartist' );
 wp_enqueue_style( 'pokm-chartist-tooltip' );
 
-$simple_list   = [ 'classes', 'types', 'clients', 'libraries', 'applications', 'feeds', 'medias' ];
-$extended_list = [ 'browsers', 'bots', 'devices', 'oses' ];
 
 ?>
 
@@ -36,12 +34,12 @@ $extended_list = [ 'browsers', 'bots', 'devices', 'oses' ];
 	        <?php echo $analytics->get_kpi_bar() ?>
         </div>
         <div class="pokm-row">
-			<?php echo $analytics->get_main_chart() ?>
+			<?php /*echo $analytics->get_main_chart()*/ ?>
         </div>
         <div class="pokm-row">
             <div class="pokm-box pokm-box-50-50-line">
-				<?php echo $analytics->get_login_pie() ?>
-				<?php echo $analytics->get_clean_pie() ?>
+				<?php /*echo $analytics->get_login_pie() ?>
+				<?php echo $analytics->get_clean_pie() */ ?>
             </div>
         </div>
 	</div>
