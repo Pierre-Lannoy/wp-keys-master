@@ -160,6 +160,8 @@ class Analytics {
 		switch ( $query ) {
 			case 'kpi':
 				return $this->query_kpi( $queried );
+			case 'sites':
+				return $this->query_list( 'sites' );
 			case 'login':
 			case 'clean':
 				return $this->query_pie( $query, (int) $queried );
@@ -524,6 +526,36 @@ class Analytics {
 			$result .= '</div>';
 		}
 		return [ 'pokm-main-chart' => $result ];
+	}
+
+	/**
+	 * Query statistics table.
+	 *
+	 * @param   string $type    The type of list.
+	 * @return array  The result of the query, ready to encode.
+	 * @since    1.0.0
+	 */
+	private function query_list( $type ) {
+		$data      = Schema::get_grouped_list( $this->filter, 'site', ! $this->is_today, '', [], false, 'ORDER BY sum_call DESC', 0, false );
+		$result    = '<table class="pokm-table">';
+		$result   .= '<tr>';
+		$result   .= '<th>&nbsp;</th>';
+		$result   .= '<th>' . esc_html__( 'Success', 'keys-master' ) . '</th>';
+		$result   .= '<th>' . esc_html__( 'Fail', 'keys-master' ) . '</th>';
+		$result   .= '<th>' . esc_html__( 'TOTAL', 'keys-master' ) . '</th>';
+		$result   .= '</tr>';
+		$other_str = '';
+		foreach ( $data as $key => $row ) {
+			$name    = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( Blog::get_blog_url( $row['site'] ) ) . '" />&nbsp;&nbsp;<span class="pokm-table-text">' . Blog::get_blog_name( $row['site'] ) . '</span>';
+			$result .= '<tr>';
+			$result .= '<td data-th="">' . $name . '</td>';
+			$result .= '<td data-th="' . esc_html__( 'Success', 'keys-master' ) . '">' . Conversion::number_shorten( $row['sum_success'], 2, false, '&nbsp;' ) . '</td>';
+			$result .= '<td data-th="' . esc_html__( 'Fail', 'keys-master' ) . '">' . Conversion::number_shorten( $row['sum_fail'], 2, false, '&nbsp;' ) . '</td>';
+			$result .= '<td data-th="' . esc_html__( 'TOTAL', 'keys-master' ) . '">' . Conversion::number_shorten( $row['sum_call'], 2, false, '&nbsp;' ) . '</td>';
+			$result .= '</tr>';
+		}
+		$result .= $other_str . '</table>';
+		return [ 'pokm-' . $type => $result ];
 	}
 
 	/**
@@ -1034,6 +1066,26 @@ class Analytics {
 			[
 				'query'   => 'clean',
 				'queried' => 3,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the domains list.
+	 *
+	 * @return string  The table ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_sites_list() {
+		$result  = '<div class="pokm-box pokm-box-full-line">';
+		$result .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Sites Breakdown', 'keys-master' ) . '</span></div>';
+		$result .= '<div class="pokm-module-content" id="pokm-sites">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'sites',
+				'queried' => 0,
 			]
 		);
 		return $result;

@@ -42,5 +42,10 @@ wp_enqueue_style( 'pokm-chartist-tooltip' );
 				<?php echo $analytics->get_clean_pie() */ ?>
             </div>
         </div>
+		<?php if ( true || Role::SUPER_ADMIN === Role::admin_type() ) { ?>
+            <div class="pokm-row last-row">
+				<?php echo $analytics->get_sites_list() ?>
+            </div>
+		<?php } ?>
 	</div>
 </div>

@@ -410,12 +410,20 @@ class Schema {
 	 * @param   boolean $not         Optional. Exclude extra filter.
 	 * @param   string  $order       Optional. The sort order of results.
 	 * @param   integer $limit       Optional. The number of results to return.
+	 * @param   boolean $statistics  Optional. The table to query.
 	 * @return  array   The grouped list.
 	 * @since    1.0.0
 	 */
-	public static function get_grouped_list( $filter, $group = '', $cache = true, $extra_field = '', $extras = [], $not = false, $order = '', $limit = 0 ) {
+	public static function get_grouped_list( $filter, $group = '', $cache = true, $extra_field = '', $extras = [], $not = false, $order = '', $limit = 0, $statistics = true ) {
+		if ( $statistics ) {
+			$table  = self::$statistics;
+			$fields = '*';
+		} else {
+			$table  = self::$usages;
+			$fields = '*, SUM(success) + SUM(fail) AS sum_call, SUM(success) AS sum_success, SUM(fail) AS sum_fail';
+		}
 		// phpcs:ignore
-		$id = Cache::id( __FUNCTION__ . serialize( $filter ) . $group . $extra_field . serialize( $extras ) . ( $not ? 'no' : 'yes') . $order . (string) $limit);
+		$id = Cache::id( __FUNCTION__ . $table . serialize( $filter ) . $group . $extra_field . serialize( $extras ) . ( $not ? 'no' : 'yes') . $order . (string) $limit);
 		if ( $cache ) {
 			$result = Cache::get_global( $id );
 			if ( $result ) {
@@ -430,7 +438,7 @@ class Schema {
 			$where_extra = ' AND ' . $extra_field . ( $not ? ' NOT' : '' ) . " IN ( '" . implode( "', '", $extras ) . "' )";
 		}
 		global $wpdb;
-		$sql = 'SELECT * FROM ' . $wpdb->base_prefix . self::$statistics . ' WHERE (' . implode( ' AND ', $filter ) . ')' . $where_extra . ' ' . $group . ' ' . $order . ( $limit > 0 ? ' LIMIT ' . $limit : '') .';';
+		$sql = 'SELECT ' . $fields . ' FROM ' . $wpdb->base_prefix . $table . ' WHERE (' . implode( ' AND ', $filter ) . ')' . $where_extra . ' ' . $group . ' ' . $order . ( $limit > 0 ? ' LIMIT ' . $limit : '') .';';
 		// phpcs:ignore
 		$result = $wpdb->get_results( $sql, ARRAY_A );
 		if ( is_array( $result ) ) {
