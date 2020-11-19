@@ -10,6 +10,9 @@
  */
 
 use KeysMaster\System\Role;
+use KeysMaster\System\GeoIP;
+
+$geoip = new GeoIP();
 
 wp_enqueue_script( 'pokm-moment-with-locale' );
 wp_enqueue_script( 'pokm-daterangepicker' );
@@ -42,8 +45,13 @@ wp_enqueue_style( 'pokm-chartist-tooltip' );
 				<?php echo $analytics->get_clean_pie() */ ?>
             </div>
         </div>
+		<?php if ( $geoip->is_installed() ) { ?>
+            <div class="pokm-row">
+				<?php echo $analytics->get_countries_list() ?>
+            </div>
+		<?php } ?>
 		<?php if ( true || Role::SUPER_ADMIN === Role::admin_type() ) { ?>
-            <div class="pokm-row last-row">
+            <div class="pokm-row">
 				<?php echo $analytics->get_sites_list() ?>
             </div>
 		<?php } ?>

@@ -11,6 +11,7 @@
 
 namespace KeysMaster\Plugin\Feature;
 
+use KeysMaster\System\GeoIP;
 use KeysMaster\Plugin\Feature\Schema;
 use KeysMaster\System\Blog;
 use KeysMaster\System\Cache;
@@ -162,6 +163,8 @@ class Analytics {
 				return $this->query_kpi( $queried );
 			case 'sites':
 				return $this->query_list( 'sites' );
+			case 'countries':
+				return $this->query_list( 'countries' );
 			case 'login':
 			case 'clean':
 				return $this->query_pie( $query, (int) $queried );
@@ -536,7 +539,15 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_list( $type ) {
-		$data      = Schema::get_grouped_list( $this->filter, 'site', ! $this->is_today, '', [], false, 'ORDER BY sum_call DESC', 0, false );
+		switch ( $type ) {
+			case 'sites':
+				$group = 'site';
+				break;
+			case 'countries':
+				$group = 'country';
+				break;
+		}
+		$data      = Schema::get_grouped_list( $this->filter, $group, ! $this->is_today, '', [], false, 'ORDER BY sum_call DESC', 0, false );
 		$result    = '<table class="pokm-table">';
 		$result   .= '<tr>';
 		$result   .= '<th>&nbsp;</th>';
@@ -545,8 +556,39 @@ class Analytics {
 		$result   .= '<th>' . esc_html__( 'TOTAL', 'keys-master' ) . '</th>';
 		$result   .= '</tr>';
 		$other_str = '';
+		$geoip     = new GeoIP();
 		foreach ( $data as $key => $row ) {
-			$name    = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( Blog::get_blog_url( $row['site'] ) ) . '" />&nbsp;&nbsp;<span class="pokm-table-text">' . Blog::get_blog_name( $row['site'] ) . '</span>';
+			switch ( $type ) {
+				case 'sites':
+					$name = '<img style="width:16px;vertical-align:bottom;" src="' . Favicon::get_base64( Blog::get_blog_url( $row['site'] ) ) . '" />&nbsp;&nbsp;<span class="pokm-table-text">' . Blog::get_blog_name( $row['site'] ) . '</span>';
+					break;
+				case 'countries':
+					switch ( $row['country'] ) {
+						case '--':
+						case '00':
+							$c = __( 'Undetectable', 'keys-master' );
+							break;
+						case '01':
+							$c = __( 'Loopback', 'keys-master' );
+							break;
+						case 'A0':
+							$c = __( 'Private network', 'keys-master' );
+							break;
+						case 'A1':
+							$c = __( 'Anonymous proxy', 'keys-master' );
+							break;
+						case 'A2':
+							$c = __( 'Satellite provider', 'keys-master' );
+							break;
+						default:
+							$c = L10n::get_country_name( $row['country'] );
+					}
+					if ( $c === '' ) {
+						$c = __( 'Unknown', 'keys-master' );
+					}
+					$name = $geoip->get_flag_from_country_code( $row['country'], '', 'width:14px;') . '&nbsp;&nbsp;<span class="pokm-table-text">' . $c . '</span>';
+					break;
+			}
 			$result .= '<tr>';
 			$result .= '<td data-th="">' . $name . '</td>';
 			$result .= '<td data-th="' . esc_html__( 'Success', 'keys-master' ) . '">' . Conversion::number_shorten( $row['sum_success'], 2, false, '&nbsp;' ) . '</td>';
@@ -1072,7 +1114,7 @@ class Analytics {
 	}
 
 	/**
-	 * Get the domains list.
+	 * Get the sites list.
 	 *
 	 * @return string  The table ready to print.
 	 * @since    1.0.0
@@ -1085,6 +1127,26 @@ class Analytics {
 		$result .= $this->get_refresh_script(
 			[
 				'query'   => 'sites',
+				'queried' => 0,
+			]
+		);
+		return $result;
+	}
+
+	/**
+	 * Get the countries list.
+	 *
+	 * @return string  The table ready to print.
+	 * @since    1.0.0
+	 */
+	public function get_countries_list() {
+		$result  = '<div class="pokm-box pokm-box-full-line">';
+		$result .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Countries Breakdown', 'keys-master' ) . '</span></div>';
+		$result .= '<div class="pokm-module-content" id="pokm-countries">' . $this->get_graph_placeholder( 200 ) . '</div>';
+		$result .= '</div>';
+		$result .= $this->get_refresh_script(
+			[
+				'query'   => 'countries',
 				'queried' => 0,
 			]
 		);
