@@ -295,19 +295,17 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_chart() {
-		$uuid             = UUID::generate_unique_id( 5 );
-		$query            = Schema::get_time_series( $this->filter, ! $this->is_today, '', [], false );
-		$item             = [];
-		$item['user']     = [ 'u_ham', 'u_spam' ];
-		$item['session']  = [ 'u_active', 'expired', 'forced', 'idle' ];
-		$item['turnover'] = [ 'registration', 'delete' ];
-		$item['log']      = [ 'logout', 'login_success', 'login_fail', 'login_block' ];
-		$item['password'] = [ 'reset' ];
-		$data             = [];
-		$series           = [];
-		$labels           = [];
-		$boundaries       = [];
-		$json             = [];
+		$uuid                   = UUID::generate_unique_id( 5 );
+		$query                  = Schema::get_time_series( $this->filter, ! $this->is_today, '', [], false );
+		$item                   = [];
+		$item['authentication'] = [ 'success', 'fail' ];
+		$item['password']       = [ 'password' ];
+		$item['turnover']       = [ 'created', 'revoked' ];
+		$data                   = [];
+		$series                 = [];
+		$labels                 = [];
+		$boundaries             = [];
+		$json                   = [];
 		foreach ( $item as $selector => $array ) {
 			$boundaries[ $selector ] = [
 				'max'    => 0,
@@ -322,9 +320,9 @@ class Analytics {
 				$datetime->setTimezone( $this->timezone );
 				$record = [];
 				foreach ( $row as $k => $v ) {
-					if ( 0 === strpos( $k, 'u_' ) ) {
+					if ( 'password' === $k ) {
 						if ( 0 < $row['cnt'] ) {
-							$record[ $k ] = (int) round( $v / $row['cnt'], 0 );
+							$record[ $k ] = (int) round( $v / $row['cnt'] );
 						} else {
 							$record[ $k ] = 0;
 						}
@@ -336,7 +334,7 @@ class Analytics {
 			}
 			// Boundaries computation.
 			foreach ( $data as $datum ) {
-				foreach ( array_merge( $item['user'], $item['session'], $item['turnover'], $item['log'], $item['password'] ) as $field ) {
+				foreach ( array_merge( $item['authentication'], $item['turnover'], $item['password'] ) as $field ) {
 					foreach ( $item as $selector => $array ) {
 						if ( in_array( $field, $array, true ) ) {
 							if ( $boundaries[ $selector ]['max'] < $datum[ $field ] ) {
@@ -359,7 +357,7 @@ class Analytics {
 			foreach ( $data as $timestamp => $datum ) {
 				// Series.
 				$ts = 'new Date(' . (string) $timestamp . '000)';
-				foreach ( array_merge( $item['user'], $item['session'], $item['turnover'], $item['log'], $item['password'] ) as $key ) {
+				foreach ( array_merge( $item['authentication'], $item['turnover'], $item['password'] ) as $key ) {
 					foreach ( $item as $selector => $array ) {
 						if ( in_array( $key, $array, true ) ) {
 							$series[ $key ][] = [
@@ -390,7 +388,7 @@ class Analytics {
 				'x' => 'new Date(' . (string) ( $datetime + $shift ) . '000)',
 				'y' => 'null',
 			];
-			foreach ( array_merge( $item['user'], $item['session'], $item['turnover'], $item['log'], $item['password'] ) as $key ) {
+			foreach ( array_merge( $item['authentication'], $item['turnover'], $item['password'] ) as $key ) {
 				array_unshift( $series[ $key ], $before );
 				$series[ $key ][] = $after;
 			}
@@ -399,48 +397,24 @@ class Analytics {
 				$serie = [];
 				foreach ( $boundaries[ $selector ]['order'] as $field ) {
 					switch ( $field ) {
-						case 'u_ham':
+						case 'success':
+							$name = esc_html__( 'Successful authentications', 'keys-master' );
+							break;
+						case 'fail':
+							$name = esc_html__( 'Failed authentications', 'keys-master' );
+							break;
+						case 'password':
 							if ( Environment::is_wordpress_multisite() ) {
-								$name = esc_html__( 'Legit Users', 'keys-master' );
+								$name = esc_html__( 'Network application passwords', 'keys-master' );
 							} else {
-								$name = esc_html__( 'Users', 'keys-master' );
+								$name = esc_html__( 'Site application passwords', 'keys-master' );
 							}
 							break;
-						case 'u_spam':
-							$name = esc_html__( 'Spam Users', 'keys-master' );
+						case 'created':
+							$name = esc_html__( 'Created', 'keys-master' );
 							break;
-						case 'u_active':
-							$name = esc_html__( 'Active Keys Master', 'keys-master' );
-							break;
-						case 'forced':
-							$name = esc_html__( 'Overridden Keys Master', 'keys-master' );
-							break;
-						case 'expired':
-							$name = esc_html__( 'Expired Keys Master', 'keys-master' );
-							break;
-						case 'idle':
-							$name = esc_html__( 'Idle Keys Master', 'keys-master' );
-							break;
-						case 'registration':
-							$name = esc_html__( 'Created Accounts', 'keys-master' );
-							break;
-						case 'delete':
-							$name = esc_html__( 'Deleted Accounts', 'keys-master' );
-							break;
-						case 'logout':
-							$name = esc_html__( 'Logouts', 'keys-master' );
-							break;
-						case 'login_success':
-							$name = esc_html__( 'Successful Logins', 'keys-master' );
-							break;
-						case 'login_fail':
-							$name = esc_html__( 'Failed Logins', 'keys-master' );
-							break;
-						case 'login_block':
-							$name = esc_html__( 'Blocked Logins', 'keys-master' );
-							break;
-						case 'reset':
-							$name = esc_html__( 'Password Resets', 'keys-master' );
+						case 'revoked':
+							$name = esc_html__( 'Revoked', 'keys-master' );
 							break;
 						default:
 							$name = esc_html__( 'Unknown', 'keys-master' );
@@ -450,7 +424,7 @@ class Analytics {
 						'data' => $series[ $field ],
 					];
 				}
-				if ( 'turnover' === $selector || 'log' === $selector ) {
+				if ( 'turnover' === $selector ) {
 					$json[ $selector ] = wp_json_encode(
 						[
 							'labels' => $labels,
@@ -480,23 +454,42 @@ class Analytics {
 				$divisor = $this->duration + 1;
 			}
 			$result  = '<div class="pokm-multichart-handler">';
-			$result .= '<div class="pokm-multichart-item active" id="pokm-chart-user">';
+			$result .= '<div class="pokm-multichart-item active" id="pokm-chart-authentication">';
 			$result .= '</div>';
 			$result .= '<script>';
 			$result .= 'jQuery(function ($) {';
-			$result .= ' var user_data' . $uuid . ' = ' . $json['user'] . ';';
-			$result .= ' var user_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
-			$result .= ' var user_option' . $uuid . ' = {';
+			$result .= ' var authentication_data' . $uuid . ' = ' . $json['authentication'] . ';';
+			$result .= ' var authentication_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
+			$result .= ' var authentication_option' . $uuid . ' = {';
 			$result .= '  height: 300,';
 			$result .= '  fullWidth: true,';
 			$result .= '  showArea: true,';
 			$result .= '  showLine: true,';
 			$result .= '  showPoint: false,';
-			$result .= '  plugins: [user_tooltip' . $uuid . '],';
+			$result .= '  plugins: [authentication_tooltip' . $uuid . '],';
 			$result .= '  axisX: {labelOffset: {x: 3,y: 0},scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("YYYY-MM-DD");}},';
-			$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + " ' . Conversion::number_shorten( $boundaries['user']['factor'], 0, true )['abbreviation'] . '";}},';
+			$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, labelInterpolationFnc: function (value) {return value.toString() + " ' . Conversion::number_shorten( $boundaries['authentication']['factor'], 0, true )['abbreviation'] . '";}},';
 			$result .= ' };';
-			$result .= ' new Chartist.Line("#pokm-chart-user", user_data' . $uuid . ', user_option' . $uuid . ');';
+			$result .= ' new Chartist.Line("#pokm-chart-authentication", authentication_data' . $uuid . ', authentication_option' . $uuid . ');';
+			$result .= '});';
+			$result .= '</script>';
+			$result .= '<div class="pokm-multichart-item" id="pokm-chart-password">';
+			$result .= '</div>';
+			$result .= '<script>';
+			$result .= 'jQuery(function ($) {';
+			$result .= ' var password_data' . $uuid . ' = ' . $json['password'] . ';';
+			$result .= ' var password_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
+			$result .= ' var password_option' . $uuid . ' = {';
+			$result .= '  height: 300,';
+			$result .= '  fullWidth: true,';
+			$result .= '  showArea: true,';
+			$result .= '  showLine: true,';
+			$result .= '  showPoint: false,';
+			$result .= '  plugins: [password_tooltip' . $uuid . '],';
+			$result .= '  axisX: {labelOffset: {x: 3,y: 0},scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("YYYY-MM-DD");}},';
+			$result .= '  axisY: {type: Chartist.AutoScaleAxis, low: 0, labelInterpolationFnc: function (value) {return value.toString() + " ' . Conversion::number_shorten( $boundaries['password']['factor'], 0, true )['abbreviation'] . '";}},';
+			$result .= ' };';
+			$result .= ' new Chartist.Line("#pokm-chart-password", password_data' . $uuid . ', password_option' . $uuid . ');';
 			$result .= '});';
 			$result .= '</script>';
 			$result .= '<div class="pokm-multichart-small-item" id="pokm-chart-turnover">';
@@ -518,82 +511,15 @@ class Analytics {
 			$result .= ' new Chartist.Bar("#pokm-chart-turnover", turnover_data' . $uuid . ', turnover_option' . $uuid . ');';
 			$result .= '});';
 			$result .= '</script>';
-			$result .= '<div class="pokm-multichart-handler">';
-			$result .= '<div class="pokm-multichart-item" id="pokm-chart-session">';
-			$result .= '</div>';
-			$result .= '<script>';
-			$result .= 'jQuery(function ($) {';
-			$result .= ' var session_data' . $uuid . ' = ' . $json['session'] . ';';
-			$result .= ' var session_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
-			$result .= ' var session_option' . $uuid . ' = {';
-			$result .= '  height: 300,';
-			$result .= '  fullWidth: true,';
-			$result .= '  showArea: true,';
-			$result .= '  showLine: true,';
-			$result .= '  showPoint: false,';
-			$result .= '  plugins: [session_tooltip' . $uuid . '],';
-			$result .= '  axisX: {labelOffset: {x: 3,y: 0},scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("YYYY-MM-DD");}},';
-			$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + " ' . Conversion::number_shorten( $boundaries['session']['factor'], 0, true )['abbreviation'] . '";}},';
-			$result .= ' };';
-			$result .= ' new Chartist.Line("#pokm-chart-session", session_data' . $uuid . ', session_option' . $uuid . ');';
-			$result .= '});';
-			$result .= '</script>';
-			$result .= '<div class="pokm-multichart-large-item large-bar" id="pokm-chart-log">';
-			$result .= '<style>';
-			$result .= '.pokm-multichart-large-item .ct-bar {stroke-width: 20px !important;stroke-opacity: 0.8 !important;}';
-			$result .= '</style>';
-			$result .= '</div>';
-			$result .= '<script>';
-			$result .= 'jQuery(function ($) {';
-			$result .= ' var log_data' . $uuid . ' = ' . $json['log'] . ';';
-			$result .= ' var log_tooltip' . $uuid . ' = Chartist.plugins.tooltip({justvalue: true, appendToBody: true});';
-			$result .= ' var log_option' . $uuid . ' = {';
-			$result .= '  height: 300,';
-			$result .= '  stackBars: true,';
-			$result .= '  stackMode: "accumulate",';
-			$result .= '  seriesBarDistance: 1,';
-			$result .= '  plugins: [log_tooltip' . $uuid . '],';
-			$result .= '  axisX: {showGrid: false, labelOffset: {x: 18,y: 0}},';
-			$result .= '  axisY: {showGrid: true, labelInterpolationFnc: function (value) {return value.toString() + " ' . Conversion::number_shorten( $boundaries['log']['factor'], 0, true )['abbreviation'] . '";}},';
-			$result .= ' };';
-			$result .= ' new Chartist.Bar("#pokm-chart-log", log_data' . $uuid . ', log_option' . $uuid . ');';
-			$result .= '});';
-			$result .= '</script>';
-			$result .= '<div class="pokm-multichart-handler">';
-			$result .= '<div class="pokm-multichart-item" id="pokm-chart-password">';
-			$result .= '</div>';
-			$result .= '<script>';
-			$result .= 'jQuery(function ($) {';
-			$result .= ' var password_data' . $uuid . ' = ' . $json['password'] . ';';
-			$result .= ' var password_tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: false, appendToBody: true});';
-			$result .= ' var password_option' . $uuid . ' = {';
-			$result .= '  height: 300,';
-			$result .= '  fullWidth: true,';
-			$result .= '  showArea: true,';
-			$result .= '  showLine: true,';
-			$result .= '  showPoint: false,';
-			$result .= '  plugins: [password_tooltip' . $uuid . '],';
-			$result .= '  axisX: {labelOffset: {x: 3,y: 0},scaleMinSpace: 100, type: Chartist.FixedScaleAxis, divisor:' . $divisor . ', labelInterpolationFnc: function (value) {return moment(value).format("YYYY-MM-DD");}},';
-			$result .= '  axisY: {type: Chartist.AutoScaleAxis, labelInterpolationFnc: function (value) {return value.toString() + " ' . Conversion::number_shorten( $boundaries['password']['factor'], 0, true )['abbreviation'] . '";}},';
-			$result .= ' };';
-			$result .= ' new Chartist.Line("#pokm-chart-password", password_data' . $uuid . ', password_option' . $uuid . ');';
-			$result .= '});';
-			$result .= '</script>';
 		} else {
 			$result  = '<div class="pokm-multichart-handler">';
-			$result .= '<div class="pokm-multichart-item active" id="pokm-chart-user">';
+			$result .= '<div class="pokm-multichart-item active" id="pokm-chart-authentication">';
+			$result .= $this->get_graph_placeholder_nodata( 274 );
+			$result .= '</div>';
+			$result .= '<div class="pokm-multichart-item" id="pokm-chart-password">';
 			$result .= $this->get_graph_placeholder_nodata( 274 );
 			$result .= '</div>';
 			$result .= '<div class="pokm-multichart-item" id="pokm-chart-turnover">';
-			$result .= $this->get_graph_placeholder_nodata( 274 );
-			$result .= '</div>';
-			$result .= '<div class="pokm-multichart-item" id="pokm-chart-session">';
-			$result .= $this->get_graph_placeholder_nodata( 274 );
-			$result .= '</div>';
-			$result .= '<div class="pokm-multichart-item" id="pokm-chart-log">';
-			$result .= $this->get_graph_placeholder_nodata( 274 );
-			$result .= '</div>';
-			$result .= '<div class="pokm-multichart-item" id="pokm-chart-password">';
 			$result .= $this->get_graph_placeholder_nodata( 274 );
 			$result .= '</div>';
 		}
@@ -994,23 +920,19 @@ class Analytics {
 	 */
 	public function get_main_chart() {
 		if ( 1 < $this->duration ) {
-			$help_user     = esc_html__( 'Users variation.', 'keys-master' );
-			$help_session  = esc_html__( 'Sessions variation.', 'keys-master' );
-			$help_turnover = esc_html__( 'Moves distribution.', 'keys-master' );
-			$help_log      = esc_html__( 'Login / logout breakdown.', 'keys-master' );
-			$help_password = esc_html__( 'Password resets.', 'keys-master' );
-			$detail        = '<span class="pokm-chart-button not-ready left" id="pokm-chart-button-user" data-position="left" data-tooltip="' . $help_user . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'users', 'none', '#73879C' ) . '" /></span>';
-			$detail       .= '&nbsp;&nbsp;&nbsp;<span class="pokm-chart-button not-ready left" id="pokm-chart-button-turnover" data-position="left" data-tooltip="' . $help_turnover . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'refresh-cw', 'none', '#73879C' ) . '" /></span>';
-			$detail       .= '&nbsp;&nbsp;&nbsp;<span class="pokm-chart-button not-ready left" id="pokm-chart-button-session" data-position="left" data-tooltip="' . $help_session . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'activity', 'none', '#73879C' ) . '" /></span>';
-			$detail       .= '&nbsp;&nbsp;&nbsp;<span class="pokm-chart-button not-ready left" id="pokm-chart-button-log" data-position="left" data-tooltip="' . $help_log . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'move', 'none', '#73879C' ) . '" /></span>';
-			$detail       .= '&nbsp;&nbsp;&nbsp;<span class="pokm-chart-button not-ready left" id="pokm-chart-button-password" data-position="left" data-tooltip="' . $help_password . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'key', 'none', '#73879C' ) . '" /></span>';
-			$result        = '<div class="pokm-row">';
-			$result       .= '<div class="pokm-box pokm-box-full-line">';
-			$result       .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Metrics Variations', 'keys-master' ) . '<span class="pokm-module-more">' . $detail . '</span></span></div>';
-			$result       .= '<div class="pokm-module-content" id="pokm-main-chart">' . $this->get_graph_placeholder( 274 ) . '</div>';
-			$result       .= '</div>';
-			$result       .= '</div>';
-			$result       .= $this->get_refresh_script(
+			$help_authentication = esc_html__( 'Authentications.', 'keys-master' );
+			$help_password       = esc_html__( 'Application passwords.', 'keys-master' );
+			$help_turnover       = esc_html__( 'Operations.', 'keys-master' );
+			$detail              = '<span class="pokm-chart-button not-ready left" id="pokm-chart-button-authentication" data-position="left" data-tooltip="' . $help_authentication . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'log-in', 'none', '#73879C' ) . '" /></span>';
+			$detail             .= '&nbsp;&nbsp;&nbsp;<span class="pokm-chart-button not-ready left" id="pokm-chart-button-password" data-position="left" data-tooltip="' . $help_password . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'key', 'none', '#73879C' ) . '" /></span>';
+			$detail             .= '&nbsp;&nbsp;&nbsp;<span class="pokm-chart-button not-ready left" id="pokm-chart-button-turnover" data-position="left" data-tooltip="' . $help_turnover . '"><img style="width:12px;vertical-align:baseline;" src="' . Feather\Icons::get_base64( 'shield', 'none', '#73879C' ) . '" /></span>';
+			$result              = '<div class="pokm-row">';
+			$result             .= '<div class="pokm-box pokm-box-full-line">';
+			$result             .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Metrics Variations', 'keys-master' ) . '<span class="pokm-module-more">' . $detail . '</span></span></div>';
+			$result             .= '<div class="pokm-module-content" id="pokm-main-chart">' . $this->get_graph_placeholder( 274 ) . '</div>';
+			$result             .= '</div>';
+			$result             .= '</div>';
+			$result             .= $this->get_refresh_script(
 				[
 					'query'   => 'main-chart',
 					'queried' => 0,
@@ -1182,7 +1104,7 @@ class Analytics {
 		$result .= ' $.each(val, function(index, value) {$("#" + index).html(value);});';
 		if ( array_key_exists( 'query', $args ) && 'main-chart' === $args['query'] ) {
 			$result .= '$(".pokm-chart-button").removeClass("not-ready");';
-			$result .= '$("#pokm-chart-button-user").addClass("active");';
+			$result .= '$("#pokm-chart-button-authentication").addClass("active");';
 		}
 		$result .= ' });';
 		$result .= '});';

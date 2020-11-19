@@ -34,7 +34,7 @@ wp_enqueue_style( 'pokm-chartist-tooltip' );
 	        <?php echo $analytics->get_kpi_bar() ?>
         </div>
         <div class="pokm-row">
-			<?php /*echo $analytics->get_main_chart()*/ ?>
+			<?php echo $analytics->get_main_chart() ?>
         </div>
         <div class="pokm-row">
             <div class="pokm-box pokm-box-50-50-line">
