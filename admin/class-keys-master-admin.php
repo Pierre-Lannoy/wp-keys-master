@@ -295,6 +295,7 @@ class Keys_Master_Admin {
 			if ( array_key_exists( '_wpnonce', $_POST ) && wp_verify_nonce( $_POST['_wpnonce'], 'pokm-plugin-options' ) ) {
 				Option::network_set( 'use_cdn', array_key_exists( 'pokm_plugin_options_usecdn', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_options_usecdn' ) : false );
 				Option::network_set( 'display_nag', array_key_exists( 'pokm_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_options_nag' ) : false );
+				Option::network_set( 'download_favicons', array_key_exists( 'pokm_plugin_options_favicons', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_options_favicons' ) : false );
 				Option::network_set( 'analytics', array_key_exists( 'pokm_plugin_features_analytics', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_features_analytics' ) : false );
 				Option::network_set( 'obfuscation', array_key_exists( 'pokm_privacy_options_obfuscation', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_privacy_options_obfuscation' ) : false );
 				Option::network_set( 'history', array_key_exists( 'pokm_plugin_features_history', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_features_history', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'history' ) );
@@ -341,6 +342,22 @@ class Keys_Master_Admin {
 	 */
 	public function plugin_options_section_callback() {
 		$form = new Form();
+		add_settings_field(
+			'pokm_plugin_options_favicons',
+			__( 'Favicons', 'keys-master' ),
+			[ $form, 'echo_field_checkbox' ],
+			'pokm_plugin_options_section',
+			'pokm_plugin_options_section',
+			[
+				'text'        => esc_html__( 'Download and display', 'keys-master' ),
+				'id'          => 'pokm_plugin_options_favicons',
+				'checked'     => Option::network_get( 'download_favicons' ),
+				'description' => esc_html__( 'If checked, Keys Master will download favicons of websites to display them in reports.', 'keys-master' ) . '<br/>' . esc_html__( 'Note: This feature uses the (free) Google Favicon Service.', 'keys-master' ),
+				'full_width'  => false,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_favicons' );
 		if ( defined( 'DECALOG_VERSION' ) ) {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'keys-master' ), '<em>DecaLog v' . DECALOG_VERSION . '</em>' );
