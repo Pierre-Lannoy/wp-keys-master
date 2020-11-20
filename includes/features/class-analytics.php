@@ -109,7 +109,7 @@ class Analytics {
 	 * @since  1.0.0
 	 * @var    array    $colors    The colors array.
 	 */
-	private $colors = [ '#73879C', '#3398DB', '#9B59B6', '#b2c326', '#BDC3C6' ];
+	private $colors = [ '#73879C', '#3398DB', '#9B59B6', '#B2C326', '#FFA5A5', '#A5F8D3', '#FEE440', '#BDC3C6' ];
 
 	/**
 	 * Initialize the class and set its properties.
@@ -165,8 +165,8 @@ class Analytics {
 				return $this->query_list( 'sites' );
 			case 'countries':
 				return $this->query_list( 'countries' );
-			case 'login':
-			case 'clean':
+			case 'protos':
+			case 'devices':
 				return $this->query_pie( $query, (int) $queried );
 			case 'main-chart':
 				return $this->query_chart();
@@ -183,43 +183,59 @@ class Analytics {
 	 * @since    1.0.0
 	 */
 	private function query_pie( $type, $limit ) {
-		$uuid  = UUID::generate_unique_id( 5 );
-		$data  = Schema::get_grouped_list( $this->filter, '', ! $this->is_today );
-		$names = [
-			'login_success' => esc_html__( 'Successful', 'keys-master' ),
-			'login_fail'    => esc_html__( 'Failed', 'keys-master' ),
-			'login_block'   => esc_html__( 'Blocked', 'keys-master' ),
-			'expired'       => esc_html__( 'Expired', 'keys-master' ),
-			'idle'          => esc_html__( 'Idle', 'keys-master' ),
-			'forced'        => esc_html__( 'Overridden', 'keys-master' ),
-		];
+		$uuid = UUID::generate_unique_id( 5 );
 		switch ( $type ) {
-			case 'login':
-				$selectors = [ 'login_success', 'login_fail', 'login_block' ];
+			case 'protos':
+				$group = 'channel';
 				break;
-			case 'clean':
-				$selectors = [ 'expired', 'idle', 'forced' ];
+			case 'devices':
+				$group = 'device';
 				break;
+		}
+		$data = Schema::get_grouped_list( $this->filter, $group, ! $this->is_today, '', [], false, 'ORDER BY sum_call DESC', 0, false );
+		if ( $limit > count( $data ) ) {
+			$limit = count( $data );
 		}
 		$val = 0;
 		if ( 0 < count( $data ) ) {
 			foreach ( $data as $row ) {
-				foreach ( $selectors as $selector ) {
-					$val += (int) $row[ $selector ];
-				}
+				$val += (int) $row['sum_call'];
 			}
 		}
 		if ( 0 < count( $data ) && 0 !== $val ) {
 			$total  = 0;
 			$other  = 0;
 			$values = [];
-			foreach ( $selectors as $selector ) {
-				$values[ $selector ] = 0;
-			}
-			foreach ( $data as $row ) {
-				foreach ( $selectors as $selector ) {
-					$total               = $total + $row[ $selector ];
-					$values[ $selector ] = $values[ $selector ] + $row[ $selector ];
+			$names  = [];
+			foreach ( $data as $i => $row ) {
+				$total        = $total + $row['sum_call'];
+				$values[ $i ] = $row['sum_call'];
+				if ( $limit <= $i ) {
+					$other = $other + $row['sum_call'];
+				}
+				switch ( $type ) {
+					case 'protos':
+						$names[ $i ] = esc_html__( 'Rest API', 'keys-master' );
+						if ( 'xmlrpc' === $row['channel'] ) {
+							$names[ $i ] = esc_html__( 'XML-RPC', 'keys-master' );
+						}
+						break;
+					case 'devices':
+						if ( class_exists( '\PODeviceDetector\API\Device' ) ) {
+							$device = \PODeviceDetector\API\Device::get( $row['device'] )->get_as_full_array();
+							if ( array_key_exists( 'bot', $device ) ) {
+								$names[ $i ] = $device['bot']['name'];
+							} else {
+								if ( array_key_exists( $device['client']['id'], $device ) ) {
+									$names[ $i ] = $device[ $device['client']['id'] ]['name'] . ' ' . $device[ $device['client']['id'] ]['version'];
+								} else {
+									$names[ $i ] = esc_html__( 'Unknown', 'keys-master' );
+								}
+							}
+						} else {
+							$names[ $i ] = esc_html__( 'Unknown', 'keys-master' ) . ' (' . substr( $row['device'], 0, 20 ) . '…)';
+						}
+						break;
 				}
 			}
 			$cpt    = 0;
@@ -227,16 +243,16 @@ class Analytics {
 			$series = [];
 			while ( $cpt < $limit ) {
 				if ( 0 < $total ) {
-					$percent = round( 100 * $values[ $selectors[ $cpt ] ] / $total, 1 );
+					$percent = round( 100 * $values[ $cpt ] / $total, 1 );
 				} else {
 					$percent = 100;
 				}
 				if ( 0.1 > $percent ) {
 					$percent = 0.1;
 				}
-				$labels[] = $names[ $selectors[ $cpt ] ];
+				$labels[] = $names [ $cpt ];
 				$series[] = [
-					'meta'  => $names[ $selectors[ $cpt ] ],
+					'meta'  => $names [ $cpt ],
 					'value' => (float) $percent,
 				];
 				++$cpt;
@@ -277,7 +293,7 @@ class Analytics {
 				]
 			) . ';';
 			$result .= ' var tooltip' . $uuid . ' = Chartist.plugins.tooltip({percentage: true, appendToBody: true});';
-			$result .= ' var option' . $uuid . ' = {width: 120, height: 120, showLabel: false, donut: true, donutWidth: "40%", startAngle: 270, plugins: [tooltip' . $uuid . ']};';
+			$result .= ' var option' . $uuid . ' = {width: 180, height: 180, showLabel: false, donut: true, donutWidth: "40%", startAngle: 270, plugins: [tooltip' . $uuid . ']};';
 			$result .= ' new Chartist.Pie("#pokm-pie-' . $type . '", data' . $uuid . ', option' . $uuid . ');';
 			$result .= '});';
 			$result .= '</script>';
@@ -766,7 +782,7 @@ class Analytics {
 				$total = $total + (float) $row['success'] + (float) $row['fail'];
 			}
 			foreach ( $pdata as $row ) {
-				$previous = $previous + (float) $row[ $queried ];
+				$previous = $previous + (float) $row['success'] + (float) $row['fail'];
 			}
 			if ( 0 !== $this->duration ) {
 				$current  = $current / $this->duration;
@@ -1074,40 +1090,40 @@ class Analytics {
 	}
 
 	/**
-	 * Get the logins pie.
+	 * Get the proto box.
 	 *
-	 * @return string  The pie box ready to print.
+	 * @return string  The box ready to print.
 	 * @since    1.0.0
 	 */
-	public function get_login_pie() {
+	public function get_proto_pie() {
 		$result  = '<div class="pokm-50-module-left">';
-		$result .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Logins', 'keys-master' ) . '</span></div>';
-		$result .= '<div class="pokm-module-content" id="pokm-login">' . $this->get_graph_placeholder( 90 ) . '</div>';
+		$result .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Channels', 'keys-master' ) . '</span></div>';
+		$result .= '<div class="pokm-module-content" id="pokm-protos">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
-				'query'   => 'login',
-				'queried' => 3,
+				'query'   => 'protos',
+				'queried' => 2,
 			]
 		);
 		return $result;
 	}
 
 	/**
-	 * Get the clean pie.
+	 * Get the device box.
 	 *
-	 * @return string  The pie box ready to print.
+	 * @return string  The box ready to print.
 	 * @since    1.0.0
 	 */
-	public function get_clean_pie() {
+	public function get_device_pie() {
 		$result  = '<div class="pokm-50-module-right">';
-		$result .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Cleaned Keys Master', 'keys-master' ) . '</span></div>';
-		$result .= '<div class="pokm-module-content" id="pokm-clean">' . $this->get_graph_placeholder( 90 ) . '</div>';
+		$result .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Top devices', 'keys-master' ) . '</span></div>';
+		$result .= '<div class="pokm-module-content" id="pokm-devices">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
 			[
-				'query'   => 'clean',
-				'queried' => 3,
+				'query'   => 'devices',
+				'queried' => 7,
 			]
 		);
 		return $result;

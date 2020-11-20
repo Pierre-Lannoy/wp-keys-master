@@ -126,7 +126,7 @@
     margin-top: -8px;
     margin-right: 10px;
     padding: 8px;
-    height:156px;
+    height:294px;
     width: 47.5%;
 }
 
@@ -140,7 +140,7 @@
     margin-top: -8px;
     margin-right: -8px;
     padding: 8px;
-    height:156px;
+    height:294px;
     width: 47.5%;
 }
 
@@ -583,6 +583,8 @@
     flex-wrap: nowrap;
     justify-content: space-evenly;
     align-items: center;
+    margin-top: 36px;
+    margin-bottom: 60px;
 }
 
 .pokm-pie-graph {
@@ -751,6 +753,9 @@ button.btn {
     }
     .last-row {
         margin-top: -26px;
+    }
+    .pokm-pie-box {
+        margin-top: 10px;
     }
 }
 

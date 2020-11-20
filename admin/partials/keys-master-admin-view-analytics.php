@@ -41,8 +41,8 @@ wp_enqueue_style( 'pokm-chartist-tooltip' );
         </div>
         <div class="pokm-row">
             <div class="pokm-box pokm-box-50-50-line">
-				<?php /*echo $analytics->get_login_pie() ?>
-				<?php echo $analytics->get_clean_pie() */ ?>
+				<?php echo $analytics->get_proto_pie() ?>
+				<?php echo $analytics->get_device_pie()  ?>
             </div>
         </div>
 		<?php if ( $geoip->is_installed() ) { ?>
@@ -50,7 +50,7 @@ wp_enqueue_style( 'pokm-chartist-tooltip' );
 				<?php echo $analytics->get_countries_list() ?>
             </div>
 		<?php } ?>
-		<?php if ( true || Role::SUPER_ADMIN === Role::admin_type() ) { ?>
+		<?php if ( Role::SUPER_ADMIN === Role::admin_type() ) { ?>
             <div class="pokm-row">
 				<?php echo $analytics->get_sites_list() ?>
             </div>
