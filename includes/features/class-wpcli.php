@@ -180,7 +180,7 @@ class Wpcli {
 	 *
 	 * ## EXAMPLES
 	 *
-	 * wp password status
+	 * wp keys status
 	 *
 	 *
 	 *     === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -242,7 +242,7 @@ class Wpcli {
 	 *
 	 * ## EXAMPLES
 	 *
-	 * wp password settings disable analytics --yes
+	 * wp keys settings disable analytics --yes
 	 *
 	 *
 	 *     === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -298,7 +298,7 @@ class Wpcli {
 	 *
 	 * ## EXAMPLES
 	 *
-	 * wp password mode set none --yes
+	 * wp keys mode set none --yes
 	 *
 	 *
 	 *     === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -362,7 +362,7 @@ class Wpcli {
 	 *
 	 * ## EXAMPLES
 	 *
-	 * wp password analytics
+	 * wp keys analytics
 	 *
 	 *
 	 *    === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -432,8 +432,8 @@ class Wpcli {
 	 * ## EXAMPLES
 	 *
 	 * Lists available exit codes:
-	 * + wp password exitcode list
-	 * + wp password exitcode list --format=json
+	 * + wp keys exitcode list
+	 * + wp keys exitcode list --format=json
 	 *
 	 *
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -476,9 +476,9 @@ class Wpcli {
 add_shortcode( 'pokm-wpcli', [ 'KeysMaster\Plugin\Feature\Wpcli', 'sc_get_helpfile' ] );
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	\WP_CLI::add_command( 'password settings', [ Wpcli::class, 'settings' ] );
-	\WP_CLI::add_command( 'password status', [ Wpcli::class, 'status' ] );
-	\WP_CLI::add_command( 'password mode', [ Wpcli::class, 'mode' ] );
-	\WP_CLI::add_command( 'password analytics', [ Wpcli::class, 'analytics' ] );
-	\WP_CLI::add_command( 'password exitcode', [ Wpcli::class, 'exitcode' ] );
+	\WP_CLI::add_command( 'keys settings', [ Wpcli::class, 'settings' ] );
+	\WP_CLI::add_command( 'keys status', [ Wpcli::class, 'status' ] );
+	\WP_CLI::add_command( 'keys mode', [ Wpcli::class, 'mode' ] );
+	\WP_CLI::add_command( 'keys analytics', [ Wpcli::class, 'analytics' ] );
+	\WP_CLI::add_command( 'keys exitcode', [ Wpcli::class, 'exitcode' ] );
 }
