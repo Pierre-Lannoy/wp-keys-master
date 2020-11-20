@@ -636,11 +636,15 @@ class Analytics {
 				case 'success':
 					$val                       = Conversion::number_shorten( $data['kpi-bottom-success'], 0, true );
 					$result['data']['success'] = [
-						'name'        => esc_html_x( 'Authentication Success', 'Noun - Number of successful authentications.', 'keys-master' ),
+						'name'        => esc_html_x( 'Auth. Success', 'Noun - Number of successful authentications.', 'keys-master' ),
 						'short'       => esc_html_x( 'Auth', 'Noun - Short (max 4 char) - Active sessions.', 'keys-master' ),
-						'description' => esc_html__( 'Number of successful authentications.', 'keys-master' ),
+						'description' => esc_html__( 'Successful authentications.', 'keys-master' ),
 						'dimension'   => 'none',
-						'ratio'       => null,
+						'ratio'       => [
+							'raw'      => round( $data['kpi-main-success'] / 100, 6 ),
+							'percent'  => round( $data['kpi-main-success'], 2 ),
+							'permille' => round( $data['kpi-main-success'] * 10, 2 ),
+						],
 						'variation'   => [
 							'raw'      => round( $data['kpi-index-success'] / 100, 6 ),
 							'percent'  => round( $data['kpi-index-success'], 2 ),
@@ -657,7 +661,7 @@ class Analytics {
 					$result['data']['password'] = [
 						'name'        => esc_html_x( 'Passwords', 'Noun - Number of application passwords.', 'keys-master' ),
 						'short'       => esc_html_x( 'Pwd.', 'Noun - Short (max 4 char) - Number of application passwords.', 'keys-master' ),
-						'description' => esc_html__( 'Number of application passwords.', 'keys-master' ),
+						'description' => esc_html__( 'Application passwords.', 'keys-master' ),
 						'dimension'   => 'none',
 						'ratio'       => null,
 						'variation'   => [
@@ -676,7 +680,7 @@ class Analytics {
 					$result['data']['revoked'] = [
 						'name'        => esc_html_x( 'Revoked', 'Noun - Number of revoked application passwords.', 'keys-master' ),
 						'short'       => esc_html_x( 'Rvk.', 'Noun - Short (max 4 char) - Number of revoked application passwords.', 'keys-master' ),
-						'description' => esc_html__( 'Number of revoked application passwords.', 'keys-master' ),
+						'description' => esc_html__( 'Revoked application passwords.', 'keys-master' ),
 						'dimension'   => 'none',
 						'ratio'       => null,
 						'variation'   => [
@@ -695,7 +699,7 @@ class Analytics {
 					$result['data']['created'] = [
 						'name'        => esc_html_x( 'Created', 'Noun - Number of created application passwords.' ),
 						'short'       => esc_html_x( 'Crd.', 'Noun - Short (max 4 char) - Number of created application passwords.', 'keys-master' ),
-						'description' => esc_html__( 'Number of created application passwords.', 'keys-master' ),
+						'description' => esc_html__( 'Created application passwords.', 'keys-master' ),
 						'dimension'   => 'none',
 						'ratio'       => null,
 						'variation'   => [
@@ -714,9 +718,13 @@ class Analytics {
 					$result['data']['adoption'] = [
 						'name'        => esc_html_x( 'Adoption', 'Noun - Application passwords adoption.', 'keys-master' ),
 						'short'       => esc_html_x( 'Adp.', 'Noun - Short (max 4 char) - Application passwords adoption.', 'keys-master' ),
-						'description' => esc_html__( 'Number of users having set at least one application password.', 'keys-master' ),
+						'description' => esc_html__( 'Users having set at least one application password.', 'keys-master' ),
 						'dimension'   => 'none',
-						'ratio'       => null,
+						'ratio'       => [
+							'raw'      => round( $data['kpi-main-adoption'] / 100, 6 ),
+							'percent'  => round( $data['kpi-main-adoption'], 2 ),
+							'permille' => round( $data['kpi-main-adoption'] * 10, 2 ),
+						],
 						'variation'   => [
 							'raw'      => round( $data['kpi-main-adoption'] / 100, 6 ),
 							'percent'  => round( $data['kpi-main-adoption'], 2 ),
@@ -733,7 +741,7 @@ class Analytics {
 					$result['data']['rate'] = [
 						'name'        => esc_html_x( 'Usage', 'Noun - Number of application passwords usage.', 'keys-master' ),
 						'short'       => esc_html_x( 'Usg.', 'Noun - Short (max 4 char) - Number of application passwords usage.', 'keys-master' ),
-						'description' => esc_html__( 'Number of application passwords usage.', 'keys-master' ),
+						'description' => esc_html__( 'Application passwords usage.', 'keys-master' ),
 						'dimension'   => 'none',
 						'ratio'       => null,
 						'variation'   => [
@@ -895,7 +903,7 @@ class Analytics {
 					if ( 0 === $val ) {
 						$txt = esc_html__( 'no successful authentication', 'keys-master' );
 					} else {
-						$txt = sprintf( esc_html( _n( '%s successful authent.', '%s successful authent.', $val, 'keys-master' ) ), Conversion::number_shorten( $val, 2, false, '&nbsp;' ) );
+						$txt = sprintf( esc_html( _n( '%s successful auth.', '%s successful auth.', $val, 'keys-master' ) ), Conversion::number_shorten( $val, 2, false, '&nbsp;' ) );
 					}
 					$result[ 'kpi-bottom-' . $queried ] = '<span class="pokm-kpi-large-bottom-text">' . $txt . '</span>';
 					break;
@@ -1045,7 +1053,7 @@ class Analytics {
 		switch ( $kpi ) {
 			case 'success':
 				$icon  = Feather\Icons::get_base64( 'log-in', 'none', '#73879C' );
-				$title = esc_html_x( 'Authent. Success', 'Noun - Number of successful authentication.', 'keys-master' );
+				$title = esc_html_x( 'Auth. Success', 'Noun - Number of successful authentication.', 'keys-master' );
 				$help  = esc_html__( 'Ratio of successful authentication.', 'keys-master' );
 				break;
 			case 'password':
