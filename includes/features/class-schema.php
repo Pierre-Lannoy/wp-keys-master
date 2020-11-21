@@ -276,7 +276,7 @@ class Schema {
 		$sql            .= " (`timestamp` date NOT NULL DEFAULT '0000-00-00',";
 		$sql            .= " `channel` enum('xmlrpc','api','unknown') NOT NULL DEFAULT 'unknown',";
 		$sql            .= " `site` int(11) UNSIGNED NOT NULL DEFAULT '0',";
-		$sql            .= " `country` varchar(2) NOT NULL DEFAULT '--',";
+		$sql            .= " `country` varchar(2) NOT NULL DEFAULT '00',";
 		$sql            .= " `device` varchar(512) NOT NULL DEFAULT '-',";
 		$sql            .= " `success` int(11) UNSIGNED NOT NULL DEFAULT '0',";
 		$sql            .= " `fail` int(11) UNSIGNED NOT NULL DEFAULT '0',";

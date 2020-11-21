@@ -153,13 +153,13 @@ class Capture {
 		self::$usage['site'] = Blog::get_current_blog_id( 0 );
 		$geo_ip              = new GeoIP();
 		$country             = $geo_ip->get_iso3166_alpha2( IP::get_current() );
-		if ( ! empty( $country ) ) {
+		if ( ! empty( $country ) && 2 === strlen( $country ) ) {
 			self::$usage['country'] = $country;
 		} else {
-			self::$usage['country'] = '--';
+			self::$usage['country'] = '00';
 		}
 		if ( array_key_exists( 'HTTP_USER_AGENT', $_SERVER ) ) {
-			self::$usage['device'] = filter_input( INPUT_SERVER, 'HTTP_USER_AGENT' );
+			self::$usage['device'] = substr( filter_input( INPUT_SERVER, 'HTTP_USER_AGENT' ), 0, 512 );
 		} else {
 			self::$usage['device'] = '-';
 		}
