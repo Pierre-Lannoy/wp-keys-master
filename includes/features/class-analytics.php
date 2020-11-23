@@ -1125,7 +1125,7 @@ class Analytics {
 	 */
 	public function get_device_pie() {
 		$result  = '<div class="pokm-50-module-right">';
-		$result .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Top devices', 'keys-master' ) . '</span></div>';
+		$result .= '<div class="pokm-module-title-bar"><span class="pokm-module-title">' . esc_html__( 'Top clients', 'keys-master' ) . '</span></div>';
 		$result .= '<div class="pokm-module-content" id="pokm-devices">' . $this->get_graph_placeholder( 200 ) . '</div>';
 		$result .= '</div>';
 		$result .= $this->get_refresh_script(
