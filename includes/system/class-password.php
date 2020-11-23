@@ -384,7 +384,10 @@ class Password {
 		if ( ! $user_id || ! ( is_int( $user_id ) && 0 < $user_id ) ) {
 			return $result;
 		}
-		return \WP_Application_Passwords::get_user_application_passwords( $user_id );
+		if ( class_exists( 'WP_Application_Passwords' ) ) {
+			return \WP_Application_Passwords::get_user_application_passwords( $user_id );
+		}
+		return [];
 	}
 
 	/**
@@ -442,7 +445,10 @@ class Password {
 		if ( ! $user_id || ! is_int( $user_id ) ) {
 			return $result;
 		}
-		return true === \WP_Application_Passwords::delete_application_password( $user_id, $password );
+		if ( class_exists( 'WP_Application_Passwords' ) ) {
+			return true === \WP_Application_Passwords::delete_application_password( $user_id, $password );
+		}
+		return false;
 	}
 
 	/**
