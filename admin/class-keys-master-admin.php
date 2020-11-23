@@ -503,7 +503,7 @@ class Keys_Master_Admin {
 				'list'        => $mode,
 				'id'          => 'pokm_plugin_features_rolemode',
 				'value'       => Option::network_get( 'rolemode' ),
-				'description' => esc_html__( 'Operation mode of this feature.', 'keys-master' ),
+				'description' => esc_html__( 'Operation mode of application passwords control.', 'keys-master' ) . '<br/><em>' . esc_html__( 'Note: administrators having other roles are not affected by the privileges computation; this privileges computation only applies on non-administrator users having multiple roles.', 'keys-master' ) . '</em>',
 				'full_width'  => false,
 				'enabled'     => true,
 			]
