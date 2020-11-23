@@ -9,7 +9,7 @@
  * @wordpress-plugin
  * Plugin Name:       Keys Master
  * Plugin URI:        https://github.com/Pierre-Lannoy/wp-keys-master
- * Description:       Powerful application passwords manager for WordPress with limiter and full analytics reporting capabilities.
+ * Description:       Powerful application passwords manager for WordPress with role-based usage control and full analytics reporting capabilities.
  * Version:           1.0.0
  * Requires at least: 5.5
  * Requires PHP:      7.2
