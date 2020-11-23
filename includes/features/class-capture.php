@@ -177,7 +177,7 @@ class Capture {
 	 *
 	 * @since    1.0.0
 	 */
-	public function wp_create_application_password( $user_id, $new_item, $new_password = '', $args = [] ) {
+	public static function wp_create_application_password( $user_id, $new_item, $new_password = '', $args = [] ) {
 		self::$created ++;
 	}
 
@@ -186,7 +186,7 @@ class Capture {
 	 *
 	 * @since    1.0.0
 	 */
-	public function wp_delete_application_password( $user_id, $item ) {
+	public static function wp_delete_application_password( $user_id, $item ) {
 		self::$revoked ++;
 	}
 
@@ -195,7 +195,7 @@ class Capture {
 	 *
 	 * @since    1.0.0
 	 */
-	public function application_password_failed_authentication( $error ) {
+	public static function application_password_failed_authentication( $error ) {
 		self::set_usage( false );
 		self::$login_fail ++;
 	}
@@ -205,7 +205,7 @@ class Capture {
 	 *
 	 * @since    1.0.0
 	 */
-	public function application_password_did_authenticate( $user, $item ) {
+	public static function application_password_did_authenticate( $user, $item ) {
 		self::set_usage( true );
 		self::$login_success ++;
 	}
