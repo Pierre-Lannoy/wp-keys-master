@@ -388,6 +388,26 @@ class Password {
 	}
 
 	/**
+	 * Get APs.
+	 *
+	 * @param   string $uuid  The password UUID.
+	 * @return  array  The list of APs.
+	 * @since   1.0.0
+	 */
+	public static function get_uuid_passwords( $uuid ) {
+		global $wpdb;
+		$sql = 'SELECT * FROM ' . $wpdb->usermeta . " WHERE meta_key = '" . self::$meta_key . "' AND meta_value LIKE '%" . $uuid . "%'ORDER BY user_id DESC LIMIT " . (int) Option::network_get( 'buffer_limit' );
+		// phpcs:ignore
+		$result = $wpdb->get_results( $sql, ARRAY_A );
+		foreach ( $result as &$record ) {
+			if ( ! is_array( $record['meta_value'] ) && is_string( $record['meta_value'] ) ) {
+				$record['meta_value'] = maybe_unserialize( $record['meta_value'] );
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 * Get all APs.
 	 *
 	 * @return  array  The details of APs.

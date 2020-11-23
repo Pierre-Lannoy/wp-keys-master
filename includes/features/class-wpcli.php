@@ -12,12 +12,16 @@
 namespace KeysMaster\Plugin\Feature;
 
 use KeysMaster\System\Environment;
+use KeysMaster\System\Logger;
 use KeysMaster\System\Option;
 use KeysMaster\System\Markdown;
 use KeysMaster\Plugin\Feature\Analytics;
 use KeysMaster\Plugin\Feature\Schema;
+use KeysMaster\System\Password;
 use KeysMaster\System\Timezone;
 use KeysMaster\System\GeoIP;
+use KeysMaster\System\User;
+use KeysMaster\System\IP;
 use Spyc;
 
 /**
@@ -43,6 +47,8 @@ class Wpcli {
 		2   => 'unrecognized action.',
 		3   => 'analytics are disabled.',
 		4   => 'unrecognized mode.',
+		5   => 'invalid application password uuid supplied.',
+		6   => 'user doesn\'t exist.',
 		255 => 'unknown error.',
 	];
 
@@ -90,6 +96,33 @@ class Wpcli {
 			exit( $code );
 		} else {
 			\WP_CLI::error( self::$exit_codes[ $code ] );
+		}
+	}
+
+	/**
+	 * Write an error from a WP_Error object.
+	 *
+	 * @param   \WP_Error  $err     The error object.
+	 * @param   boolean  $stdout    Optional. Clean stdout output.
+	 * @since   1.0.0
+	 */
+	private static function error_from_object( $err, $stdout = false ) {
+		$msg = self::$exit_codes[255];
+		if ( is_wp_error( $err ) ) {
+			$msg = $err->get_error_message();
+		}
+		if ( \WP_CLI\Utils\isPiped() ) {
+			// phpcs:ignore
+			fwrite( STDOUT, '' );
+			// phpcs:ignore
+			exit( 255 );
+		} elseif ( $stdout ) {
+			// phpcs:ignore
+			fwrite( STDERR, ucfirst( $msg ) );
+			// phpcs:ignore
+			exit( 255 );
+		} else {
+			\WP_CLI::error( $msg );
 		}
 	}
 
@@ -471,6 +504,203 @@ class Wpcli {
 		return $md->get_shortcode(  'WP-CLI.md', $attributes  );
 	}
 
+	/**
+	 * Manage application passwords.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <list|create|revoke>
+	 * : The action to take.
+	 * ---
+	 * options:
+	 *  - list
+	 *  - create
+	 *  - revoke
+	 * ---
+	 *
+	 * [<uuid|user_id>]
+	 * : The uuid of the password or the id of the user to perform an action/search on.
+	 *
+	 * [--settings=<settings>]
+	 * : The settings needed by "create" action.
+	 * MUST be a string containing a json configuration.
+	 * ---
+	 * default: '{}'
+	 * example: '{"name": "New app key"}'
+	 * ---
+	 *
+	 * [--detail=<detail>]
+	 * : The details of the output when listing application passwords.
+	 * ---
+	 * default: short
+	 * options:
+	 *  - short
+	 *  - full
+	 * ---
+	 *
+	 * [--format=<format>]
+	 * : Allows overriding the output of the command when listing application passwords. Note if json or yaml is chosen: full metadata is outputted too.
+	 * ---
+	 * default: table
+	 * options:
+	 *  - table
+	 *  - json
+	 *  - csv
+	 *  - yaml
+	 *  - ids
+	 *  - count
+	 * ---
+	 *
+	 * [--yes]
+	 * : Answer yes to the confirmation message, if any.
+	 *
+	 * [--stdout]
+	 * : Use clean STDOUT output to use results in scripts. Unnecessary when piping commands because piping is detected by Keys Master.
+	 *
+	 * ## EXAMPLES
+	 *
+	 * List some application passwords:
+	 * + wp keys password list
+	 * + wp keys password list ed0f775f-2271-4570-a28b-0bc11fba2b27
+	 * + wp keys password list 1
+	 * + wp keys password list --detail=full
+	 * + wp keys password list --format=json
+	 *
+	 * Create an application password:
+	 * + wp keys password create 125
+	 * + wp keys password create 1 --settings='{"name":"My Application Password"}'
+	 *
+	 * Revoke an application password:
+	 * + wp keys password revoke 5d3f949d-d135-4c19-a621-7a47b6c0f83b
+	 * + wp keys password revoke 5d3f949d-d135-4c19-a621-7a47b6c0f83b --yes
+	 *
+	 *
+	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
+	 *
+	 */
+	public static function password( $args, $assoc_args ) {
+		$stdout = \WP_CLI\Utils\get_flag_value( $assoc_args, 'stdout', false );
+		$format = \WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
+		$detail = \WP_CLI\Utils\get_flag_value( $assoc_args, 'detail', 'short' );
+		$params = self::get_params( $assoc_args );
+		$uuid   = '';
+		$id     = '';
+		$action = isset( $args[0] ) ? $args[0] : 'list';
+		if ( isset( $args[1] ) ) {
+			$arg = $args[1];
+			if ( false !== strpos( $arg, '-' ) ) {
+				$uuid = $arg;
+			} else {
+				$id = (int) $arg;
+				if ( false === get_userdata( $id ) ) {
+					self::error( 6, $stdout );
+				}
+			}
+		}
+		if ( 'create' === $action && '' === $id ) {
+			self::error( 6, $stdout );
+		}
+		if ( 'revoke' === $action && '' === $uuid ) {
+			self::error( 5, $stdout );
+		}
+		switch ( $action ) {
+			case 'list':
+				$passwords = [];
+				$list      = [];
+				$tz        = Timezone::network_get();
+				if ( '' !== $id ) {
+					$tmp    = Password::get_user_passwords( $id );
+					$list[] = [
+						'user_id'    => $id,
+						'meta_value' => $tmp,
+					];
+				} elseif ( '' !== $uuid ) {
+					foreach ( Password::get_uuid_passwords( $uuid ) as $password_list ) {
+						foreach ( $password_list['meta_value'] as $password ) {
+							if ( $uuid === $password['uuid'] ) {
+								$list[] = [
+									'user_id'    => (int) $password_list['user_id'],
+									'meta_value' => [ $password ],
+								];
+								break 2;
+							}
+						}
+					}
+				} else {
+					$list = Password::get_all_passwords();
+				}
+				foreach ( $list as $password_list ) {
+					foreach ( $password_list['meta_value'] as $password ) {
+						$passwords[ $password['uuid'] ]['uuid']    = $password['uuid'];
+						$passwords[ $password['uuid'] ]['user-id'] = (int) $password_list['user_id'];
+						$passwords[ $password['uuid'] ]['user']    = User::get_user_string( $password_list['user_id'] );
+						$passwords[ $password['uuid'] ]['name']    = substr( $password['name'], 0, 20 );
+						if ( isset( $password['last_used'] ) ) {
+							$datetime = new \DateTime( date( 'Y-m-d H:i:s', $password['last_used'] ) );
+							$datetime->setTimezone( $tz );
+							$passwords[ $password['uuid'] ]['last-used'] = $datetime->format( 'Y-m-d' );
+						} else {
+							$passwords[ $password['uuid'] ]['last-used'] = 'never';
+						}
+						$datetime = new \DateTime( date( 'Y-m-d H:i:s', $password['created'] ) );
+						$datetime->setTimezone( $tz );
+						$passwords[ $password['uuid'] ]['created'] = $datetime->format( 'Y-m-d' );
+						if ( isset( $password['last_used'] ) ) {
+							$passwords[ $password['uuid'] ]['last-ip'] = IP::expand( $password['last_ip'] );
+						} else {
+							$passwords[ $password['uuid'] ]['last-ip'] = '-';
+						}
+					}
+				}
+				usort(
+					$passwords,
+					function ( $a, $b ) {
+						return strcmp( strtolower( $a[ 'user' ] ), strtolower( $b[ 'user' ] ) );
+					}
+				);
+				if ( 'full' === $detail ) {
+					$detail = [ 'uuid', 'user', 'name', 'created', 'last-used', 'last-ip' ];
+				} else {
+					$detail = [ 'uuid', 'user', 'name', 'last-used' ];
+				}
+				if ( 'ids' === $format ) {
+					self::write_ids( $passwords, 'uuid' );
+				} elseif ( 'yaml' === $format ) {
+					$details = Spyc::YAMLDump( $passwords, true, true, true );
+					self::line( $details, $details, $stdout );
+				}  elseif ( 'json' === $format ) {
+					$details = wp_json_encode( $passwords );
+					self::line( $details, $details, $stdout );
+				} else {
+					\WP_CLI\Utils\format_items( $format, $passwords, $detail );
+				}
+				break;
+			case 'create':
+				if ( ! array_key_exists( 'name', $params ) ) {
+					$params['name'] = 'Application password created via Keys Master';
+				}
+				$created = \WP_Application_Passwords::create_new_application_password( $id, $params );
+				if ( is_wp_error( $created ) && ! is_array( $created ) ) {
+					self::error_from_object( $created );
+				}
+				self::success( 'the new password is ' . \WP_CLI::colorize( '%8' ) . $created[0] . \WP_CLI::colorize( '%n.' ) . ' Be sure to save this in a safe location, you will not be able to retrieve it.', $created[0], $stdout );
+				break;
+			case 'revoke':
+				$meta = Password::get_uuid_passwords( $uuid );
+				if ( 0 < $meta && array_key_exists( 'user_id', $meta[0] ) ) {
+					\WP_CLI::confirm( 'Are you sure you want to revoke this password?', $assoc_args );
+					$revoked = \WP_Application_Passwords::delete_application_password( (int) $meta[0]['user_id'], $uuid );
+					if ( is_wp_error( $revoked ) && ! is_array( $revoked ) ) {
+						self::error_from_object( $revoked );
+					}
+					self::success( 'password ' . \WP_CLI::colorize( '%8' ) . $uuid . \WP_CLI::colorize( '%n' ) . ' revoked.', $uuid, $stdout );
+				} else {
+					self::error( 5, $stdout );
+				}
+				break;
+		}
+	}
+
 }
 
 add_shortcode( 'pokm-wpcli', [ 'KeysMaster\Plugin\Feature\Wpcli', 'sc_get_helpfile' ] );
@@ -480,5 +710,6 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	\WP_CLI::add_command( 'keys status', [ Wpcli::class, 'status' ] );
 	\WP_CLI::add_command( 'keys mode', [ Wpcli::class, 'mode' ] );
 	\WP_CLI::add_command( 'keys analytics', [ Wpcli::class, 'analytics' ] );
+	\WP_CLI::add_command( 'keys password', [ Wpcli::class, 'password' ] );
 	\WP_CLI::add_command( 'keys exitcode', [ Wpcli::class, 'exitcode' ] );
 }
