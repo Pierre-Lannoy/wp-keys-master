@@ -637,7 +637,7 @@ class Analytics {
 					$val                       = Conversion::number_shorten( $data['kpi-bottom-success'], 0, true );
 					$result['data']['success'] = [
 						'name'        => esc_html_x( 'Auth. Success', 'Noun - Number of successful authentications.', 'keys-master' ),
-						'short'       => esc_html_x( 'Auth', 'Noun - Short (max 4 char) - Active sessions.', 'keys-master' ),
+						'short'       => esc_html_x( 'Auth', 'Noun - Short (max 4 char) - Number of successful authentications.', 'keys-master' ),
 						'description' => esc_html__( 'Successful authentications.', 'keys-master' ),
 						'dimension'   => 'none',
 						'ratio'       => [

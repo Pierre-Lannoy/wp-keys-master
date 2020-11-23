@@ -121,7 +121,7 @@ class Keys_Master_Admin {
 				'description'   => '',
 				'icon_callback' => [ \KeysMaster\Plugin\Core::class, 'get_base64_logo' ],
 				'slug'          => 'pokm-settings',
-				/* translators: as in the sentence "Sessions Settings" or "WordPress Settings" */
+				/* translators: as in the sentence "Keys Master Settings" or "WordPress Settings" */
 				'page_title'    => sprintf( esc_html__( '%s Settings', 'keys-master' ), POKM_PRODUCT_NAME ),
 				'menu_title'    => POKM_PRODUCT_NAME,
 				'capability'    => 'manage_options',
@@ -271,8 +271,6 @@ class Keys_Master_Admin {
 				}
 				Option::roles_set( $settings );
 				$message  = esc_html__( 'Plugin settings have been saved.', 'keys-master' );
-				$message .= '<br/>' . esc_html__( 'Note these settings will only affect new sessions.', 'keys-master' );
-				$message .= ' ' . esc_html__( 'For immediate implementation for all accounts, you must delete all active sessions.', 'keys-master' );
 				$code     = 0;
 				add_settings_error( 'pokm_no_error', $code, $message, 'updated' );
 				Logger::info( 'Plugin settings updated.', $code );
@@ -521,7 +519,7 @@ class Keys_Master_Admin {
 				'text'        => esc_html__( 'Activated', 'keys-master' ),
 				'id'          => 'pokm_plugin_features_analytics',
 				'checked'     => Option::network_get( 'analytics' ),
-				'description' => esc_html__( 'If checked, Keys Master will store statistics about accounts and sessions.', 'keys-master' ),
+				'description' => esc_html__( 'If checked, Keys Master will store statistics about passwords usages.', 'keys-master' ),
 				'full_width'  => false,
 				'enabled'     => true,
 			]

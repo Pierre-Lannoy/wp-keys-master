@@ -47,7 +47,7 @@ class Databeam {
 			'name'         => POKM_PRODUCT_NAME,
 			'version'      => POKM_VERSION,
 			'subname'      => __( 'KPIs', 'keys-master' ),
-			'description'  => __( 'Allows to integrate, as a DataBeam source, all KPIs related to users\' sessions.', 'keys-master' ),
+			'description'  => __( 'Allows to integrate, as a DataBeam source, all KPIs related to applications passwords.', 'keys-master' ),
 			'instruction'  => __( 'Just add this and use it as source in your favorite visualizers and publishers.', 'keys-master' ),
 			'note'         => __( 'In multisite environments, this source is available for all network sites.', 'keys-master' ),
 			'legal'        =>
