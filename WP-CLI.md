@@ -110,9 +110,9 @@ If you try to set `none` as mode, wp-cli will ask you to confirm. To force answe
 
 ### Available modes
 
-- `none`: disabled application passwords usage by roles (standard WordPress mode)
-- `cumulative`: enabled application passwords usage by roles with cumulative privileges
-- `least`: enabled application passwords usage by roles with least privileges
+- `none`: disable application passwords usage by roles (standard WordPress mode)
+- `cumulative`: enable application passwords usage by roles with cumulative privileges
+- `least`: enable application passwords usage by roles with least privileges
 
 ### Example
 
