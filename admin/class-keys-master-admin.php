@@ -519,7 +519,7 @@ class Keys_Master_Admin {
 				'text'        => esc_html__( 'Activated', 'keys-master' ),
 				'id'          => 'pokm_plugin_features_analytics',
 				'checked'     => Option::network_get( 'analytics' ),
-				'description' => esc_html__( 'If checked, Keys Master will store statistics about passwords usages.', 'keys-master' ),
+				'description' => esc_html__( 'If checked, Keys Master will store statistics about application passwords usages.', 'keys-master' ),
 				'full_width'  => false,
 				'enabled'     => true,
 			]
