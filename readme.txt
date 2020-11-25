@@ -97,5 +97,5 @@ Please, see [full changelog](https://github.com/Pierre-Lannoy/wp-keys-master/blo
 
 1. Application Passwords Management
 2. Main Analytics Dashboard
-3. Keys Master Options Per Roles
+3. Application Passwords Options Per Roles
 4. Plugin Options
