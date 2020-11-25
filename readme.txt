@@ -29,6 +29,15 @@ For each roles defined on your site, you can define a period during which a pass
 * countries breakdown (requires the free [IP Locator](https://wordpress.org/plugins/ip-locator/) plugin);
 * site breakdowns in multisites environments.
 
+**Keys Master** supports a set of WP-CLI commands to:
+    
+* manage WordPress application passwords - see `wp help keys password` for details;
+* toggle on/off main settings - see `wp help keys settings` for details;
+* modify operations mode - see `wp help keys mode` for details;
+* display passwords statistics - see `wp help keys analytics` for details.
+
+For a full help on WP-CLI commands in Keys Master, please [read this guide](https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md).
+
 **Keys Master** is a free and open source plugin for WordPress. It integrates many other free and open source works (as-is or modified). Please, see 'about' tab in the plugin settings to see the details.
 
 = Support =
