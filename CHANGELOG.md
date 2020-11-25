@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased - will be 1.0.2]
 
+### Changed
+- [WP-CLI] Adds help section.
+
 ### Fixed
 - There are some typos in the `readme.txt` file.
 
