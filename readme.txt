@@ -31,7 +31,7 @@ For each roles defined on your site, you can define a period during which a pass
 
 **Keys Master** supports a set of WP-CLI commands to:
     
-* manage WordPress application passwords - see `wp help keys password` for details;
+* manage WordPress application passwords (list, create and revoke) - see `wp help keys password` for details;
 * toggle on/off main settings - see `wp help keys settings` for details;
 * modify operations mode - see `wp help keys mode` for details;
 * display passwords statistics - see `wp help keys analytics` for details.
