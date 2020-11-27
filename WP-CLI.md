@@ -84,7 +84,7 @@ pierre@dev:~$ wp keys password create 1 --settings='{"name": "Application Test"}
 Success: the new password is tvu9q3LUv0jgEMdTbIsWlGQM. Be sure to save this in a safe location, you will not be able to retrieve it.
 ```
 
-### revoking a password
+### Revoking a password
 
 To revoke a WordPress application password, use the `wp keys password revoke <uuid>` command where:
 
