@@ -11,7 +11,6 @@
 
 namespace KeysMaster\System;
 
-use Decalog\Plugin\Feature\Log;
 use KeysMaster\System\Role;
 use KeysMaster\System\Option;
 use KeysMaster\System\Logger;

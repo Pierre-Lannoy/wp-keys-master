@@ -11,7 +11,6 @@
 
 namespace KeysMaster\Plugin\Feature;
 
-use Decalog\Plugin\Feature\Log;
 use KeysMaster\System\Option;
 use KeysMaster\System\Database;
 use KeysMaster\System\Environment;
