@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Keys Master\n"
-"POT-Creation-Date: 2020-11-25 18:14+0100\n"
+"POT-Creation-Date: 2020-12-05 20:23+0100\n"
 "PO-Revision-Date: 2019-07-08 14:07+0200\n"
 "Last-Translator: Pierre Lannoy <pierre@lannoy.fr>\n"
 "Language-Team: Pierre Lannoy <pierre@lannoy.fr>\n"
@@ -982,17 +982,17 @@ msgstr ""
 msgid "Sorry, unable to find or read the specified file."
 msgstr ""
 
-#: includes/system/class-password.php:321
+#: includes/system/class-password.php:320
 #, php-format
 msgid "You can manage up to %d passwords."
 msgstr ""
 
-#: includes/system/class-password.php:324
+#: includes/system/class-password.php:323
 #, php-format
 msgid "Passwords are revoked after %d days of inactivity."
 msgstr ""
 
-#: includes/system/class-password.php:335
+#: includes/system/class-password.php:334
 msgid "To create an application password, please, ask your administrator."
 msgstr ""
 
