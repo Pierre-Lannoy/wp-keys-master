@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Keys Master - Stable Readme (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-11-25 16:46+0100\n"
+"PO-Revision-Date: 2020-12-07 12:00+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,13 +22,41 @@ msgstr "Puissant gestionnaire de mots de passe d’application pour WordPress av
 msgid "Keys Master"
 msgstr "Keys Master"
 
+#. Found in description paragraph.
+msgid "For a full help on WP-CLI commands in Keys Master, please <a href=\"https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md\">read this guide</a>."
+msgstr "Pour obtenir une aide complète sur les commandes WP-CLI dans Keys Master, veuillez <a href=\"https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md\">lire ce guide</a>."
+
+#. Found in description paragraph.
+msgid "<strong>Keys Master</strong> supports a set of WP-CLI commands to:"
+msgstr "<strong>Keys Master</strong> prend en charge un ensemble de commandes WP-CLI pour :"
+
+#. Found in description list item.
+msgid "display passwords statistics - see <code>wp help apwd analytics</code> for details."
+msgstr "afficher les statistiques de mots de passe - voir <code>wp help apwd analytics</code> pour plus de détails."
+
+#. Found in description list item.
+msgid "modify operations mode - see <code>wp help apwd mode</code> for details;"
+msgstr "modifier le mode de fonctionnement - voir <code>wp help apwd mode</code> pour plus de détails ;"
+
+#. Found in description list item.
+msgid "toggle on/off main settings - see <code>wp help apwd settings</code> for details;"
+msgstr "activer ou désactiver le réglages principaux - voir <code>wp help apwd settings</code> pour plus de détails ;"
+
+#. Found in description list item.
+msgid "manage WordPress application passwords (list, create and revoke) - see <code>wp help apwd password</code> for details;"
+msgstr "gérer les mots de passe d’application WordPress (lister, créer et révoquer) - voir <code>wp help apwd password</code> pour plus de détails ;"
+
+#. Screenshot description.
+msgid "Application Passwords Options Per Roles"
+msgstr "Options des mots de passe d’application par rôle"
+
 #. Found in faq paragraph.
 msgid "You can report bugs and suggest ideas via the <a href=\"https://github.com/Pierre-Lannoy/wp-keys-master/issues\">GitHub issue tracker</a> of the plugin."
 msgstr "Vous pouvez signaler des bogues et suggérer des améliorations via le <a href=\"https://github.com/Pierre-Lannoy/wp-keys-master/issues\">suivi d’incidents GitHub</a> de l’extension."
 
 #. Found in faq paragraph.
 msgid "Support is provided via the official <a href=\"https://wordpress.org/support/plugin/keys-master/\">WordPress page</a>."
-msgstr "L’assistance est proposée via la page officielle <a href=\"https://wordpress.org/support/plugin/ke/\">d’assistance</a>."
+msgstr "L’assistance est proposée via la page officielle <a href=\"https://wordpress.org/support/plugin/keys-master/\">d’assistance</a>."
 
 #. Found in faq paragraph.
 msgid "Yes. It is designed to work on multisite too. Network Admins can use all the plugin features. Sites Admins have no access to the plugin features."
@@ -112,11 +140,11 @@ msgstr "Cette extension ne traite pas de données à caractère personnel (DCP).
 
 #. Found in description paragraph.
 msgid "This plugin doesn't set any cookie in the user's browser."
-msgstr "Cette extension ne dépose pas de témoin dans le navigateur de l’utilisateur."
+msgstr "Cette extension ne dépose pas de témoin dans le navigateur de l’utilisatrice ou de l’utilisateur."
 
 #. Found in description paragraph.
 msgid "This plugin, as any piece of software, is neither compliant nor non-compliant with privacy laws and regulations. It is your responsibility to use it - by activating the corresponding options or services - with respect for the personal data of your users and applicable laws."
-msgstr "Cette extension, comme tout autre logiciel, n’est ni conforme ni non conforme aux lois et règlements sur la protection de la vie privée. Il est de votre responsabilité de l’utiliser - en activant les options ou services correspondants - dans le respect des données personnelles de vos utilisateurs et des lois applicables."
+msgstr "Cette extension, comme tout autre logiciel, n’est ni conforme ni non conforme aux lois et règlements sur la protection de la vie privée. Il est de votre responsabilité de l’utiliser - en activant les options ou services correspondants - dans le respect des données personnelles de vos utilisatrices et utilisateurs ainsi que des lois applicables."
 
 #. Found in description paragraph.
 msgid "Anyway, I'll be glad to help you if you encounter issues when using this plugin. Just use the support section of this plugin page."
@@ -172,7 +200,7 @@ msgstr "utilisation spécifique : aucune (bloque l’utilisation), seulement l�
 
 #. Found in description list item.
 msgid "maximum passwords per user;"
-msgstr "nombre maximum de mots de passe par utilisateur ;"
+msgstr "nombre maximum de mots de passe par compte ;"
 
 #. Found in description header.
 msgid "Donation"
@@ -189,10 +217,6 @@ msgstr "Assistance"
 #. Screenshot description.
 msgid "Plugin Options"
 msgstr "Options de l’extension"
-
-#. Screenshot description.
-msgid "Keys Master Options Per Roles"
-msgstr "Options des mots de passe par rôles"
 
 #. Screenshot description.
 msgid "Main Analytics Dashboard"

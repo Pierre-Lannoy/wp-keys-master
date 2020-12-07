@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Keys Master - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-11-25 18:04+0100\n"
+"PO-Revision-Date: 2020-12-07 12:09+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,7 +20,7 @@ msgstr "Surveillance des mots de passe d’application inutilisés."
 
 #: admin/class-keys-master-admin.php:621
 msgid "Maximal number of application passwords per user."
-msgstr "Nombre maximal de mots de passe d’application par utilisateur."
+msgstr "Nombre maximal de mots de passe d’application par compte."
 
 #: admin/class-keys-master-admin.php:605
 msgid "Allowed application passwords usage."
@@ -90,7 +90,7 @@ msgstr "Statistiques"
 
 #: admin/class-keys-master-admin.php:506
 msgid "Note: administrators having other roles are not affected by the privileges computation; this privileges computation only applies on non-administrator users having multiple roles."
-msgstr "Remarque : les administrateurs ayant d’autres rôles ne sont pas affectés par le calcul des privilèges ; ce calcul de privilèges ne s’applique qu’aux utilisateurs non administrateurs ayant plusieurs rôles."
+msgstr "Remarque : les administratrices ou administrateurs ayant d’autres rôles ne sont pas affectés par le calcul des privilèges ; ce calcul de privilèges ne s’applique qu’aux utilisatrices ou utilisateurs sans rôle d’administration mais ayant plusieurs autres rôles."
 
 #: admin/class-keys-master-admin.php:506
 msgid "Operation mode of application passwords control."
@@ -174,7 +174,7 @@ msgstr "Journalisation"
 
 #: admin/class-keys-master-admin.php:364
 msgid "Your site does not use any logging plugin. To log all events triggered in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory."
-msgstr "Votre site n’utilise aucune extension de journalisation. Pour journaliser tous les évènements déclenchés par MailArchiver, je vous recommande d’installer l’excellent (et gratuit) %s. Mais ce n’est pas obligatoire."
+msgstr "Votre site n’utilise aucune extension de journalisation. Pour journaliser tous les évènements déclenchés par Keys Master, je vous recommande d’installer l’excellent (et gratuit) %s. Mais ce n’est pas obligatoire."
 
 #: admin/class-keys-master-admin.php:361 admin/class-keys-master-admin.php:380
 #: admin/class-keys-master-admin.php:398
@@ -823,7 +823,7 @@ msgstr "Taux d’utilisation"
 
 #: includes/features/class-analytics.php:1077
 msgid "Ratio of users having set at least one application password."
-msgstr "Ratio d’utilisateurs ayant défini au moins un mot de passe d’application."
+msgstr "Ratio de comptes ayant défini au moins un mot de passe d’application."
 
 #: includes/features/class-analytics.php:1072
 msgid "Number of revoked application passwords."
@@ -865,8 +865,8 @@ msgstr "Résumé principal"
 #: includes/features/class-analytics.php:923
 msgid "%s user"
 msgid_plural "%s users"
-msgstr[0] "%s utilisateur"
-msgstr[1] "%s utilisateurs"
+msgstr[0] "%s compte"
+msgstr[1] "%s comptes"
 
 #: includes/features/class-analytics.php:921
 msgid "no adoption"
@@ -908,7 +908,7 @@ msgstr "Utilisation"
 
 #: includes/features/class-analytics.php:721
 msgid "Users having set at least one application password."
-msgstr "Utilisateurs ayant défini au moins un mot de passe d’application."
+msgstr "Comptes ayant défini au moins un mot de passe d’application."
 
 #: includes/features/class-analytics.php:720
 msgctxt "Noun - Short (max 4 char) - Application passwords adoption."
@@ -1144,7 +1144,7 @@ msgstr "Nom"
 
 #: includes/features/class-passwords.php:330
 msgid "User"
-msgstr "Utilisateur"
+msgstr "Compte"
 
 #. Author URI of the plugin
 msgid "https://pierre.lannoy.fr"
