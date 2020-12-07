@@ -213,7 +213,7 @@ class Wpcli {
 	 *
 	 * ## EXAMPLES
 	 *
-	 * wp keys status
+	 * wp apwd status
 	 *
 	 *
 	 *     === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -275,7 +275,7 @@ class Wpcli {
 	 *
 	 * ## EXAMPLES
 	 *
-	 * wp keys settings disable analytics --yes
+	 * wp apwd settings disable analytics --yes
 	 *
 	 *
 	 *     === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -331,7 +331,7 @@ class Wpcli {
 	 *
 	 * ## EXAMPLES
 	 *
-	 * wp keys mode set none --yes
+	 * wp apwd mode set none --yes
 	 *
 	 *
 	 *     === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -395,7 +395,7 @@ class Wpcli {
 	 *
 	 * ## EXAMPLES
 	 *
-	 * wp keys analytics
+	 * wp apwd analytics
 	 *
 	 *
 	 *    === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -465,8 +465,8 @@ class Wpcli {
 	 * ## EXAMPLES
 	 *
 	 * Lists available exit codes:
-	 * + wp keys exitcode list
-	 * + wp keys exitcode list --format=json
+	 * + wp apwd exitcode list
+	 * + wp apwd exitcode list --format=json
 	 *
 	 *
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -560,19 +560,19 @@ class Wpcli {
 	 * ## EXAMPLES
 	 *
 	 * List some application passwords:
-	 * + wp keys password list
-	 * + wp keys password list ed0f775f-2271-4570-a28b-0bc11fba2b27
-	 * + wp keys password list 1
-	 * + wp keys password list --detail=full
-	 * + wp keys password list --format=json
+	 * + wp apwd password list
+	 * + wp apwd password list ed0f775f-2271-4570-a28b-0bc11fba2b27
+	 * + wp apwd password list 1
+	 * + wp apwd password list --detail=full
+	 * + wp apwd password list --format=json
 	 *
 	 * Create an application password:
-	 * + wp keys password create 125
-	 * + wp keys password create 1 --settings='{"name":"My Application Password"}'
+	 * + wp apwd password create 125
+	 * + wp apwd password create 1 --settings='{"name":"My Application Password"}'
 	 *
 	 * Revoke an application password:
-	 * + wp keys password revoke 5d3f949d-d135-4c19-a621-7a47b6c0f83b
-	 * + wp keys password revoke 5d3f949d-d135-4c19-a621-7a47b6c0f83b --yes
+	 * + wp apwd password revoke 5d3f949d-d135-4c19-a621-7a47b6c0f83b
+	 * + wp apwd password revoke 5d3f949d-d135-4c19-a621-7a47b6c0f83b --yes
 	 *
 	 *
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
@@ -706,10 +706,10 @@ class Wpcli {
 add_shortcode( 'pokm-wpcli', [ 'KeysMaster\Plugin\Feature\Wpcli', 'sc_get_helpfile' ] );
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	\WP_CLI::add_command( 'keys settings', [ Wpcli::class, 'settings' ] );
-	\WP_CLI::add_command( 'keys status', [ Wpcli::class, 'status' ] );
-	\WP_CLI::add_command( 'keys mode', [ Wpcli::class, 'mode' ] );
-	\WP_CLI::add_command( 'keys analytics', [ Wpcli::class, 'analytics' ] );
-	\WP_CLI::add_command( 'keys password', [ Wpcli::class, 'password' ] );
-	\WP_CLI::add_command( 'keys exitcode', [ Wpcli::class, 'exitcode' ] );
+	\WP_CLI::add_command( 'apwd settings', [ Wpcli::class, 'settings' ] );
+	\WP_CLI::add_command( 'apwd status', [ Wpcli::class, 'status' ] );
+	\WP_CLI::add_command( 'apwd mode', [ Wpcli::class, 'mode' ] );
+	\WP_CLI::add_command( 'apwd analytics', [ Wpcli::class, 'analytics' ] );
+	\WP_CLI::add_command( 'apwd password', [ Wpcli::class, 'password' ] );
+	\WP_CLI::add_command( 'apwd exitcode', [ Wpcli::class, 'exitcode' ] );
 }

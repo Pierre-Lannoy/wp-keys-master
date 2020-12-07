@@ -1,15 +1,15 @@
 Keys Master is fully usable from command-line, thanks to [WP-CLI](https://wp-cli.org/). You can set Keys Master options and much more, without using a web browser.
 
-1. [Obtaining statistics about application passwords](#obtaining-statistics-about-application-passwords) - `wp keys analytics`
-2. [Managing passwords](#managing-passwords) - `wp keys paswword`
-3. [Getting Keys Master status](#getting-keys-master-status) - `wp keys status`
-4. [Modifying operation mode](#modifying-operation-mode) - `wp keys mode`
-5. [Managing main settings](#managing-main-settings) - `wp keys settings`
+1. [Obtaining statistics about application passwords](#obtaining-statistics-about-application-passwords) - `wp apwd analytics`
+2. [Managing passwords](#managing-passwords) - `wp apwd paswword`
+3. [Getting Keys Master status](#getting-keys-master-status) - `wp apwd status`
+4. [Modifying operation mode](#modifying-operation-mode) - `wp apwd mode`
+5. [Managing main settings](#managing-main-settings) - `wp apwd settings`
 6. [Misc flags](#misc-flags)
 
 ## Obtaining statistics about application passwords
 
-You can get application passwords analytics for today (compared with yesterday). To do that, use the `wp keys analytics` command.
+You can get application passwords analytics for today (compared with yesterday). To do that, use the `wp apwd analytics` command.
 
 By default, the outputted format is a simple table. If you want to customize the format, just use `--format=<format>`. Note if you choose `json` or `yaml` as format, the output will contain full data and metadata for the current day.
 
@@ -17,7 +17,7 @@ By default, the outputted format is a simple table. If you want to customize the
 
 To display application passwords statistics, type the following command:
 ```console
-pierre@dev:~$ wp keys analytics
+pierre@dev:~$ wp apwd analytics
 +---------------+-----------------------------------------------------+-------+-------+-----------+
 | kpi           | description                                         | value | ratio | variation |
 +---------------+-----------------------------------------------------+-------+-------+-----------+
@@ -32,11 +32,11 @@ pierre@dev:~$ wp keys analytics
 
 ## Managing passwords
 
-To manage WordPress application passwords, use the `wp keys password <list|create|revoke> [<uuid|user_id>] [--settings=<settings>]` command.
+To manage WordPress application passwords, use the `wp apwd password <list|create|revoke> [<uuid|user_id>] [--settings=<settings>]` command.
 
 ### Listing passwords
 
-To list application passwords of your site/network, use the `wp keys password list [<uuid|user_id>]` command.
+To list application passwords of your site/network, use the `wp apwd password list [<uuid|user_id>]` command.
 
 You can filter the listed passwords as follow:
 
@@ -47,7 +47,7 @@ You can filter the listed passwords as follow:
 
 To display all the passwords for the user ID 1, type the following command:
 ```console
-pierre@dev:~$ wp keys password list 1
+pierre@dev:~$ wp apwd password list 1
 +--------------------------------------+---------------------------+---------------+------------+
 | uuid                                 | user                      | name          | last-used  |
 +--------------------------------------+---------------------------+---------------+------------+
@@ -61,7 +61,7 @@ pierre@dev:~$ wp keys password list 1
 
 To display details about password `23b40ccc-f27c-4c21-a383-9ca7ad53983b`, type the following command:
 ```console
-pierre@dev:~$ wp keys password list 23b40ccc-f27c-4c21-a383-9ca7ad53983b
+pierre@dev:~$ wp apwd password list 23b40ccc-f27c-4c21-a383-9ca7ad53983b
 +--------------------------------------+--------------------------------+---------------+------------+
 | uuid                                 | user                           | name          | last-used  |
 +--------------------------------------+--------------------------------+---------------+------------+
@@ -71,7 +71,7 @@ pierre@dev:~$ wp keys password list 23b40ccc-f27c-4c21-a383-9ca7ad53983b
 
 ### Creating a password
 
-To create a WordPress application password, use the `wp keys password create <user_id> [--settings=<settings>]` command where:
+To create a WordPress application password, use the `wp apwd password create <user_id> [--settings=<settings>]` command where:
 
 - `<user_id>` is a valid WordPress user ID.
 - `<settings>` a json string containing ***"parameter":value*** pairs. The only available parameter is `name`; if you omit it, Keys Master will name the new password automatically.
@@ -80,13 +80,13 @@ To create a WordPress application password, use the `wp keys password create <us
 
 To create an application password for user ID 1, type the following command:
 ```console
-pierre@dev:~$ wp keys password create 1 --settings='{"name": "Application Test"}'
+pierre@dev:~$ wp apwd password create 1 --settings='{"name": "Application Test"}'
 Success: the new password is tvu9q3LUv0jgEMdTbIsWlGQM. Be sure to save this in a safe location, you will not be able to retrieve it.
 ```
 
 ### Revoking a password
 
-To revoke a WordPress application password, use the `wp keys password revoke <uuid>` command where:
+To revoke a WordPress application password, use the `wp apwd password revoke <uuid>` command where:
 
 - `<uuid>` is a valid application password UUID.
 
@@ -94,17 +94,17 @@ To revoke a WordPress application password, use the `wp keys password revoke <uu
 
 To revoke an application password with UUID `23b40ccc-f27c-4c21-a383-9ca7ad53983b`, type the following command:
 ```console
-pierre@dev:~$ wp keys password revoke 23b40ccc-f27c-4c21-a383-9ca7ad53983b --yes
+pierre@dev:~$ wp apwd password revoke 23b40ccc-f27c-4c21-a383-9ca7ad53983b --yes
 Success: password ed0f775f-2271-4570-a28b-0bc11fba2b27 revoked.
 ```
 
 ## Getting Keys Master status
 
-To get detailed status and operation mode, use the `wp keys status` command.
+To get detailed status and operation mode, use the `wp apwd status` command.
 
 ## Modifying operation mode
 
-To set Keys Master main operation mode, use `wp keys mode <set> <none|cumulative|least>`.
+To set Keys Master main operation mode, use `wp apwd mode <set> <none|cumulative|least>`.
 
 If you try to set `none` as mode, wp-cli will ask you to confirm. To force answer to yes without prompting, just use `--yes`.
 
@@ -118,13 +118,13 @@ If you try to set `none` as mode, wp-cli will ask you to confirm. To force answe
 
 To disable application passwords usage by roles without confirmation prompt, type the following command:
 ```console
-pierre@dev:~$ wp keys mode set none --yes
+pierre@dev:~$ wp apwd mode set none --yes
 Success: operation mode is now "no role limitation".
 ```
 
 ## Managing main settings
 
-To toggle on/off main settings, use `wp keys settings <enable|disable> <analytics>`.
+To toggle on/off main settings, use `wp apwd settings <enable|disable> <analytics>`.
 
 If you try to disable a setting, wp-cli will ask you to confirm. To force answer to yes without prompting, just use `--yes`.
 
@@ -136,7 +136,7 @@ If you try to disable a setting, wp-cli will ask you to confirm. To force answer
 
 To disable analytics without confirmation prompt, type the following command:
 ```console
-pierre@dev:~$ wp keys settings disable analytics --yes
+pierre@dev:~$ wp apwd settings disable analytics --yes
 Success: analytics are now deactivated.
 ```
 
@@ -149,4 +149,4 @@ For most commands, Keys Master lets you use the following flags:
 > It's not mandatory to use `--stdout` when using `--format=count` or `--format=ids`: in such cases `--stdout` is assumed.
 
 > Note Keys Master sets exit code so you can use `$?` to write scripts.
-> To know the meaning of Keys Master exit codes, just use the command `wp keys exitcode list`.
+> To know the meaning of Keys Master exit codes, just use the command `wp apwd exitcode list`.

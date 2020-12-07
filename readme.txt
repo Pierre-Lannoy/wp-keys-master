@@ -4,7 +4,7 @@ Tags: application password, authentication, rest-api, security, xml-rpc
 Requires at least: 5.6
 Requires PHP: 7.2
 Tested up to: 5.6
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -31,10 +31,10 @@ For each roles defined on your site, you can define a period during which a pass
 
 **Keys Master** supports a set of WP-CLI commands to:
     
-* manage WordPress application passwords (list, create and revoke) - see `wp help keys password` for details;
-* toggle on/off main settings - see `wp help keys settings` for details;
-* modify operations mode - see `wp help keys mode` for details;
-* display passwords statistics - see `wp help keys analytics` for details.
+* manage WordPress application passwords (list, create and revoke) - see `wp help apwd password` for details;
+* toggle on/off main settings - see `wp help apwd settings` for details;
+* modify operations mode - see `wp help apwd mode` for details;
+* display passwords statistics - see `wp help apwd analytics` for details.
 
 For a full help on WP-CLI commands in Keys Master, please [read this guide](https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md).
 

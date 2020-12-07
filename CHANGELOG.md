@@ -3,6 +3,16 @@ All notable changes to **Keys Master** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Sessions** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2020-12-07
+
+### Changed
+- [WP-CLI] Main command is now named `apwd`.
+- Integrates improvements packed with RC3/RC4, Keys Master is now ready for WordPress 5.6 release.
+
+### Fixed
+- There are some typos in the documentation.
+- Some strings are not translatable.
+
 ## [1.0.2] - 2020-12-04
 
 ### Changed
