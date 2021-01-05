@@ -1,7 +1,12 @@
 # Changelog
 All notable changes to **Keys Master** are documented in this *changelog*.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Sessions** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Keys Master** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Fixed
+- There are some typos in the changelog.
 
 ## [1.0.4] - 2021-01-05
 
