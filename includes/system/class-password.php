@@ -314,6 +314,7 @@ class Password {
 			$user_id = $this->user->ID;
 		}
 		$privileges = $this->get_privileges_for_user( $user_id );
+		$result     = '';
 		if ( 'full' === $privileges['modes']['allow'] ) {
 			$text = '';
 			if ( 1000 > $privileges['modes']['maxap'] ) {
