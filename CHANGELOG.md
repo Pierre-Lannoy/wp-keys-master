@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-### Fixed
+### Changed
+- Consistent reset for settings.
 - There are some typos in the changelog.
 
 ## [1.0.4] - 2021-01-05
