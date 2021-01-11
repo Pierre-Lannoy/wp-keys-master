@@ -116,7 +116,7 @@ class Conversion {
 	 */
 	public static function rate_shorten( $number, $precision = 2, $detail = false, $separator = '' ) {
 		$divisors = [
-			pow( 60, 0 ) => esc_html_x( 'day', 'Abbreviation - Stands for "day".', 'keys-master' ),
+			pow( 60, 0 ) => esc_html_x( 'd', 'Abbreviation - Stands for "day".', 'keys-master' ),
 			pow( 60, 1 ) => esc_html_x( 'hr', 'Abbreviation - Stands for "hour".', 'keys-master' ),
 			pow( 60, 2 ) => esc_html_x( 'min', 'Abbreviation - Stands for "minute".', 'keys-master' ),
 			pow( 60, 3 ) => esc_html_x( 'sec', 'Abbreviation - Stands for "second".', 'keys-master' ),
