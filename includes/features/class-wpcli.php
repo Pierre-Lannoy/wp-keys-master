@@ -27,8 +27,6 @@ use Spyc;
 /**
  * Manages application passwords and get details about their use.
  *
- * Defines methods and properties for WP-CLI commands.
- *
  * @package Features
  * @author  Pierre Lannoy <https://pierre.lannoy.fr/>.
  * @since   1.0.0
