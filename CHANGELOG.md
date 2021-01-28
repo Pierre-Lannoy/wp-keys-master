@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 - Consistent reset for settings.
 - There are some typos in the changelog.
+- [WP_CLI] `apwd` command have now a definition and all synopsis are up to date.
 
 ### Fixed
 - In Site Health section, Opcache status may be wrong (or generates PHP warnings) if OPcache API usage is restricted.

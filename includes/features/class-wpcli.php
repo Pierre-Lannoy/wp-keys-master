@@ -25,7 +25,7 @@ use KeysMaster\System\IP;
 use Spyc;
 
 /**
- * WP-CLI for Keys Master.
+ * Manages application passwords and get details about their use.
  *
  * Defines methods and properties for WP-CLI commands.
  *
@@ -41,7 +41,7 @@ class Wpcli {
 	 * @since    1.0.0
 	 * @var array $exit_codes Exit codes.
 	 */
-	private static $exit_codes = [
+	private $exit_codes = [
 		0   => 'operation successful.',
 		1   => 'unrecognized setting.',
 		2   => 'unrecognized action.',
@@ -59,7 +59,7 @@ class Wpcli {
 	 * @param   string  $field  Optional. The field to output.
 	 * @since   1.0.0
 	 */
-	private static function write_ids( $ids, $field = '' ) {
+	private function write_ids( $ids, $field = '' ) {
 		$result = '';
 		$last   = end( $ids );
 		foreach ( $ids as $key => $id ) {
@@ -83,7 +83,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   1.0.0
 	 */
-	private static function error( $code = 255, $stdout = false ) {
+	private function error( $code = 255, $stdout = false ) {
 		if ( \WP_CLI\Utils\isPiped() ) {
 			// phpcs:ignore
 			fwrite( STDOUT, '' );
@@ -91,11 +91,11 @@ class Wpcli {
 			exit( $code );
 		} elseif ( $stdout ) {
 			// phpcs:ignore
-			fwrite( STDERR, ucfirst( self::$exit_codes[ $code ] ) );
+			fwrite( STDERR, ucfirst( $this->exit_codes[ $code ] ) );
 			// phpcs:ignore
 			exit( $code );
 		} else {
-			\WP_CLI::error( self::$exit_codes[ $code ] );
+			\WP_CLI::error( $this->exit_codes[ $code ] );
 		}
 	}
 
@@ -106,8 +106,8 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   1.0.0
 	 */
-	private static function error_from_object( $err, $stdout = false ) {
-		$msg = self::$exit_codes[255];
+	private function error_from_object( $err, $stdout = false ) {
+		$msg = $this->exit_codes[255];
 		if ( is_wp_error( $err ) ) {
 			$msg = $err->get_error_message();
 		}
@@ -134,7 +134,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   1.0.0
 	 */
-	private static function warning( $msg, $result = '', $stdout = false ) {
+	private function warning( $msg, $result = '', $stdout = false ) {
 		if ( \WP_CLI\Utils\isPiped() || $stdout ) {
 			// phpcs:ignore
 			fwrite( STDOUT, $result );
@@ -151,7 +151,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   1.0.0
 	 */
-	private static function success( $msg, $result = '', $stdout = false ) {
+	private function success( $msg, $result = '', $stdout = false ) {
 		if ( \WP_CLI\Utils\isPiped() || $stdout ) {
 			// phpcs:ignore
 			fwrite( STDOUT, $result );
@@ -168,7 +168,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   1.0.0
 	 */
-	private static function line( $msg, $result = '', $stdout = false ) {
+	private function line( $msg, $result = '', $stdout = false ) {
 		if ( \WP_CLI\Utils\isPiped() || $stdout ) {
 			// phpcs:ignore
 			fwrite( STDOUT, $result );
@@ -184,7 +184,7 @@ class Wpcli {
 	 * @param   boolean  $stdout    Optional. Clean stdout output.
 	 * @since   1.0.0
 	 */
-	private static function log( $msg, $stdout = false ) {
+	private function log( $msg, $stdout = false ) {
 		if ( ! \WP_CLI\Utils\isPiped() && ! $stdout ) {
 			\WP_CLI::log( $msg );
 		}
@@ -197,7 +197,7 @@ class Wpcli {
 	 * @return  array The true parameters.
 	 * @since   1.0.0
 	 */
-	private static function get_params( $args ) {
+	private function get_params( $args ) {
 		$result = '';
 		if ( array_key_exists( 'settings', $args ) ) {
 			$result = \json_decode( $args['settings'], true );
@@ -219,7 +219,7 @@ class Wpcli {
 	 *     === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function status( $args, $assoc_args ) {
+	public function status( $args, $assoc_args ) {
 		\WP_CLI::line( sprintf( '%s is running.', Environment::plugin_version_text() ) );
 		switch ( Option::network_get( 'rolemode' ) ) {
 			case -1:
@@ -281,7 +281,7 @@ class Wpcli {
 	 *     === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function settings( $args, $assoc_args ) {
+	public function settings( $args, $assoc_args ) {
 		$stdout  = \WP_CLI\Utils\get_flag_value( $assoc_args, 'stdout', false );
 		$action  = isset( $args[0] ) ? (string) $args[0] : '';
 		$setting = isset( $args[1] ) ? (string) $args[1] : '';
@@ -290,10 +290,10 @@ class Wpcli {
 				switch ( $setting ) {
 					case 'analytics':
 						Option::network_set( 'analytics', true );
-						self::success( 'analytics are now activated.', '', $stdout );
+						$this->success( 'analytics are now activated.', '', $stdout );
 						break;
 					default:
-						self::error( 1, $stdout );
+						$this->error( 1, $stdout );
 				}
 				break;
 			case 'disable':
@@ -301,14 +301,14 @@ class Wpcli {
 					case 'analytics':
 						\WP_CLI::confirm( 'Are you sure you want to deactivate analytics?', $assoc_args );
 						Option::network_set( 'analytics', false );
-						self::success( 'analytics are now deactivated.', '', $stdout );
+						$this->success( 'analytics are now deactivated.', '', $stdout );
 						break;
 					default:
-						self::error( 1, $stdout );
+						$this->error( 1, $stdout );
 				}
 				break;
 			default:
-				self::error( 2, $stdout );
+				$this->error( 2, $stdout );
 		}
 	}
 
@@ -337,7 +337,7 @@ class Wpcli {
 	 *     === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function mode( $args, $assoc_args ) {
+	public function mode( $args, $assoc_args ) {
 		$stdout = \WP_CLI\Utils\get_flag_value( $assoc_args, 'stdout', false );
 		$action = isset( $args[0] ) ? (string) $args[0] : '';
 		$mode   = isset( $args[1] ) ? (string) $args[1] : '';
@@ -347,23 +347,23 @@ class Wpcli {
 					case 'none':
 						\WP_CLI::confirm( 'Are you sure you want to deactivate role-mode?', $assoc_args );
 						Option::network_set( 'rolemode', -1 );
-						self::success( 'operation mode is now "no role limitation".', '', $stdout );
+						$this->success( 'operation mode is now "no role limitation".', '', $stdout );
 						break;
 					case 'cumulative':
 						Option::network_set( 'rolemode', 0 );
-						self::success( 'operation mode is now "role limitation with cumulative privileges".', '', $stdout );
+						$this->success( 'operation mode is now "role limitation with cumulative privileges".', '', $stdout );
 						break;
 					case 'least':
 						Option::network_set( 'rolemode', 1 );
-						self::success( 'operation mode is now "role limitation with least privileges".', '', $stdout );
+						$this->success( 'operation mode is now "role limitation with least privileges".', '', $stdout );
 						break;
 					default:
-						self::error( 4, $stdout );
+						$this->error( 4, $stdout );
 						break;
 				}
 				break;
 			default:
-				self::error( 2, $stdout );
+				$this->error( 2, $stdout );
 		}
 	}
 
@@ -401,12 +401,12 @@ class Wpcli {
 	 *    === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function analytics( $args, $assoc_args ) {
+	public function analytics( $args, $assoc_args ) {
 		$stdout = \WP_CLI\Utils\get_flag_value( $assoc_args, 'stdout', false );
 		$site   = (int) \WP_CLI\Utils\get_flag_value( $assoc_args, 'site', 0 );
 		$format = \WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
 		if ( ! Option::network_get( 'analytics' ) ) {
-			self::error( 3, $stdout );
+			$this->error( 3, $stdout );
 		}
 		$analytics = Analytics::get_status_kpi_collection( [ 'site_id' => $site ] );
 		$result    = [];
@@ -427,11 +427,11 @@ class Wpcli {
 		}
 		if ( 'json' === $format ) {
 			$detail = wp_json_encode( $analytics );
-			self::line( $detail, $detail, $stdout );
+			$this->line( $detail, $detail, $stdout );
 		} elseif ( 'yaml' === $format ) {
 			unset( $analytics['assets'] );
 			$detail = Spyc::YAMLDump( $analytics, true, true, true );
-			self::line( $detail, $detail, $stdout );
+			$this->line( $detail, $detail, $stdout );
 		} else {
 			\WP_CLI\Utils\format_items( $assoc_args['format'], $result, [ 'kpi', 'description', 'value', 'ratio', 'variation' ] );
 		}
@@ -472,18 +472,18 @@ class Wpcli {
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function exitcode( $args, $assoc_args ) {
+	public function exitcode( $args, $assoc_args ) {
 		$stdout = \WP_CLI\Utils\get_flag_value( $assoc_args, 'stdout', false );
 		$format = \WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
 		$action = isset( $args[0] ) ? $args[0] : 'list';
 		$codes  = [];
-		foreach ( self::$exit_codes as $key => $msg ) {
+		foreach ( $this->exit_codes as $key => $msg ) {
 			$codes[ $key ] = [ 'code' => $key, 'meaning' => ucfirst( $msg ) ];
 		}
 		switch ( $action ) {
 			case 'list':
 				if ( 'ids' === $format ) {
-					self::write_ids( $codes );
+					$this->write_ids( $codes );
 				} else {
 					\WP_CLI\Utils\format_items( $format, $codes, [ 'code', 'meaning' ] );
 				}
@@ -578,11 +578,11 @@ class Wpcli {
 	 *   === For other examples and recipes, visit https://github.com/Pierre-Lannoy/wp-keys-master/blob/master/WP-CLI.md ===
 	 *
 	 */
-	public static function password( $args, $assoc_args ) {
+	public function password( $args, $assoc_args ) {
 		$stdout = \WP_CLI\Utils\get_flag_value( $assoc_args, 'stdout', false );
 		$format = \WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
 		$detail = \WP_CLI\Utils\get_flag_value( $assoc_args, 'detail', 'short' );
-		$params = self::get_params( $assoc_args );
+		$params = $this->get_params( $assoc_args );
 		$uuid   = '';
 		$id     = '';
 		$action = isset( $args[0] ) ? $args[0] : 'list';
@@ -593,15 +593,15 @@ class Wpcli {
 			} else {
 				$id = (int) $arg;
 				if ( false === get_userdata( $id ) ) {
-					self::error( 6, $stdout );
+					$this->error( 6, $stdout );
 				}
 			}
 		}
 		if ( 'create' === $action && '' === $id ) {
-			self::error( 6, $stdout );
+			$this->error( 6, $stdout );
 		}
 		if ( 'revoke' === $action && '' === $uuid ) {
-			self::error( 5, $stdout );
+			$this->error( 5, $stdout );
 		}
 		switch ( $action ) {
 			case 'list':
@@ -664,13 +664,13 @@ class Wpcli {
 					$detail = [ 'uuid', 'user', 'name', 'last-used' ];
 				}
 				if ( 'ids' === $format ) {
-					self::write_ids( $passwords, 'uuid' );
+					$this->write_ids( $passwords, 'uuid' );
 				} elseif ( 'yaml' === $format ) {
 					$details = Spyc::YAMLDump( $passwords, true, true, true );
-					self::line( $details, $details, $stdout );
+					$this->line( $details, $details, $stdout );
 				}  elseif ( 'json' === $format ) {
 					$details = wp_json_encode( $passwords );
-					self::line( $details, $details, $stdout );
+					$this->line( $details, $details, $stdout );
 				} else {
 					\WP_CLI\Utils\format_items( $format, $passwords, $detail );
 				}
@@ -681,9 +681,9 @@ class Wpcli {
 				}
 				$created = \WP_Application_Passwords::create_new_application_password( $id, $params );
 				if ( is_wp_error( $created ) && ! is_array( $created ) ) {
-					self::error_from_object( $created );
+					$this->error_from_object( $created );
 				}
-				self::success( 'the new password is ' . \WP_CLI::colorize( '%8' ) . $created[0] . \WP_CLI::colorize( '%n.' ) . ' Be sure to save this in a safe location, you will not be able to retrieve it.', $created[0], $stdout );
+				$this->success( 'the new password is ' . \WP_CLI::colorize( '%8' ) . $created[0] . \WP_CLI::colorize( '%n.' ) . ' Be sure to save this in a safe location, you will not be able to retrieve it.', $created[0], $stdout );
 				break;
 			case 'revoke':
 				$meta = Password::get_uuid_passwords( $uuid );
@@ -691,11 +691,11 @@ class Wpcli {
 					\WP_CLI::confirm( 'Are you sure you want to revoke this password?', $assoc_args );
 					$revoked = \WP_Application_Passwords::delete_application_password( (int) $meta[0]['user_id'], $uuid );
 					if ( is_wp_error( $revoked ) && ! is_array( $revoked ) ) {
-						self::error_from_object( $revoked );
+						$this->error_from_object( $revoked );
 					}
-					self::success( 'password ' . \WP_CLI::colorize( '%8' ) . $uuid . \WP_CLI::colorize( '%n' ) . ' revoked.', $uuid, $stdout );
+					$this->success( 'password ' . \WP_CLI::colorize( '%8' ) . $uuid . \WP_CLI::colorize( '%n' ) . ' revoked.', $uuid, $stdout );
 				} else {
-					self::error( 5, $stdout );
+					$this->error( 5, $stdout );
 				}
 				break;
 		}
@@ -706,10 +706,5 @@ class Wpcli {
 add_shortcode( 'pokm-wpcli', [ 'KeysMaster\Plugin\Feature\Wpcli', 'sc_get_helpfile' ] );
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	\WP_CLI::add_command( 'apwd settings', [ Wpcli::class, 'settings' ] );
-	\WP_CLI::add_command( 'apwd status', [ Wpcli::class, 'status' ] );
-	\WP_CLI::add_command( 'apwd mode', [ Wpcli::class, 'mode' ] );
-	\WP_CLI::add_command( 'apwd analytics', [ Wpcli::class, 'analytics' ] );
-	\WP_CLI::add_command( 'apwd password', [ Wpcli::class, 'password' ] );
-	\WP_CLI::add_command( 'apwd exitcode', [ Wpcli::class, 'exitcode' ] );
+	\WP_CLI::add_command( 'apwd', 'KeysMaster\Plugin\Feature\Wpcli' );
 }
