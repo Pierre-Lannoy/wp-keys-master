@@ -12,7 +12,7 @@
 namespace KeysMaster\Plugin\Feature;
 
 use KeysMaster\System\Environment;
-use KeysMaster\System\Logger;
+
 use KeysMaster\System\Option;
 use KeysMaster\System\Markdown;
 use KeysMaster\Plugin\Feature\Analytics;

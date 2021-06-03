@@ -18,7 +18,7 @@ use KeysMaster\System\Cache;
 use KeysMaster\System\Date;
 use KeysMaster\System\Conversion;
 use KeysMaster\System\Role;
-use KeysMaster\System\Logger;
+
 use KeysMaster\System\L10n;
 use KeysMaster\System\Http;
 use KeysMaster\System\Favicon;

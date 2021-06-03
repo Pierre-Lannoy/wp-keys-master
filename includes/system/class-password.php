@@ -13,7 +13,7 @@ namespace KeysMaster\System;
 
 use KeysMaster\System\Role;
 use KeysMaster\System\Option;
-use KeysMaster\System\Logger;
+
 use KeysMaster\System\Hash;
 use KeysMaster\System\User;
 use KeysMaster\System\Environment;
@@ -505,14 +505,14 @@ class Password {
 				}
 			}
 			if ( 0 === $count ) {
-				Logger::notice( 'No passwords to revoke.' );
+				\DecaLog\Engine::eventsLogger( POKM_SLUG )->notice( 'No passwords to revoke.' );
 			} else {
 				do_action( 'opkm_force_admin_terminate', $count );
-				Logger::notice( sprintf( 'All selected passwords have been revoked (%d revoked passwords).', $count ) );
+				\DecaLog\Engine::eventsLogger( POKM_SLUG )->notice( sprintf( 'All selected passwords have been revoked (%d revoked passwords).', $count ) );
 			}
 			return $count;
 		} else {
-			Logger::alert( 'A non authorized user attempted to revoke some passwords.' );
+			\DecaLog\Engine::eventsLogger( POKM_SLUG )->alert( 'A non authorized user attempted to revoke some passwords.' );
 			return false;
 		}
 	}

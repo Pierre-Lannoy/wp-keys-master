@@ -12,7 +12,7 @@
 namespace KeysMaster\Plugin\Feature;
 
 use KeysMaster\System\Cache;
-use KeysMaster\System\Logger;
+
 use KeysMaster\System\Option;
 use KeysMaster\System\Password;
 use KeysMaster\Plugin\Feature\Schema;
@@ -52,12 +52,12 @@ class ZooKeeper {
 			return;
 		}
 		if ( isset( $semaphore ) && $semaphore && (int) $semaphore + (int) Option::network_get( 'zk_semaphore' ) >= time() ) {
-			Logger::debug( '[ZooKeeper] Destroying staled semaphore.' );
+			\DecaLog\Engine::eventsLogger( POKM_SLUG )->debug( '[ZooKeeper] Destroying staled semaphore.' );
 		}
 		Cache::set_global( 'zookeeper/semaphore', time() );
-		Logger::debug( '[ZooKeeper] Starting background tasks execution.' );
+		\DecaLog\Engine::eventsLogger( POKM_SLUG )->debug( '[ZooKeeper] Starting background tasks execution.' );
 		self::revoke_old_passwords();
-		Logger::debug( '[ZooKeeper] Ending background tasks execution.' );
+		\DecaLog\Engine::eventsLogger( POKM_SLUG )->debug( '[ZooKeeper] Ending background tasks execution.' );
 		Cache::delete_global( 'zookeeper/semaphore' );
 		Cache::set_global( 'zookeeper/lastexec', time() );
 	}
@@ -69,7 +69,7 @@ class ZooKeeper {
 	 */
 	private static function revoke_old_passwords() {
 		global $wpdb;
-		Logger::debug( '[ZooKeeper] Starting "revoke_old_passwords" execution.' );
+		\DecaLog\Engine::eventsLogger( POKM_SLUG )->debug( '[ZooKeeper] Starting "revoke_old_passwords" execution.' );
 		$index = Cache::get_global( 'zookeeper/userindex' );
 		if ( ! $index ) {
 			$index = 0;
@@ -96,21 +96,21 @@ class ZooKeeper {
 			}
 			switch ( $cpt ) {
 				case 0:
-					Logger::debug( 'No application password to auto-revoke.' );
+					\DecaLog\Engine::eventsLogger( POKM_SLUG )->debug( 'No application password to auto-revoke.' );
 					break;
 				case 1:
-					Logger::notice( sprintf( '%d application password auto-revoked.', $cpt ) );
+					\DecaLog\Engine::eventsLogger( POKM_SLUG )->notice( sprintf( '%d application password auto-revoked.', $cpt ) );
 					break;
 				default:
-					Logger::notice( sprintf( '%d application password auto-revoked.', $cpt ) );
+					\DecaLog\Engine::eventsLogger( POKM_SLUG )->notice( sprintf( '%d application password auto-revoked.', $cpt ) );
 					break;
 			}
 		} else {
-			Logger::debug( 'No application password to auto-revoke.' );
+			\DecaLog\Engine::eventsLogger( POKM_SLUG )->debug( 'No application password to auto-revoke.' );
 			$index = 0;
 		}
 		Cache::set_global( 'zookeeper/userindex', $index, 'infinite' );
-		Logger::debug( '[ZooKeeper] Ending "revoke_old_passwords" execution.' );
+		\DecaLog\Engine::eventsLogger( POKM_SLUG )->debug( '[ZooKeeper] Ending "revoke_old_passwords" execution.' );
 	}
 
 }

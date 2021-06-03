@@ -11,7 +11,7 @@
 
 namespace KeysMaster\Plugin\Feature;
 
-use KeysMaster\System\Logger;
+
 use KeysMaster\System\User;
 use KeysMaster\Plugin\Feature\Schema;
 use KeysMaster\System\Environment;

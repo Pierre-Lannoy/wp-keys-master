@@ -16,7 +16,7 @@ use KeysMaster\System\Loader;
 use KeysMaster\System\I18n;
 use KeysMaster\System\Assets;
 use KeysMaster\Library\Libraries;
-use KeysMaster\System\Logger;
+
 use KeysMaster\System\Nag;
 use KeysMaster\System\Password;
 

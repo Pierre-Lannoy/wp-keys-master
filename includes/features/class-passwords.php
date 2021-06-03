@@ -12,7 +12,7 @@
 namespace KeysMaster\Plugin\Feature;
 
 use KeysMaster\System\Conversion;
-use KeysMaster\System\Logger;
+
 use KeysMaster\System\Date;
 use KeysMaster\System\Timezone;
 use KeysMaster\System\Option;

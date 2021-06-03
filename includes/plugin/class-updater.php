@@ -12,7 +12,7 @@ namespace KeysMaster\Plugin;
 use KeysMaster\System\Nag;
 use KeysMaster\System\Option;
 use Exception;
-use KeysMaster\System\Logger;
+
 use KeysMaster\System\Cache;
 use KeysMaster\Plugin\Feature\Schema;
 use KeysMaster\System\Markdown;
@@ -45,7 +45,7 @@ class Updater {
 				$this->update( $old );
 				// phpcs:ignore
 				$message  = sprintf( esc_html__( '%1$s has been correctly updated from version %2$s to version %3$s.', 'keys-master' ), POKM_PRODUCT_NAME, $old, POKM_VERSION );
-				Logger::notice( $message );
+				\DecaLog\Engine::eventsLogger( POKM_SLUG )->notice( $message );
 				// phpcs:ignore
 				$message .= ' ' . sprintf( __( 'See <a href="%s">what\'s new</a>.', 'keys-master' ), admin_url( 'admin.php?page=pokm-settings&tab=about' ) );
 			}
@@ -73,7 +73,7 @@ class Updater {
 		$schema = new Schema();
 		$schema->update();
 		Cache::delete_global( 'data/*' );
-		Logger::notice( 'Cache purged.' );
+		\DecaLog\Engine::eventsLogger( POKM_SLUG )->notice( 'Cache purged.' );
 	}
 
 	/**

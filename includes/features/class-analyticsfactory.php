@@ -14,7 +14,7 @@ namespace KeysMaster\Plugin\Feature;
 use KeysMaster\Plugin\Feature\Analytics;
 use KeysMaster\System\Blog;
 use KeysMaster\System\Date;
-use KeysMaster\System\Logger;
+
 use KeysMaster\System\Timezone;
 
 /**
