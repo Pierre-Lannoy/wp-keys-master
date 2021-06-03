@@ -68,7 +68,7 @@ function pokm_uninstall() {
  * @since 1.0.0
  */
 function pokm_run() {
-	\DecaLog\Engine::initPlugin( POKM_SLUG, POKM_PRODUCT_NAME, POKM_VERSION );
+	\DecaLog\Engine::initPlugin( POKM_SLUG, POKM_PRODUCT_NAME, POKM_VERSION, \KeysMaster\Plugin\Core::get_base64_logo() );
 	// It is needed to do these inits here because some plugins make very early die()
 	\KeysMaster\System\Password::init();
 	\KeysMaster\Plugin\Feature\Capture::init();
