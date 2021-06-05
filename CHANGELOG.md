@@ -3,6 +3,12 @@ All notable changes to **Keys Master** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Keys Master** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2021-06-xx
+
+### Added
+- Compatibility with WordPress 5.8.
+- Integration with DecaLog SDK.
+
 ## [1.1.0] - 2021-02-24
 
 ### Added
