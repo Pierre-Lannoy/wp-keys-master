@@ -295,6 +295,7 @@ class Keys_Master_Admin {
 				Option::network_set( 'display_nag', array_key_exists( 'pokm_plugin_options_nag', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_options_nag' ) : false );
 				Option::network_set( 'download_favicons', array_key_exists( 'pokm_plugin_options_favicons', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_options_favicons' ) : false );
 				Option::network_set( 'analytics', array_key_exists( 'pokm_plugin_features_analytics', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_features_analytics' ) : false );
+				Option::network_set( 'metrics', array_key_exists( 'pokm_plugin_features_metrics', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_plugin_features_metrics' ) : false );
 				Option::network_set( 'obfuscation', array_key_exists( 'pokm_privacy_options_obfuscation', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_privacy_options_obfuscation' ) : false );
 				Option::network_set( 'history', array_key_exists( 'pokm_plugin_features_history', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_features_history', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'history' ) );
 				Option::network_set( 'rolemode', array_key_exists( 'pokm_plugin_features_rolemode', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_features_rolemode', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'rolemode' ) );
@@ -356,9 +357,9 @@ class Keys_Master_Admin {
 			]
 		);
 		register_setting( 'pokm_plugin_options_section', 'pokm_plugin_options_favicons' );
-		if ( defined( 'DECALOG_VERSION' ) ) {
+		if ( \DecaLog\Engine::isDecalogActivated() ) {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'thumbs-up', 'none', '#00C800' ) . '" />&nbsp;';
-			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'keys-master' ), '<em>DecaLog v' . DECALOG_VERSION . '</em>' );
+			$help .= sprintf( esc_html__( 'Your site is currently using %s.', 'keys-master' ), '<em>' . \DecaLog\Engine::getVersionString() . '</em>' );
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__( 'Your site does not use any logging plugin. To log all events triggered in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/decalog/">DecaLog</a>' );
@@ -541,6 +542,22 @@ class Keys_Master_Admin {
 			]
 		);
 		register_setting( 'pokm_plugin_features_section', 'pokm_plugin_features_history' );
+		add_settings_field(
+			'pokm_plugin_features_metrics',
+			esc_html__( 'Metrics', 'keys-master' ),
+			[ $form, 'echo_field_checkbox' ],
+			'pokm_plugin_features_section',
+			'pokm_plugin_features_section',
+			[
+				'text'        => esc_html__( 'Activated', 'keys-master' ),
+				'id'          => 'pokm_plugin_features_metrics',
+				'checked'     => \DecaLog\Engine::isDecalogActivated() ? Option::network_get( 'metrics' ) : false,
+				'description' => esc_html__( 'If checked, Keys Master will collate and publish application passwords metrics.', 'keys-master' ) . ( \DecaLog\Engine::isDecalogActivated() ? '' : '<br/>' . esc_html__( 'Note: for this to work, you must install DecaLog.', 'keys-master' ) ),
+				'full_width'  => false,
+				'enabled'     => \DecaLog\Engine::isDecalogActivated(),
+			]
+		);
+		register_setting( 'pokm_plugin_features_section', 'pokm_plugin_features_metrics' );
 	}
 	/**
 	 * Callback for privacy options section.

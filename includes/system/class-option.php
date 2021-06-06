@@ -75,13 +75,14 @@ class Option {
 		self::$defaults['version']           = '0.0.0';
 		self::$defaults['history']           = 30;
 		self::$defaults['analytics']         = true;
+		self::$defaults['metrics']           = true;
 		self::$defaults['obfuscation']       = false;
 		self::$defaults['rolemode']          = 0;
 		self::$defaults['zk_semaphore']      = 300;
 		self::$defaults['zk_cycle']          = 90;
 		self::$defaults['zk_tsize']          = 20;
 		self::$defaults['buffer_limit']      = 4000;
-		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'analytics', 'obfuscation', 'history', 'rolemode', 'zk_cycle', 'zk_tsize', 'zk_semaphore', 'buffer_limit' ];
+		self::$network                       = [ 'version', 'use_cdn', 'download_favicons', 'script_in_footer', 'display_nag', 'analytics', 'obfuscation', 'history', 'metrics', 'rolemode', 'zk_cycle', 'zk_tsize', 'zk_semaphore', 'buffer_limit' ];
 		// Specific options.
 		self::$defaults['allow'] = 'full';
 		self::$defaults['idle']  = 0;

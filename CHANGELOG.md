@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 - Compatibility with WordPress 5.8.
 - Integration with DecaLog SDK.
+- New option, available via settings page and wp-cli, to disable/enable metrics collation.
+
+### Changed
+- [WP-CLI] `apwd status` command now displays DecaLog SDK version too.
 
 ## [1.1.0] - 2021-02-24
 
