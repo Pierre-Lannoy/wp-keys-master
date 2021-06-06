@@ -654,6 +654,11 @@ class Analytics {
 							'raw'   => $data['kpi-bottom-success'],
 							'human' => $val['value'] . $val['abbreviation'],
 						],
+						'metrics'     => [
+							'name'  => 'authentication_success',
+							'desc'  => 'Ratio of successful authentication - [percent]',
+							'value' => (float) ( $data['kpi-main-success'] / 100.0 ),
+						],
 					];
 					break;
 				case 'password':
@@ -672,6 +677,11 @@ class Analytics {
 						'value'       => [
 							'raw'   => $data['kpi-main-password'],
 							'human' => $val['value'] . $val['abbreviation'],
+						],
+						'metrics'     => [
+							'name'  => 'password_total',
+							'desc'  => 'Number of registered application passwords - [count]',
+							'value' => (int) $data['kpi-main-password'],
 						],
 					];
 					break;
@@ -692,6 +702,11 @@ class Analytics {
 							'raw'   => $data['kpi-main-revoked'],
 							'human' => $val['value'] . $val['abbreviation'],
 						],
+						'metrics'     => [
+							'name'  => 'password_today_revoked',
+							'desc'  => 'Number of revoked application passwords today - [count]',
+							'value' => (int) $data['kpi-main-revoked'],
+						],
 					];
 					break;
 				case 'created':
@@ -710,6 +725,11 @@ class Analytics {
 						'value'       => [
 							'raw'   => $data['kpi-main-created'],
 							'human' => $val['value'] . $val['abbreviation'],
+						],
+						'metrics'     => [
+							'name'  => 'password_today_created',
+							'desc'  => 'Number of created application passwords today - [count]',
+							'value' => (int) $data['kpi-main-created'],
 						],
 					];
 					break;
@@ -734,6 +754,11 @@ class Analytics {
 							'raw'   => $data['kpi-bottom-adoption'],
 							'human' => $val['value'] . $val['abbreviation'],
 						],
+						'metrics'     => [
+							'name'  => 'password_adoption',
+							'desc'  => 'Ratio of users having set at least one application password - [percent]',
+							'value' => (float) ( $data['kpi-main-adoption'] / 100.0 ),
+						],
 					];
 					break;
 				case 'rate':
@@ -752,6 +777,11 @@ class Analytics {
 						'value'       => [
 							'raw'   => $data['kpi-bottom-rate'],
 							'human' => $val['value'] . $val['abbreviation'],
+						],
+						'metrics'     => [
+							'name'  => 'password_today_usage',
+							'desc'  => 'Application passwords usage today - [count]',
+							'value' => (int) $data['kpi-bottom-rate'],
 						],
 					];
 					break;

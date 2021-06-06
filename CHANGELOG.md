@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 - Compatibility with WordPress 5.8.
 - Integration with DecaLog SDK.
+- Traces and metrics collation and publication.
 - New option, available via settings page and wp-cli, to disable/enable metrics collation.
 
 ### Changed

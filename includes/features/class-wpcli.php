@@ -423,8 +423,9 @@ class Wpcli {
 		$analytics = Analytics::get_status_kpi_collection( [ 'site_id' => $site ] );
 		$result    = [];
 		if ( array_key_exists( 'data', $analytics ) ) {
-			foreach ( $analytics['data'] as $kpi ) {
+			foreach ( $analytics['data'] as $id => $kpi ) {
 				$item                = [];
+				$item['id']          = $id;
 				$item['kpi']         = $kpi['name'];
 				$item['description'] = $kpi['description'];
 				$item['value']       = $kpi['value']['human'];
@@ -445,7 +446,7 @@ class Wpcli {
 			$detail = Spyc::YAMLDump( $analytics, true, true, true );
 			$this->line( $detail, $detail, $stdout );
 		} else {
-			\WP_CLI\Utils\format_items( $assoc_args['format'], $result, [ 'kpi', 'description', 'value', 'ratio', 'variation' ] );
+			\WP_CLI\Utils\format_items( $assoc_args['format'], $result, [ 'id', 'kpi', 'description', 'value', 'ratio', 'variation' ] );
 		}
 	}
 
