@@ -130,7 +130,7 @@ class Core {
 		$analytics = Cache::get_global( $cache_id );
 		if ( ! isset( $analytics ) ) {
 			$analytics = Analytics::get_status_kpi_collection( [ 'site_id' => 0 ] );
-			Cache::set_global( $cache_id, $analytics, 'statistics' );
+			Cache::set_global( $cache_id, $analytics, 'metrics' );
 		}
 		if ( isset( $analytics ) ) {
 			$metrics = \DecaLog\Engine::metricsLogger( POKM_SLUG );
