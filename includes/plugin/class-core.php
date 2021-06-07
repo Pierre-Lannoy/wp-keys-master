@@ -13,6 +13,7 @@
 namespace KeysMaster\Plugin;
 
 use KeysMaster\Plugin\Feature\Analytics;
+use KeysMaster\System\Environment;
 use KeysMaster\System\Loader;
 use KeysMaster\System\I18n;
 use KeysMaster\System\Assets;
@@ -57,7 +58,7 @@ class Core {
 		$this->define_global_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-		if ( \DecaLog\Engine::isDecalogActivated() && Option::network_get( 'metrics' ) ) {
+		if ( \DecaLog\Engine::isDecalogActivated() && Option::network_get( 'metrics' ) && Environment::exec_mode_for_metrics() ) {
 			$this->define_metrics();
 		}
 	}
