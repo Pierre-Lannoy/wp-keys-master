@@ -655,8 +655,8 @@ class Analytics {
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 						'metrics'     => [
-							'name'  => 'authentication_success',
-							'desc'  => 'Ratio of successful authentication - [percent]',
+							'name'  => 'authentication_success_today',
+							'desc'  => 'Ratio of successful authentication today - [percent]',
 							'value' => (float) ( $data['kpi-main-success'] / 100.0 ),
 							'type'  => 'gauge',
 						],
@@ -705,7 +705,7 @@ class Analytics {
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 						'metrics'     => [
-							'name'  => 'password_today_revoked',
+							'name'  => 'password_revoked_today',
 							'desc'  => 'Number of revoked application passwords today - [count]',
 							'value' => (int) $data['kpi-main-revoked'],
 							'type'  => 'counter',
@@ -730,7 +730,7 @@ class Analytics {
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 						'metrics'     => [
-							'name'  => 'password_today_created',
+							'name'  => 'password_created_today',
 							'desc'  => 'Number of created application passwords today - [count]',
 							'value' => (int) $data['kpi-main-created'],
 							'type'  => 'counter',
@@ -784,7 +784,7 @@ class Analytics {
 							'human' => $val['value'] . $val['abbreviation'],
 						],
 						'metrics'     => [
-							'name'  => 'password_today_usage',
+							'name'  => 'password_usage_today',
 							'desc'  => 'Application passwords usage today - [count]',
 							'value' => (int) $data['kpi-bottom-rate'],
 							'type'  => 'counter',
