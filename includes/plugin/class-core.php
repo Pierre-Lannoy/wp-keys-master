@@ -138,7 +138,15 @@ class Core {
 				foreach ( $analytics['data'] as $kpi ) {
 					$m = $kpi['metrics'] ?? null;
 					if ( isset( $m ) ) {
-						$metrics->createProdGauge( $m['name'], $m['value'], $m['desc'] );
+						switch ( $m['type'] ) {
+							case 'gauge':
+								$metrics->createProdGauge( $m['name'], $m['value'], $m['desc'] );
+								break;
+							case 'counter':
+								$metrics->createProdCounter( $m['name'], $m['desc'] );
+								$metrics->incProdCounter( $m['name'], $m['value'] );
+								break;
+						}
 					}
 				}
 			}

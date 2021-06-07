@@ -658,6 +658,7 @@ class Analytics {
 							'name'  => 'authentication_success',
 							'desc'  => 'Ratio of successful authentication - [percent]',
 							'value' => (float) ( $data['kpi-main-success'] / 100.0 ),
+							'type'  => 'gauge',
 						],
 					];
 					break;
@@ -682,6 +683,7 @@ class Analytics {
 							'name'  => 'password_total',
 							'desc'  => 'Number of registered application passwords - [count]',
 							'value' => (int) $data['kpi-main-password'],
+							'type'  => 'gauge',
 						],
 					];
 					break;
@@ -706,6 +708,7 @@ class Analytics {
 							'name'  => 'password_today_revoked',
 							'desc'  => 'Number of revoked application passwords today - [count]',
 							'value' => (int) $data['kpi-main-revoked'],
+							'type'  => 'counter',
 						],
 					];
 					break;
@@ -730,6 +733,7 @@ class Analytics {
 							'name'  => 'password_today_created',
 							'desc'  => 'Number of created application passwords today - [count]',
 							'value' => (int) $data['kpi-main-created'],
+							'type'  => 'counter',
 						],
 					];
 					break;
@@ -758,6 +762,7 @@ class Analytics {
 							'name'  => 'password_adoption',
 							'desc'  => 'Ratio of users having set at least one application password - [percent]',
 							'value' => (float) ( $data['kpi-main-adoption'] / 100.0 ),
+							'type'  => 'gauge',
 						],
 					];
 					break;
@@ -782,6 +787,7 @@ class Analytics {
 							'name'  => 'password_today_usage',
 							'desc'  => 'Application passwords usage today - [count]',
 							'value' => (int) $data['kpi-bottom-rate'],
+							'type'  => 'counter',
 						],
 					];
 					break;
