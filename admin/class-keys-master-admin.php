@@ -552,7 +552,7 @@ class Keys_Master_Admin {
 				'text'        => esc_html__( 'Activated', 'keys-master' ),
 				'id'          => 'pokm_plugin_features_metrics',
 				'checked'     => \DecaLog\Engine::isDecalogActivated() ? Option::network_get( 'metrics' ) : false,
-				'description' => esc_html__( 'If checked, Keys Master will collate and publish application passwords metrics.', 'keys-master' ) . ( \DecaLog\Engine::isDecalogActivated() ? '' : '<br/>' . esc_html__( 'Note: for this to work, you must install DecaLog.', 'keys-master' ) ),
+				'description' => esc_html__( 'If checked, Keys Master will collate and publish application passwords metrics.', 'keys-master' ) . '<br/>' . ( \DecaLog\Engine::isDecalogActivated() ? esc_html__( 'Note: for this to work, you must enable analytics.', 'keys-master' ) : esc_html__( 'Note: for this to work, you must install DecaLog.', 'keys-master' ) ),
 				'full_width'  => false,
 				'enabled'     => \DecaLog\Engine::isDecalogActivated(),
 			]
