@@ -6,7 +6,7 @@
 
 __Keys Master__ is a powerful application passwords manager for WordPress with role-based usage control and full analytics reporting about passwords usages. It relies on the "application password" core feature introduced in WordPress 5.6. and add it extra features and controls.
 
-See [WordPress directory page](https://wordpress.org/plugins/keys-master/). 
+See [WordPress directory page](https://wordpress.org/plugins/keys-master/) or [official website](https://perfops.one/keys-master). 
 
 You can limit usage of application passwords, on a per role basis:
 
@@ -31,6 +31,8 @@ __Keys Master__ supports a set of WP-CLI commands to:
 * display passwords statistics - see `wp help apwd analytics` for details.
 
 For a full help on WP-CLI commands in Keys Master, please [read this guide](WP-CLI.md).
+
+> __Keys Master__ is part of [PerfOps One](https://perfops.one/), a suite of free and open source WordPress plugins dedicated to observability and operations performance.
 
 __Keys Master__ is a free and open source plugin for WordPress. It integrates many other free and open source works (as-is or modified). Please, see 'about' tab in the plugin settings to see the details.
 
