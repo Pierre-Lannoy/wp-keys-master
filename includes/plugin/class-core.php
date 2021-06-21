@@ -126,7 +126,7 @@ class Core {
 	 * @access private
 	 */
 	private function define_metrics() {
-		$span      = \DecaLog\Engine::tracesLogger( POKM_SLUG )->start_span( 'Metrics collation', DECALOG_SPAN_PLUGINS_LOAD );
+		$span      = \DecaLog\Engine::tracesLogger( POKM_SLUG )->startSpan( 'Metrics collation', DECALOG_SPAN_PLUGINS_LOAD );
 		$cache_id  = 'metrics/lastcheck';
 		$analytics = Cache::get_global( $cache_id );
 		if ( ! isset( $analytics ) ) {
@@ -152,7 +152,7 @@ class Core {
 				}
 			}
 		}
-		\DecaLog\Engine::tracesLogger( POKM_SLUG )->end_span( $span );
+		\DecaLog\Engine::tracesLogger( POKM_SLUG )->endSpan( $span );
 	}
 
 	/**
