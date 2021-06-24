@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Keys Master\n"
-"POT-Creation-Date: 2021-02-23 23:55+0100\n"
+"POT-Creation-Date: 2021-06-24 14:34+0200\n"
 "PO-Revision-Date: 2019-07-08 14:07+0200\n"
 "Last-Translator: Pierre Lannoy <pierre@lannoy.fr>\n"
 "Language-Team: Pierre Lannoy <pierre@lannoy.fr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: keys-master.php\n"
@@ -84,51 +84,47 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:193
-msgid "GitHub repository"
-msgstr ""
-
-#: admin/class-keys-master-admin.php:273 admin/class-keys-master-admin.php:301
+#: admin/class-keys-master-admin.php:273 admin/class-keys-master-admin.php:302
 msgid "Plugin settings have been saved."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:278 admin/class-keys-master-admin.php:306
+#: admin/class-keys-master-admin.php:278 admin/class-keys-master-admin.php:307
 msgid "Plugin settings have not been saved. Please try again."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:323
+#: admin/class-keys-master-admin.php:324
 msgid "Plugin settings have been reset to defaults."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:328
+#: admin/class-keys-master-admin.php:329
 msgid "Plugin settings have not been reset to defaults. Please try again."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:345
+#: admin/class-keys-master-admin.php:346
 msgid "Favicons"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:350
+#: admin/class-keys-master-admin.php:351
 msgid "Download and display"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:353
+#: admin/class-keys-master-admin.php:354
 msgid ""
 "If checked, Keys Master will download favicons of websites to display them in "
 "reports."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:353
+#: admin/class-keys-master-admin.php:354
 msgid "Note: This feature uses the (free) Google Favicon Service."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:361 admin/class-keys-master-admin.php:380
-#: admin/class-keys-master-admin.php:398
+#: admin/class-keys-master-admin.php:362 admin/class-keys-master-admin.php:381
+#: admin/class-keys-master-admin.php:399
 #, php-format
 msgid "Your site is currently using %s."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:364
+#: admin/class-keys-master-admin.php:365
 #, php-format
 msgid ""
 "Your site does not use any logging plugin. To log all events triggered in "
@@ -136,11 +132,11 @@ msgid ""
 "is not mandatory."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:368
+#: admin/class-keys-master-admin.php:369
 msgid "Logging"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:383
+#: admin/class-keys-master-admin.php:384
 #, php-format
 msgid ""
 "Your site does not use any IP geographic information plugin. To allow country "
@@ -148,11 +144,11 @@ msgid ""
 "excellent (and free) %s. But it is not mandatory."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:387
+#: admin/class-keys-master-admin.php:388
 msgid "IP information"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:401
+#: admin/class-keys-master-admin.php:402
 #, php-format
 msgid ""
 "Your site does not use any device detection mechanism. To allow device "
@@ -160,157 +156,175 @@ msgid ""
 "excellent (and free) %s. But it is not mandatory."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:405
+#: admin/class-keys-master-admin.php:406
 msgid "Device detection"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:434
+#: admin/class-keys-master-admin.php:435
 msgid "Resources"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:439
+#: admin/class-keys-master-admin.php:440
 msgid "Use public CDN"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:442
+#: admin/class-keys-master-admin.php:443
 msgid ""
 "If checked, Keys Master will use a public CDN (jsDelivr) to serve scripts and "
 "stylesheets."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:450
+#: admin/class-keys-master-admin.php:451
 msgid "Admin notices"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:455
+#: admin/class-keys-master-admin.php:456
 msgid "Display"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:458
+#: admin/class-keys-master-admin.php:459
 msgid ""
 "Allows Keys Master to display admin notices throughout the admin dashboard."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:458
+#: admin/class-keys-master-admin.php:459
 msgid "Note: Keys Master respects DISABLE_NAG_NOTICES flag."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:476
+#: admin/class-keys-master-admin.php:477
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-keys-master-admin.php:480
+#: admin/class-keys-master-admin.php:481
 #, php-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-keys-master-admin.php:493
+#: admin/class-keys-master-admin.php:494
 msgid "Disabled - Don't limit application passwords usage by roles"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:494
+#: admin/class-keys-master-admin.php:495
 msgid "Enabled - Cumulative privileges"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:495
+#: admin/class-keys-master-admin.php:496
 msgid "Enabled - Least privileges"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:498
+#: admin/class-keys-master-admin.php:499
 msgid "Settings by roles"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:506
+#: admin/class-keys-master-admin.php:507
 msgid "Operation mode of application passwords control."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:506
+#: admin/class-keys-master-admin.php:507
 msgid ""
 "Note: administrators having other roles are not affected by the privileges "
 "computation; this privileges computation only applies on non-administrator "
 "users having multiple roles."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:514
+#: admin/class-keys-master-admin.php:515
 msgid "Analytics"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:519
+#: admin/class-keys-master-admin.php:520 admin/class-keys-master-admin.php:552
 msgid "Activated"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:522
+#: admin/class-keys-master-admin.php:523
 msgid ""
 "If checked, Keys Master will store statistics about application passwords "
 "usages."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:530
+#: admin/class-keys-master-admin.php:531
 msgid "Historical data"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:538
+#: admin/class-keys-master-admin.php:539
 msgid "Maximum age of data to keep for statistics."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:554
+#: admin/class-keys-master-admin.php:547
+msgid "Metrics"
+msgstr ""
+
+#: admin/class-keys-master-admin.php:555
+msgid ""
+"If checked, Keys Master will collate and publish application passwords "
+"metrics."
+msgstr ""
+
+#: admin/class-keys-master-admin.php:555
+msgid "Note: for this to work, you must enable analytics."
+msgstr ""
+
+#: admin/class-keys-master-admin.php:555
+msgid "Note: for this to work, you must install DecaLog."
+msgstr ""
+
+#: admin/class-keys-master-admin.php:571
 msgid "Remote IPs"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:559
+#: admin/class-keys-master-admin.php:576
 msgid "Obfuscation"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:562
+#: admin/class-keys-master-admin.php:579
 msgid "If checked, hashes will be stored instead of real IPs."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:578
+#: admin/class-keys-master-admin.php:595
 msgid "Full (authentication, creation and revocation)"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:579
+#: admin/class-keys-master-admin.php:596
 msgid "Limited (authentication and revocation)"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:580
+#: admin/class-keys-master-admin.php:597
 msgid "None"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:582
+#: admin/class-keys-master-admin.php:599
 msgid "Never revoke"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:585
+#: admin/class-keys-master-admin.php:602
 #, php-format
 msgid "Revoke when unused for more than %d days"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:590
+#: admin/class-keys-master-admin.php:607
 #, php-format
 msgid "%d application password"
 msgid_plural "%d application passwords"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-keys-master-admin.php:592
+#: admin/class-keys-master-admin.php:609
 msgid "Unlimited"
 msgstr ""
 
-#: admin/class-keys-master-admin.php:605
+#: admin/class-keys-master-admin.php:622
 msgid "Allowed application passwords usage."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:621
+#: admin/class-keys-master-admin.php:638
 msgid "Maximal number of application passwords per user."
 msgstr ""
 
-#: admin/class-keys-master-admin.php:637
+#: admin/class-keys-master-admin.php:654
 msgid "Unused application passwords supervision."
 msgstr ""
 
@@ -370,7 +384,7 @@ msgid "Number of passwords to display"
 msgstr ""
 
 #: admin/partials/keys-master-admin-tools-lines.php:23
-#: includes/features/class-analytics.php:1310
+#: includes/features/class-analytics.php:1346
 msgid "Apply"
 msgstr ""
 
@@ -395,7 +409,7 @@ msgid "Other"
 msgstr ""
 
 #: includes/features/class-analytics.php:303
-#: includes/features/class-analytics.php:1199
+#: includes/features/class-analytics.php:1235
 msgid "No Data"
 msgstr ""
 
@@ -473,201 +487,201 @@ msgstr ""
 msgid "Successful authentications."
 msgstr ""
 
-#: includes/features/class-analytics.php:662
-#: includes/features/class-analytics.php:1061
+#: includes/features/class-analytics.php:668
+#: includes/features/class-analytics.php:1097
 msgctxt "Noun - Number of application passwords."
 msgid "Passwords"
 msgstr ""
 
-#: includes/features/class-analytics.php:663
+#: includes/features/class-analytics.php:669
 msgctxt "Noun - Short (max 4 char) - Number of application passwords."
 msgid "Pwd."
 msgstr ""
 
-#: includes/features/class-analytics.php:664
-#: includes/features/class-analytics.php:1022
+#: includes/features/class-analytics.php:670
+#: includes/features/class-analytics.php:1058
 msgid "Application passwords."
 msgstr ""
 
-#: includes/features/class-analytics.php:681
-#: includes/features/class-analytics.php:1071
+#: includes/features/class-analytics.php:693
+#: includes/features/class-analytics.php:1107
 msgctxt "Noun - Number of revoked application passwords."
 msgid "Revoked"
 msgstr ""
 
-#: includes/features/class-analytics.php:682
+#: includes/features/class-analytics.php:694
 msgctxt "Noun - Short (max 4 char) - Number of revoked application passwords."
 msgid "Rvk."
 msgstr ""
 
-#: includes/features/class-analytics.php:683
+#: includes/features/class-analytics.php:695
 msgid "Revoked application passwords."
 msgstr ""
 
-#: includes/features/class-analytics.php:700
-#: includes/features/class-analytics.php:1066
+#: includes/features/class-analytics.php:718
+#: includes/features/class-analytics.php:1102
 msgctxt "Noun - Number of created application passwords."
 msgid "Created"
 msgstr ""
 
-#: includes/features/class-analytics.php:701
+#: includes/features/class-analytics.php:719
 msgctxt "Noun - Short (max 4 char) - Number of created application passwords."
 msgid "Crd."
 msgstr ""
 
-#: includes/features/class-analytics.php:702
+#: includes/features/class-analytics.php:720
 msgid "Created application passwords."
 msgstr ""
 
-#: includes/features/class-analytics.php:719
-#: includes/features/class-analytics.php:1076
+#: includes/features/class-analytics.php:743
+#: includes/features/class-analytics.php:1112
 msgctxt "Noun - Application passwords adoption."
 msgid "Adoption"
 msgstr ""
 
-#: includes/features/class-analytics.php:720
+#: includes/features/class-analytics.php:744
 msgctxt "Noun - Short (max 4 char) - Application passwords adoption."
 msgid "Adp."
 msgstr ""
 
-#: includes/features/class-analytics.php:721
+#: includes/features/class-analytics.php:745
 msgid "Users having set at least one application password."
 msgstr ""
 
-#: includes/features/class-analytics.php:742
+#: includes/features/class-analytics.php:772
 msgctxt "Noun - Number of application passwords usage."
 msgid "Usage"
 msgstr ""
 
-#: includes/features/class-analytics.php:743
+#: includes/features/class-analytics.php:773
 msgctxt "Noun - Short (max 4 char) - Number of application passwords usage."
 msgid "Usg."
 msgstr ""
 
-#: includes/features/class-analytics.php:744
+#: includes/features/class-analytics.php:774
 msgid "Application passwords usage."
 msgstr ""
 
-#: includes/features/class-analytics.php:811
+#: includes/features/class-analytics.php:847
 msgid "no call"
 msgstr ""
 
-#: includes/features/class-analytics.php:813
+#: includes/features/class-analytics.php:849
 #, php-format
 msgid "%s call"
 msgid_plural "%s calls"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/features/class-analytics.php:904
+#: includes/features/class-analytics.php:940
 msgid "no successful authentication"
 msgstr ""
 
-#: includes/features/class-analytics.php:906
+#: includes/features/class-analytics.php:942
 #, php-format
 msgid "%s successful auth."
 msgid_plural "%s successful auth."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/features/class-analytics.php:921
+#: includes/features/class-analytics.php:957
 msgid "no adoption"
 msgstr ""
 
-#: includes/features/class-analytics.php:923
+#: includes/features/class-analytics.php:959
 #, php-format
 msgid "%s user"
 msgid_plural "%s users"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/features/class-analytics.php:984
+#: includes/features/class-analytics.php:1020
 msgid "Main Summary"
 msgstr ""
 
-#: includes/features/class-analytics.php:1021
+#: includes/features/class-analytics.php:1057
 msgid "Authentications."
 msgstr ""
 
-#: includes/features/class-analytics.php:1023
+#: includes/features/class-analytics.php:1059
 msgid "Operations."
 msgstr ""
 
-#: includes/features/class-analytics.php:1029
+#: includes/features/class-analytics.php:1065
 msgid "Metrics Variations"
 msgstr ""
 
-#: includes/features/class-analytics.php:1056
+#: includes/features/class-analytics.php:1092
 msgctxt "Noun - Number of successful authentication."
 msgid "Auth. Success"
 msgstr ""
 
-#: includes/features/class-analytics.php:1057
+#: includes/features/class-analytics.php:1093
 msgid "Ratio of successful authentication."
 msgstr ""
 
-#: includes/features/class-analytics.php:1062
+#: includes/features/class-analytics.php:1098
 msgid "Number of application passwords."
 msgstr ""
 
-#: includes/features/class-analytics.php:1067
+#: includes/features/class-analytics.php:1103
 msgid "Number of created application passwords."
 msgstr ""
 
-#: includes/features/class-analytics.php:1072
+#: includes/features/class-analytics.php:1108
 msgid "Number of revoked application passwords."
 msgstr ""
 
-#: includes/features/class-analytics.php:1077
+#: includes/features/class-analytics.php:1113
 msgid "Ratio of users having set at least one application password."
 msgstr ""
 
-#: includes/features/class-analytics.php:1081
+#: includes/features/class-analytics.php:1117
 msgctxt "Noun - Number of application passwords usage."
 msgid "Usage Rate"
 msgstr ""
 
-#: includes/features/class-analytics.php:1082
+#: includes/features/class-analytics.php:1118
 msgid "Number of application passwords usage."
 msgstr ""
 
-#: includes/features/class-analytics.php:1108
+#: includes/features/class-analytics.php:1144
 msgid "Channels"
 msgstr ""
 
-#: includes/features/class-analytics.php:1128
+#: includes/features/class-analytics.php:1164
 msgid "Top clients"
 msgstr ""
 
-#: includes/features/class-analytics.php:1148
+#: includes/features/class-analytics.php:1184
 msgid "Sites Breakdown"
 msgstr ""
 
-#: includes/features/class-analytics.php:1168
+#: includes/features/class-analytics.php:1204
 msgid "Countries Breakdown"
 msgstr ""
 
-#: includes/features/class-analytics.php:1310
+#: includes/features/class-analytics.php:1346
 msgid "Custom Range"
 msgstr ""
 
-#: includes/features/class-analytics.php:1310
+#: includes/features/class-analytics.php:1346
 msgid "Cancel"
 msgstr ""
 
-#: includes/features/class-analytics.php:1312
+#: includes/features/class-analytics.php:1348
 msgid "Today"
 msgstr ""
 
-#: includes/features/class-analytics.php:1313
+#: includes/features/class-analytics.php:1349
 msgid "Yesterday"
 msgstr ""
 
-#: includes/features/class-analytics.php:1314
+#: includes/features/class-analytics.php:1350
 msgid "This Month"
 msgstr ""
 
-#: includes/features/class-analytics.php:1315
+#: includes/features/class-analytics.php:1351
 msgid "Last Month"
 msgstr ""
 
@@ -777,40 +791,40 @@ msgstr ""
 
 #: includes/libraries/class-libraries.php:67
 #: includes/libraries/class-libraries.php:78
-#: includes/libraries/class-libraries.php:175
-#: includes/libraries/class-libraries.php:183
-#: includes/libraries/class-libraries.php:190
-#: includes/libraries/class-libraries.php:197
+#: includes/libraries/class-libraries.php:215
+#: includes/libraries/class-libraries.php:223
+#: includes/libraries/class-libraries.php:230
+#: includes/libraries/class-libraries.php:237
 #, php-format
 msgid "%s & contributors"
 msgstr ""
 
-#: includes/libraries/class-libraries.php:116
+#: includes/libraries/class-libraries.php:156
 msgid "MIT license"
 msgstr ""
 
-#: includes/libraries/class-libraries.php:119
+#: includes/libraries/class-libraries.php:159
 msgid "Apache license, version 2.0"
 msgstr ""
 
-#: includes/libraries/class-libraries.php:122
+#: includes/libraries/class-libraries.php:162
 msgid "GPL-2.0 license"
 msgstr ""
 
-#: includes/libraries/class-libraries.php:125
+#: includes/libraries/class-libraries.php:165
 msgid "GPL-3.0 license"
 msgstr ""
 
-#: includes/libraries/class-libraries.php:128
+#: includes/libraries/class-libraries.php:168
 msgid "LGPL-3.0 license"
 msgstr ""
 
-#: includes/libraries/class-libraries.php:131
+#: includes/libraries/class-libraries.php:171
 msgid "unknown license"
 msgstr ""
 
 #. translators: as in the sentence "Product W version X by author Y (license Z)"
-#: includes/libraries/class-libraries.php:207
+#: includes/libraries/class-libraries.php:247
 #, php-format
 msgid "<a href=\"%1$s\">%2$s %3$s</a>%4$s by %5$s (%6$s)"
 msgstr ""
@@ -962,19 +976,19 @@ msgid_plural "hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/system/class-environment.php:206
+#: includes/system/class-environment.php:216
 msgid "log"
 msgstr ""
 
-#: includes/system/class-environment.php:211
+#: includes/system/class-environment.php:221
 msgid "display"
 msgstr ""
 
-#: includes/system/class-environment.php:217
+#: includes/system/class-environment.php:227
 msgid "Debug enabled"
 msgstr ""
 
-#: includes/system/class-environment.php:217
+#: includes/system/class-environment.php:227
 msgid "Debug disabled"
 msgstr ""
 
