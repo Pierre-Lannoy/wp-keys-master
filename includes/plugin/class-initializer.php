@@ -40,6 +40,10 @@ class Initializer {
 		\KeysMaster\System\APCu::init();
 		\KeysMaster\Plugin\Feature\UserAdministration::init();
 		\KeysMaster\Plugin\Feature\ZooKeeper::init();
+		if ( 'en_US' !== determine_locale() ) {
+			unload_textdomain( POKM_SLUG );
+			load_plugin_textdomain( POKM_SLUG );
+		}
 	}
 
 	/**
