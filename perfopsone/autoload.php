@@ -1,6 +1,6 @@
 <?php
 /**
- * Autoload for Keys Master.
+ * Autoload for Sessions.
  *
  * @package Bootstrap
  * @author  Pierre Lannoy <https://pierre.lannoy.fr/>.

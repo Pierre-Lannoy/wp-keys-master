@@ -21,7 +21,7 @@ use KeysMaster\System\Blog;
 use KeysMaster\System\Date;
 use KeysMaster\System\Timezone;
 use KeysMaster\System\GeoIP;
-use PerfOpsOne\AdminMenus;
+use PerfOpsOne\Menus;
 use KeysMaster\System\Statistics;
 
 /**
@@ -86,7 +86,7 @@ class Keys_Master_Admin {
 	 * @return array    The completed menus array.
 	 * @since 1.0.0
 	 */
-	public function init_perfops_admin_menus( $perfops ) {
+	public function init_perfopsone_admin_menus( $perfops ) {
 		if ( Role::SUPER_ADMIN === Role::admin_type() || Role::SINGLE_ADMIN === Role::admin_type() ) {
 			$perfops['analytics'][] = [
 				'name'          => esc_html__( 'Application Passwords', 'keys-master' ),
@@ -97,7 +97,6 @@ class Keys_Master_Admin {
 				'menu_title'    => esc_html__( 'App. Passwords', 'keys-master' ),
 				'capability'    => 'manage_options',
 				'callback'      => [ $this, 'get_viewer_page' ],
-				'position'      => 50,
 				'plugin'        => POKM_SLUG,
 				'activated'     => Option::network_get( 'analytics' ),
 				'remedy'        => esc_url( admin_url( 'admin.php?page=pokm-settings&tab=misc' ) ),
@@ -111,7 +110,6 @@ class Keys_Master_Admin {
 				'menu_title'    => esc_html__( 'App. Passwords', 'keys-master' ),
 				'capability'    => 'manage_options',
 				'callback'      => [ $this, 'get_manager_page' ],
-				'position'      => 50,
 				'plugin'        => POKM_SLUG,
 				'activated'     => true,
 				'remedy'        => '',
@@ -126,7 +124,6 @@ class Keys_Master_Admin {
 				'menu_title'    => POKM_PRODUCT_NAME,
 				'capability'    => 'manage_options',
 				'callback'      => [ $this, 'get_settings_page' ],
-				'position'      => 50,
 				'plugin'        => POKM_SLUG,
 				'version'       => POKM_VERSION,
 				'activated'     => true,
@@ -138,13 +135,22 @@ class Keys_Master_Admin {
 	}
 
 	/**
+	 * Dispatch the items in the settings menu.
+	 *
+	 * @since 2.0.0
+	 */
+	public function finalize_admin_menus() {
+		Menus::finalize();
+	}
+
+	/**
 	 * Set the items in the settings menu.
 	 *
 	 * @since 1.0.0
 	 */
 	public function init_admin_menus() {
-		add_filter( 'init_perfops_admin_menus', [ $this, 'init_perfops_admin_menus' ] );
-		AdminMenus::initialize();
+		add_filter( 'init_perfopsone_admin_menus', [ $this, 'init_perfopsone_admin_menus' ] );
+		Menus::initialize();
 	}
 
 	/**
