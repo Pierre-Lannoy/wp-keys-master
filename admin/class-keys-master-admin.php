@@ -163,6 +163,9 @@ class Keys_Master_Admin {
 		//add_settings_section( 'pokm_privacy_options_section', esc_html__( 'Privacy options', 'keys-master' ), [ $this, 'privacy_options_section_callback' ], 'pokm_privacy_options_section' );
 		add_settings_section( 'pokm_plugin_options_section', esc_html__( 'Plugin options', 'keys-master' ), [ $this, 'plugin_options_section_callback' ], 'pokm_plugin_options_section' );
 		add_settings_section( 'pokm_plugin_roles_section', '', [ $this, 'plugin_roles_section_callback' ], 'pokm_plugin_roles_section' );
+		if ( apply_filters( 'perfopsone_advanced_controls', false ) ) {
+			add_settings_section( 'pokm_plugin_advanced_section', esc_html__( 'Plugin advanced options', 'keys-master' ), [ $this, 'plugin_advanced_section_callback' ], 'pokm_plugin_advanced_section' );
+		}
 	}
 
 	/**
@@ -276,8 +279,8 @@ class Keys_Master_Admin {
 					}
 				}
 				Option::roles_set( $settings );
-				$message  = esc_html__( 'Plugin settings have been saved.', 'keys-master' );
-				$code     = 0;
+				$message = esc_html__( 'Plugin settings have been saved.', 'keys-master' );
+				$code    = 0;
 				add_settings_error( 'pokm_no_error', $code, $message, 'updated' );
 				\DecaLog\Engine::eventsLogger( POKM_SLUG )->info( 'Plugin settings updated.', [ 'code' => $code ] );
 			} else {
@@ -305,6 +308,10 @@ class Keys_Master_Admin {
 				Option::network_set( 'obfuscation', array_key_exists( 'pokm_privacy_options_obfuscation', $_POST ) ? (bool) filter_input( INPUT_POST, 'pokm_privacy_options_obfuscation' ) : false );
 				Option::network_set( 'history', array_key_exists( 'pokm_plugin_features_history', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_features_history', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'history' ) );
 				Option::network_set( 'rolemode', array_key_exists( 'pokm_plugin_features_rolemode', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_features_rolemode', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'rolemode' ) );
+				Option::network_set( 'zk_semaphore', array_key_exists( 'pokm_plugin_advanced_zk_semaphore', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_advanced_zk_semaphore', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'zk_semaphore' ) );
+				Option::network_set( 'zk_cycle', array_key_exists( 'pokm_plugin_advanced_zk_cycle', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_advanced_zk_cycle', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'zk_cycle' ) );
+				Option::network_set( 'zk_tsize', array_key_exists( 'pokm_plugin_advanced_zk_tsize', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_advanced_zk_tsize', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'zk_tsize' ) );
+				Option::network_set( 'buffer_limit', array_key_exists( 'pokm_plugin_advanced_buffer_limit', $_POST ) ? (string) filter_input( INPUT_POST, 'pokm_plugin_advanced_buffer_limit', FILTER_SANITIZE_NUMBER_INT ) : Option::network_get( 'buffer_limit' ) );
 				$message = esc_html__( 'Plugin settings have been saved.', 'keys-master' );
 				$code    = 0;
 				add_settings_error( 'pokm_no_error', $code, $message, 'updated' );
@@ -490,6 +497,87 @@ class Keys_Master_Admin {
 	}
 
 	/**
+	 * Callback for plugin advanced section.
+	 *
+	 * @since 1.0.0
+	 */
+	public function plugin_advanced_section_callback() {
+		$form = new Form();
+		add_settings_field(
+			'pokm_plugin_advanced_buffer_limit',
+			'List size',
+			[ $form, 'echo_field_input_integer' ],
+			'pokm_plugin_advanced_section',
+			'pokm_plugin_advanced_section',
+			[
+				'id'          => 'pokm_plugin_advanced_buffer_limit',
+				'value'       => Option::network_get( 'buffer_limit' ),
+				'min'         => 1000,
+				'max'         => 200000,
+				'step'        => 1000,
+				'description' => 'List size, in number of items.',
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'pokm_plugin_advanced_section', 'pokm_plugin_advanced_buffer_limit' );
+		add_settings_field(
+			'pokm_plugin_advanced_zk_tsize',
+			'Zookeeper size',
+			[ $form, 'echo_field_input_integer' ],
+			'pokm_plugin_advanced_section',
+			'pokm_plugin_advanced_section',
+			[
+				'id'          => 'pokm_plugin_advanced_zk_tsize',
+				'value'       => Option::network_get( 'zk_tsize' ),
+				'min'         => 10,
+				'max'         => 1000,
+				'step'        => 10,
+				'description' => 'Batch size, in number of items.',
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'pokm_plugin_advanced_section', 'pokm_plugin_advanced_zk_tsize' );
+		add_settings_field(
+			'pokm_plugin_advanced_zk_semaphore',
+			'Zookeeper semaphore',
+			[ $form, 'echo_field_input_integer' ],
+			'pokm_plugin_advanced_section',
+			'pokm_plugin_advanced_section',
+			[
+				'id'          => 'pokm_plugin_advanced_zk_semaphore',
+				'value'       => Option::network_get( 'zk_semaphore' ),
+				'min'         => 300,
+				'max'         => 1800,
+				'step'        => 60,
+				'description' => 'Semaphore auto release, in seconds.',
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'pokm_plugin_advanced_section', 'pokm_plugin_advanced_zk_semaphore' );
+		add_settings_field(
+			'pokm_plugin_advanced_zk_cycle',
+			'Zookeeper cycle',
+			[ $form, 'echo_field_input_integer' ],
+			'pokm_plugin_advanced_section',
+			'pokm_plugin_advanced_section',
+			[
+				'id'          => 'pokm_plugin_advanced_zk_cycle',
+				'value'       => Option::network_get( 'zk_cycle' ),
+				'min'         => 60,
+				'max'         => 1800,
+				'step'        => 30,
+				'description' => 'Cycle duration, in seconds. Must be less than semaphore value.',
+				'full_width'  => true,
+				'enabled'     => true,
+			]
+		);
+		register_setting( 'pokm_plugin_advanced_section', 'pokm_plugin_advanced_zk_cycle' );
+	}
+
+	/**
 	 * Callback for plugin features section.
 	 *
 	 * @since 1.0.0
@@ -565,6 +653,7 @@ class Keys_Master_Admin {
 		);
 		register_setting( 'pokm_plugin_features_section', 'pokm_plugin_features_metrics' );
 	}
+	
 	/**
 	 * Callback for privacy options section.
 	 *
