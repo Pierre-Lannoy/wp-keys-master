@@ -23,18 +23,17 @@ __Keys Master__ can report the following main items and metrics:
 * countries breakdown (requires the free [IP Locator](https://wordpress.org/plugins/ip-locator/) plugin);
 * site breakdowns in multisites environments.
 
-__Keys Master__ supports a set of WP-CLI commands to:
-    
-* manage WordPress application passwords (list, create and revoke) - see `wp help apwd password` for details;
-* toggle on/off main settings - see `wp help apwd settings` for details;
-* modify operations mode - see `wp help apwd mode` for details;
-* display passwords statistics - see `wp help apwd analytics` for details.
-
-For a full help on WP-CLI commands in Keys Master, please [read this guide](WP-CLI.md).
-
 > __Keys Master__ is part of [PerfOps One](https://perfops.one/), a suite of free and open source WordPress plugins dedicated to observability and operations performance.
 
 __Keys Master__ is a free and open source plugin for WordPress. It integrates many other free and open source works (as-is or modified). Please, see 'about' tab in the plugin settings to see the details.
+
+## WP-CLI
+
+__Keys Master__ implements a set of WP-CLI commands. For a full help on these commands, please read [this guide](WP-CLI.md).
+
+## Hooks
+
+__Keys Master__ introduces some filters and actions to allow plugin customization. Please, read the [hooks reference](HOOKS.md) to learn more about them.
 
 ## Installation
 
