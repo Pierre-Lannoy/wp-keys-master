@@ -208,7 +208,6 @@ class Keys_Master_Admin {
 	public function add_row_meta( $links, $file ) {
 		if ( 0 === strpos( $file, POKM_SLUG . '/' ) ) {
 			$links[] = '<a href="https://wordpress.org/support/plugin/' . POKM_SLUG . '/">' . __( 'Support', 'keys-master' ) . '</a>';
-			$links[] = '<a href="https://perfops.one">PefOps One</a>';
 		}
 		return $links;
 	}

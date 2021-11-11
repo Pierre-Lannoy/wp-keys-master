@@ -8,13 +8,13 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Keys Master
- * Plugin URI:        https://github.com/Pierre-Lannoy/wp-keys-master
+ * Plugin URI:        https://perfops.one/keys-master
  * Description:       Powerful application passwords manager for WordPress with role-based usage control and full analytics reporting capabilities.
  * Version:           1.3.0
  * Requires at least: 5.6
  * Requires PHP:      7.2
- * Author:            Pierre Lannoy
- * Author URI:        https://pierre.lannoy.fr
+ * Author:            PerfOps One / Pierre Lannoy
+ * Author URI:        https://perfops.one
  * License:           GPLv3
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Network:           true
