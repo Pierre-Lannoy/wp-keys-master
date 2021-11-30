@@ -22,6 +22,7 @@ use KeysMaster\System\Date;
 use KeysMaster\System\Timezone;
 use KeysMaster\System\GeoIP;
 use PerfOpsOne\Menus;
+use PerfOpsOne\AdminBar;
 use KeysMaster\System\Statistics;
 
 /**
@@ -160,6 +161,7 @@ class Keys_Master_Admin {
 	public function init_admin_menus() {
 		add_filter( 'init_perfopsone_admin_menus', [ $this, 'init_perfopsone_admin_menus' ] );
 		Menus::initialize();
+		AdminBar::initialize();
 	}
 
 	/**
@@ -253,6 +255,36 @@ class Keys_Master_Admin {
 									$this->save_options();
 								} elseif ( ! empty( $_POST ) && array_key_exists( 'reset-to-defaults', $_POST ) ) {
 									$this->reset_options();
+								}
+							}
+							break;
+						case 'install-decalog':
+							if ( class_exists( 'PerfOpsOne\Installer' ) ) {
+								$result = \PerfOpsOne\Installer::do( 'decalog', true );
+								if ( '' === $result ) {
+									add_settings_error( 'pokm_no_error', '', esc_html__( 'Plugin successfully installed and activated with default settings.', 'keys-master' ), 'info' );
+								} else {
+									add_settings_error( 'pokm_install_error', '', sprintf( esc_html__( 'Unable to install or activate the plugin. Error message: %s.', 'keys-master' ), $result ), 'error' );
+								}
+							}
+							break;
+						case 'install-podd':
+							if ( class_exists( 'PerfOpsOne\Installer' ) ) {
+								$result = \PerfOpsOne\Installer::do( 'device-detector', true );
+								if ( '' === $result ) {
+									add_settings_error( 'pokm_no_error', '', esc_html__( 'Plugin successfully installed and activated with default settings.', 'keys-master' ), 'info' );
+								} else {
+									add_settings_error( 'pokm_install_error', '', sprintf( esc_html__( 'Unable to install or activate the plugin. Error message: %s.', 'keys-master' ), $result ), 'error' );
+								}
+							}
+							break;
+						case 'install-iplocator':
+							if ( class_exists( 'PerfOpsOne\Installer' ) ) {
+								$result = \PerfOpsOne\Installer::do( 'ip-locator', true );
+								if ( '' === $result ) {
+									add_settings_error( 'pokm_no_error', '', esc_html__( 'Plugin successfully installed and activated with default settings.', 'keys-master' ), 'info' );
+								} else {
+									add_settings_error( 'pokm_install_error', '', sprintf( esc_html__( 'Unable to install or activate the plugin. Error message: %s.', 'keys-master' ), $result ), 'error' );
 								}
 							}
 							break;
@@ -384,6 +416,9 @@ class Keys_Master_Admin {
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__( 'Your site does not use any logging plugin. To log all events triggered in Keys Master, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/decalog/">DecaLog</a>' );
+			if ( class_exists( 'PerfOpsOne\Installer' ) && ! Environment::is_wordpress_multisite() ) {
+				$help .= '<br/><a href="' . esc_url( admin_url( 'admin.php?page=pokm-settings&tab=misc&action=install-decalog' ) ) . '" class="poo-button-install"><img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'download-cloud', 'none', '#FFFFFF', 3 ) . '" />&nbsp;&nbsp;' . esc_html__('Install It Now', 'keys-master' ) . '</a>';
+			}
 		}
 		add_settings_field(
 			'pokm_plugin_options_logger',
@@ -403,6 +438,9 @@ class Keys_Master_Admin {
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__( 'Your site does not use any IP geographic information plugin. To allow country differentiation in Keys Master analytics, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/ip-locator/">IP Locator</a>' );
+			if ( class_exists( 'PerfOpsOne\Installer' ) && ! Environment::is_wordpress_multisite() ) {
+				$help .= '<br/><a href="' . esc_url( admin_url( 'admin.php?page=pokm-settings&tab=misc&action=install-iplocator' ) ) . '" class="poo-button-install"><img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'download-cloud', 'none', '#FFFFFF', 3 ) . '" />&nbsp;&nbsp;' . esc_html__('Install It Now', 'keys-master' ) . '</a>';
+			}
 		}
 		add_settings_field(
 			'pokm_plugin_options_geoip',
@@ -421,6 +459,9 @@ class Keys_Master_Admin {
 		} else {
 			$help  = '<img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'alert-triangle', 'none', '#FF8C00' ) . '" />&nbsp;';
 			$help .= sprintf( esc_html__( 'Your site does not use any device detection mechanism. To allow device differentiation in Keys Master analytics, I recommend you to install the excellent (and free) %s. But it is not mandatory.', 'keys-master' ), '<a href="https://wordpress.org/plugins/device-detector/">Device Detector</a>' );
+			if ( class_exists( 'PerfOpsOne\Installer' ) && ! Environment::is_wordpress_multisite() ) {
+				$help .= '<br/><a href="' . esc_url( admin_url( 'admin.php?page=pokm-settings&tab=misc&action=install-podd' ) ) . '" class="poo-button-install"><img style="width:16px;vertical-align:text-bottom;" src="' . \Feather\Icons::get_base64( 'download-cloud', 'none', '#FFFFFF', 3 ) . '" />&nbsp;&nbsp;' . esc_html__('Install It Now', 'keys-master' ) . '</a>';
+			}
 		}
 		add_settings_field(
 			'pokm_plugin_options_podd',
