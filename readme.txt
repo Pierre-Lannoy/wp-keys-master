@@ -4,7 +4,7 @@ Tags: application password, authentication, rest-api, security, xml-rpc
 Requires at least: 5.6
 Requires PHP: 7.2
 Tested up to: 5.9
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
