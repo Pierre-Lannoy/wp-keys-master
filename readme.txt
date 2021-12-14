@@ -77,7 +77,7 @@ If you like this plugin or find it useful and want to thank me for the work done
 
 = Once Activated =
 
-1. Visit 'PerfOps Settings > Keys Master' in the left-hand menu of your WP Admin to adjust settings.
+1. Visit 'PerfOps One > Control Center > Keys Master' in the left-hand menu of your WP Admin to adjust settings.
 2. Enjoy!
 
 == Frequently Asked Questions ==
