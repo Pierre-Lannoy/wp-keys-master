@@ -424,11 +424,9 @@ class Schema {
 		}
 		// phpcs:ignore
 		$id = Cache::id( __FUNCTION__ . $table . serialize( $filter ) . $group . $extra_field . serialize( $extras ) . ( $not ? 'no' : 'yes') . $order . (string) $limit);
-		if ( $cache ) {
-			$result = Cache::get_global( $id );
-			if ( $result ) {
-				return $result;
-			}
+		$result = Cache::get_global( $id );
+		if ( $result ) {
+			return $result;
 		}
 		if ( '' !== $group ) {
 			$group = ' GROUP BY ' . $group;
@@ -442,9 +440,7 @@ class Schema {
 		// phpcs:ignore
 		$result = $wpdb->get_results( $sql, ARRAY_A );
 		if ( is_array( $result ) ) {
-			if ( $cache ) {
-				Cache::set_global( $id, $result, 'infinite' );
-			}
+			Cache::set_global( $id, $result, $cache ? 'infinite' : 'ephemeral' );
 			return $result;
 		}
 		return [];
