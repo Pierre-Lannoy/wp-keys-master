@@ -5,8 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [1.7.0] - Not Yet Released
 
+### Added
+- Compatibility with WordPress 6.1.
+
 ### Changed
 - Improved ephemeral cache in analytics.
+
+### Fixed
+- [SEC002] Moment.js library updated to 2.29.4 / [Regular Expression Denial of Service (ReDoS)](https://github.com/moment/moment/issues/6012).
 
 ## [1.6.0] - 2022-04-20
 
