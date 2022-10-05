@@ -12,7 +12,7 @@ define( 'POKM_PRODUCT_URL', 'https://github.com/Pierre-Lannoy/wp-keys-master' );
 define( 'POKM_PRODUCT_SHORTNAME', 'keys-master' );
 define( 'POKM_PRODUCT_ABBREVIATION', 'keysmaster' );
 define( 'POKM_SLUG', 'keys-master' );
-define( 'POKM_VERSION', '1.7.0-dev1' );
+define( 'POKM_VERSION', '1.7.0-dev2' );
 define( 'POKM_CODENAME', '"-"' );
 define( 'POKM_CDN_AVAILABLE', true );
 
