@@ -45,7 +45,7 @@ class Keys_Master_Public {
 	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
-		$this->assets->register_style( POKM_ASSETS_ID, POKM_PUBLIC_URL, 'css/keys-master.min.css' );
+		//$this->assets->register_style( POKM_ASSETS_ID, POKM_PUBLIC_URL, 'css/keys-master.min.css' );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Keys_Master_Public {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-		$this->assets->register_script( POKM_ASSETS_ID, POKM_PUBLIC_URL, 'js/keys-master.min.js', [ 'jquery' ] );
+		//$this->assets->register_script( POKM_ASSETS_ID, POKM_PUBLIC_URL, 'js/keys-master.min.js', [ 'jquery' ] );
 	}
 
 }
