@@ -1,5 +1,5 @@
 === Keys Master ===
-Contributors: PierreLannoy
+Contributors: PierreLannoy, hosterra
 Tags: application password, authentication, rest-api, security, xml-rpc
 Requires at least: 5.6
 Requires PHP: 7.2
