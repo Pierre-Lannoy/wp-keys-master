@@ -3,6 +3,11 @@ All notable changes to **Keys Master** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Keys Master** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.2] - 2023-04-07
+
+### Fixed
+- Auto expiration can throw an exception while forced in cron or ajax (thanks to [YR Chen](https://github.com/stevapple)).
+
 ## [1.8.1] - 2023-03-02
 
 ### Fixed
