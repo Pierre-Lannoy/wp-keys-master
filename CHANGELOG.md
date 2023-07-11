@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [1.9.0] - Not Yet Released
 
-### Fixed
-- 
+### Added
+- Compatibility with WordPress 6.3.
 
+### Changed
+- The color for `shmop` test in Site Health is now gray to not worry to much about it (was previously orange).
 
 ## [1.8.2] - 2023-04-07
 
