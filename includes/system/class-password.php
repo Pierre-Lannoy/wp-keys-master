@@ -461,6 +461,7 @@ class Password {
 	 */
 	public static function auto_revoke_password( $passwords, $user_id ) {
 		$privileges = null;
+		$idle       = 0;
 		if ( isset( self::$instance ) ) {
 			$privileges = self::$instance->get_privileges_for_user( $user_id );
 		}

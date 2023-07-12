@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 - The color for `shmop` test in Site Health is now gray to not worry to much about it (was previously orange).
+- 
+### Fixed
+- In some edge-cases, detecting idle time may produce PHP warnings (thanks to [YR Chen](https://github.com/stevapple)).
 
 ## [1.8.2] - 2023-04-07
 
