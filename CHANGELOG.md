@@ -3,14 +3,14 @@ All notable changes to **Keys Master** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Keys Master** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.9.0] - Not Yet Released
+## [1.9.0] - 2023-07-12
 
 ### Added
 - Compatibility with WordPress 6.3.
 
 ### Changed
 - The color for `shmop` test in Site Health is now gray to not worry to much about it (was previously orange).
-- 
+
 ### Fixed
 - In some edge-cases, detecting idle time may produce PHP warnings (thanks to [YR Chen](https://github.com/stevapple)).
 
