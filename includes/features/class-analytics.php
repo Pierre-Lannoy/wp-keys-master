@@ -642,12 +642,12 @@ class Analytics {
 						'dimension'   => 'none',
 						'ratio'       => [
 							'raw'      => round( $data['kpi-main-success'] / 100, 6 ),
-							'percent'  => round( $data['kpi-main-success'], 2 ),
+							'percent'  => round( $data['kpi-main-success'] ?? 0, 2 ),
 							'permille' => round( $data['kpi-main-success'] * 10, 2 ),
 						],
 						'variation'   => [
 							'raw'      => round( $data['kpi-index-success'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-success'], 2 ),
+							'percent'  => round( $data['kpi-index-success'] ?? 0, 2 ),
 							'permille' => round( $data['kpi-index-success'] * 10, 2 ),
 						],
 						'value'       => [
@@ -672,7 +672,7 @@ class Analytics {
 						'ratio'       => null,
 						'variation'   => [
 							'raw'      => round( $data['kpi-index-password'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-password'], 2 ),
+							'percent'  => round( $data['kpi-index-password'] ?? 0, 2 ),
 							'permille' => round( $data['kpi-index-password'] * 10, 2 ),
 						],
 						'value'       => [
@@ -697,7 +697,7 @@ class Analytics {
 						'ratio'       => null,
 						'variation'   => [
 							'raw'      => round( $data['kpi-index-revoked'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-revoked'], 2 ),
+							'percent'  => round( $data['kpi-index-revoked'] ?? 0, 2 ),
 							'permille' => round( $data['kpi-index-revoked'] * 10, 2 ),
 						],
 						'value'       => [
@@ -722,7 +722,7 @@ class Analytics {
 						'ratio'       => null,
 						'variation'   => [
 							'raw'      => round( $data['kpi-index-created'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-created'], 2 ),
+							'percent'  => round( $data['kpi-index-created'] ?? 0, 2 ),
 							'permille' => round( $data['kpi-index-created'] * 10, 2 ),
 						],
 						'value'       => [
@@ -746,12 +746,12 @@ class Analytics {
 						'dimension'   => 'none',
 						'ratio'       => [
 							'raw'      => round( $data['kpi-main-adoption'] / 100, 6 ),
-							'percent'  => round( $data['kpi-main-adoption'], 2 ),
+							'percent'  => round( $data['kpi-main-adoption'] ?? 0, 2 ),
 							'permille' => round( $data['kpi-main-adoption'] * 10, 2 ),
 						],
 						'variation'   => [
 							'raw'      => round( $data['kpi-main-adoption'] / 100, 6 ),
-							'percent'  => round( $data['kpi-main-adoption'], 2 ),
+							'percent'  => round( $data['kpi-main-adoption'] ?? 0, 2 ),
 							'permille' => round( $data['kpi-main-adoption'] * 10, 2 ),
 						],
 						'value'       => [
@@ -776,7 +776,7 @@ class Analytics {
 						'ratio'       => null,
 						'variation'   => [
 							'raw'      => round( $data['kpi-index-rate'] / 100, 6 ),
-							'percent'  => round( $data['kpi-index-rate'], 2 ),
+							'percent'  => round( $data['kpi-index-rate'] ?? 0, 2 ),
 							'permille' => round( $data['kpi-index-rate'] * 10, 2 ),
 						],
 						'value'       => [

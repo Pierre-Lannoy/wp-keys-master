@@ -3,6 +3,11 @@ All notable changes to **Keys Master** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Keys Master** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - Not Yet Released
+
+### Fixed
+- With PHP 8.2, in some edge cases, deprecation warnings may be triggered when viewing analytics.
+
 ## [1.9.0] - 2023-07-12
 
 ### Added
