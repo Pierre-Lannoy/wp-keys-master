@@ -4,7 +4,7 @@ All notable changes to **Keys Master** are documented in this *changelog*.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Keys Master** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [1.11.1] - Not Yet Released
+## [1.11.1] - 2024-05-04
 
 ### Changed
 - Updated DecaLog SDK from version 3.0.0 to version 4.1.0.
