@@ -11,7 +11,7 @@
  * Plugin URI:        https://perfops.one/keys-master
  * Description:       Powerful application passwords manager for WordPress with role-based usage control and full analytics reporting capabilities.
  * Version:           1.11.0
- * Requires at least: 6.1
+ * Requires at least: 6.2
  * Requires PHP:      8.1
  * Author:            Pierre Lannoy / PerfOps One
  * Author URI:        https://perfops.one
