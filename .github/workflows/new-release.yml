@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: WordPress Plugin Deploy
+      - name: Deploy plugin to WordPress official repository
         id: wordpress_plugin_deploy
         uses: Pierre-Lannoy/wordpress-actions/dotorg-plugin-deploy@master
         env:
@@ -19,8 +19,8 @@ jobs:
           NAME: Keys Master
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-      - name: Output artifact url
+      - name: Adding plugin zip to release
         uses: softprops/action-gh-release@v1
         if: ${{startsWith(github.ref, 'refs/tags/') }}
         with:
-          files: keys-master.zip
+          files: ${{ steps.wordpress_plugin_deploy.outputs.zip_path }}
