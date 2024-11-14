@@ -19,10 +19,8 @@ jobs:
           NAME: Keys Master
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-      - name: Artifact Upload
-        id: artifact_upload
-        uses: actions/upload-artifact@v4
-        with:
-          path: ${{ steps.wordpress_plugin_deploy.outputs.zip_path }}
       - name: Output artifact url
-        run: echo 'Artifact url is ${{ steps.artifact-artifact_upload-step.outputs.artifact-url }}'
+        uses: softprops/action-gh-release@v1
+        if: ${{startsWith(github.ref, 'refs/tags/') }}
+        with:
+          files: ${{ steps.wordpress_plugin_deploy.outputs.zip_path }}
