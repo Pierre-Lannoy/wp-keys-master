@@ -24,4 +24,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: ${{ steps.wordpress_plugin_deploy.outputs.zip_path }}
+          body_path: ${{ steps.wordpress_plugin_deploy.outputs.zip_path }}
