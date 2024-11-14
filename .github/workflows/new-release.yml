@@ -19,9 +19,10 @@ jobs:
           NAME: Keys Master
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-      - name: Plugin Zip Add
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Artifact Upload
+        id: artifact_upload
+        uses: actions/upload-artifact@v4
         with:
-          body_path: ${{ steps.wordpress_plugin_deploy.outputs.zip_path }}
+          path: ${{ steps.wordpress_plugin_deploy.outputs.zip_path }}
+      - name: Output artifact url
+        run: echo 'Artifact url is ${{ steps.artifact-artifact_upload-step.outputs.artifact-url }}'
