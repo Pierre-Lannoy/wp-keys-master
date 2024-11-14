@@ -23,4 +23,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: ${{startsWith(github.ref, 'refs/tags/') }}
         with:
-          files: ${{ steps.wordpress_plugin_deploy.outputs.zip_path }}
+          files: keys-master.zip
