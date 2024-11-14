@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: WordPress Plugin Deploy
+        id: wordpress_plugin_deploy
         uses: Pierre-Lannoy/wordpress-actions/dotorg-plugin-deploy@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -18,3 +19,13 @@ jobs:
           NAME: Keys Master
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        env:
+          # Note, this is an exception to action secrets: GH_TOKEN is always available and provides access to
+          # the current repository this action runs in.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        with:
+          # Provide what the file should be named when attached to the release (plugin-name.zip)
+          files: ${{ github.workspace }}/${{ github.event.repository.name }}.zip
