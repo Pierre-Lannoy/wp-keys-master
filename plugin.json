@@ -1,15 +1,11 @@
 {
-  "author" : "<a href='https://rudrastyh.com'>Misha Rudrastyh</a>",
-  "author_profile" : "http://profiles.wordpress.org/rudrastyh",
-  "requires" : "3.0",
+  "author" : "<a href='https://perfops.one'>Pierre Lannoy / PerfOps One</a>",
+  "author_profile" : "https://profiles.wordpress.org/pierrelannoy/",
+  "requires" : "6.2",
   "tested" : "6.7",
-  "requires_php" : "5.3",
+  "requires_php" : "8.1",
   "last_updated" : "2024-11-17 02:10:00",
-  "sections" : {
-    "description" : "This simple plugin does nothing, only gets updates from a custom server",
-    "installation" : "Click the activate button and that's it.",
-    "changelog" : "<h4>1.0 –  1 august 2021</h4><ul><li>Bug fixes.</li><li>Initital release.</li></ul>"
-  },
+  "description" : "This simple plugin does nothing, only gets updates from a custom server",
   "banners" : {
     "low" : "https://rudrastyh.com/wp-content/uploads/updater/banner-772x250.jpg",
     "high" : "https://rudrastyh.com/wp-content/uploads/updater/banner-1544x500.jpg"
