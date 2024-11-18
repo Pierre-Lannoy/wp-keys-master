@@ -20,7 +20,7 @@ jobs:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
       - name: Adding plugin zip to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@master
         if: ${{startsWith(github.ref, 'refs/tags/') }}
         with:
           files: ${{ steps.wordpress_plugin_deploy.outputs.zip_file }}

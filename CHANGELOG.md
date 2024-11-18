@@ -3,7 +3,12 @@ All notable changes to **Keys Master** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Keys Master** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.1.0] - Not Yet Released
+## [2.1.1] - 2024-11-18
+
+### Fixed
+- Plugin is not downloadable from wp.org.
+
+## [2.1.0] - 2024-11-18
 
 ### Added
 - Compatibility with WordPress 6.6 & 6.7.
