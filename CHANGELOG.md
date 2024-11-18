@@ -5,8 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [2.1.0] - Not Yet Released
 
+### Added
+- Compatibility with WordPress 6.6 & 6.7.
+
 ### Changed
-- Better rendering for advanced settings.
+- Better rendering for advanced settings.a
+
+### Fixed
+- a
+
+### Removed
+- As Databeam project has been abandoned, all corresponding hooks and libraries have been removed.
 
 ## [2.0.0] - 2024-05-28
 
