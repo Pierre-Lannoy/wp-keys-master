@@ -9,10 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Compatibility with WordPress 6.6 & 6.7.
 
 ### Changed
-- Better rendering for advanced settings.a
-
-### Fixed
-- a
+- Better rendering for advanced settings.
 
 ### Removed
 - As Databeam project has been abandoned, all corresponding hooks and libraries have been removed.
