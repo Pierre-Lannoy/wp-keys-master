@@ -3,11 +3,5 @@
   "author_profile" : "https://profiles.wordpress.org/pierrelannoy/",
   "requires" : "6.2",
   "tested" : "6.8",
-  "requires_php" : "8.1",
-  "last_updated" : "2024-11-17 02:10:00",
-  "description" : "This simple plugin does nothing, only gets updates from a custom server",
-  "banners" : {
-    "low" : "https://rudrastyh.com/wp-content/uploads/updater/banner-772x250.jpg",
-    "high" : "https://rudrastyh.com/wp-content/uploads/updater/banner-1544x500.jpg"
-  }
+  "requires_php" : "8.1"
 }
