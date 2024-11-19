@@ -66,8 +66,6 @@ class Updater {
 			add_action( 'upgrader_process_complete', [ $this, 'info_reset' ], 10, 2 );
 			add_filter( 'clean_url', [ $this, 'filter_logo' ], PHP_INT_MAX, 3 );
 		}
-
-
 	}
 
 	/**
