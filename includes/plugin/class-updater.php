@@ -12,7 +12,7 @@ namespace KeysMaster\Plugin;
 use KeysMaster\System\Nag;
 use KeysMaster\System\Option;
 use Exception;
-
+use KeysMaster\System\Http;
 use KeysMaster\System\Cache;
 use KeysMaster\Plugin\Feature\Schema;
 use KeysMaster\System\Markdown;
@@ -121,7 +121,8 @@ class Updater {
 				[
 					'timeout' => 10,
 					'headers' => [
-						'Accept' => 'application/vnd.github+json'
+						'Accept'     => 'application/vnd.github+json',
+						'user-agent' => Http::user_agent(),
 					]
 				]
 			);
@@ -139,8 +140,8 @@ class Updater {
 				'https://releases.perfops.one/' . $this->slug . '.json',
 				[
 					'timeout' => 10,
-					'headers'    => [
-						'user-agent' => 'PerfOps One - ' . $this->name . ' (https://perfops.one/' . $this->slug . ')',
+					'headers' => [
+						'user-agent' => Http::user_agent(),
 					],
 				]
 			);
