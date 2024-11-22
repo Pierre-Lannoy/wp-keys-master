@@ -112,7 +112,7 @@ class Updater {
 	 * @return  object   The remote info.
 	 */
 	private function gather_info() {
-		$remotes = get_transient( 'update-' . $this->slug );
+		$remotes = null;//Cache::get_global( 'data_update-infos' );
 		if ( ! $remotes ) {
 			$remotes = new \stdClass();
 
@@ -136,12 +136,12 @@ class Updater {
 			$remotes->author_profile = $plugin_info['author_profile'] ?? 'https://profiles.wordpress.org/pierrelannoy/';
 
 			$remote = wp_remote_get(
-				str_replace( 'github.com', 'api.github.com/repos', $this->product ) . '/releases/latest',
+				'https://releases.perfops.one/' . $this->slug . '.json',
 				[
 					'timeout' => 10,
-					'headers' => [
-						'Accept' => 'application/vnd.github+json'
-					]
+					'headers'    => [
+						'user-agent' => 'PerfOps One - ' . $this->name . ' (https://perfops.one/' . $this->slug . ')',
+					],
 				]
 			);
 			if ( is_wp_error( $remote ) || 200 !== wp_remote_retrieve_response_code( $remote ) || empty( wp_remote_retrieve_body( $remote ) ) ) {
@@ -159,8 +159,7 @@ class Updater {
 			if ( '-' === $remotes->download_url ) {
 				return false;
 			}
-
-			set_transient( 'update-' . $this->slug, $remotes, DAY_IN_SECONDS );
+			Cache::set_global( 'data_update-infos', $remotes, DAY_IN_SECONDS );
 		}
 
 		return $remotes;
