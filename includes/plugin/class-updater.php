@@ -112,7 +112,7 @@ class Updater {
 	 * @return  object   The remote info.
 	 */
 	private function gather_info() {
-		$remotes = null;//Cache::get_global( 'data_update-infos' );
+		$remotes = Cache::get_global( 'data_update-infos' );
 		if ( ! $remotes ) {
 			$remotes = new \stdClass();
 

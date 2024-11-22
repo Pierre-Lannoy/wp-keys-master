@@ -3,6 +3,12 @@ All notable changes to **Keys Master** are documented in this *changelog*.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and **Keys Master** adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.3] - 2024-11-22
+
+### Changed
+- Updater performances improved.
+- The plugin user agent is now more consistent and "standard".
+
 ## [2.1.2] - 2024-11-19
 
 ### Changed
