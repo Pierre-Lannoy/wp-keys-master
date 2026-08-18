@@ -1,7 +1,7 @@
 # Keys Master
 [![version](https://badgen.net/github/release/Pierre-Lannoy/wp-keys-master/)](https://wordpress.org/plugins/keys-master/)
-[![php](https://badgen.net/badge/php/7.2+/green)](https://wordpress.org/plugins/keys-master/)
-[![wordpress](https://badgen.net/badge/wordpress/5.6+/green)](https://wordpress.org/plugins/keys-master/)
+[![php](https://badgen.net/badge/php/8.2+/green)](https://wordpress.org/plugins/keys-master/)
+[![wordpress](https://badgen.net/badge/wordpress/6.4+/green)](https://wordpress.org/plugins/keys-master/)
 [![license](https://badgen.net/github/license/Pierre-Lannoy/wp-keys-master/)](/license.txt)
 
 __Keys Master__ is a powerful application passwords manager for WordPress with role-based usage control and full analytics reporting about passwords usages. It relies on the "application password" core feature introduced in WordPress 5.6. and add it extra features and controls.
@@ -56,7 +56,3 @@ Alternatively, if you have usage questions, you can open a discussion on the [Wo
 Before submitting an issue or a pull request, please read the [contribution guidelines](CONTRIBUTING.md).
 
 > ⚠️ The `master` branch is the current development state of the plugin. If you want a stable, production-ready version, please pick the last official [release](https://github.com/Pierre-Lannoy/wp-keys-master/releases).
-
-## Smoke tests
-[![WP compatibility](https://plugintests.com/plugins/keys-master/wp-badge.svg)](https://plugintests.com/plugins/keys-master/latest)
-[![PHP compatibility](https://plugintests.com/plugins/keys-master/php-badge.svg)](https://plugintests.com/plugins/keys-master/latest)
