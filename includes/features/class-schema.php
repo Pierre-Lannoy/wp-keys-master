@@ -100,7 +100,7 @@ class Schema {
 		foreach ( $record as $k => $v ) {
 			$field_insert[] = '`' . $k . '`';
 			if ( 'timestamp' === $k ) {
-				$value_insert[] = "'" . $v . "'";
+				$value_insert[] = "'" . esc_sql( $v ) . "'";
 			} else {
 				$value_insert[] = (int) $v;
 				$value_update[] = '`' . $k . '`=`' . $k . '` + ' . (int) $v;
@@ -140,7 +140,7 @@ class Schema {
 					$value_update[] = '`' . $k . '`=`' . $k . '` + ' . (int) $v;
 				}
 			} else {
-				$value_insert[] = "'" . $v . "'";
+				$value_insert[] = "'" . esc_sql( $v ) . "'";
 			}
 		}
 		if ( count( $field_insert ) > 1 ) {
